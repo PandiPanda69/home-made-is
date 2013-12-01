@@ -1,0 +1,94 @@
+<script type="text/template" id="heuristics-template">
+		<h1>Heuristiques</h1>
+
+		
+			<ul class="nav nav-tabs">
+				<li id="operations-type-btn" class="active"><a href="#operations-type-pane" data-toggle="tab">Types d'opération</a></li>
+				<li id="operations-name-btn" class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Nom des opérations
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<li id="operations-name-pattern-btn"><a href="#operations-name-pattern-pane"   data-toggle="tab">Motif</a></li>
+						<li id="operations-name-heuristic-btn"><a href="#operations-name-heuristic-pane" data-toggle="tab">Heuristiques</a></li>
+					</ul>
+				</li>
+			</ul>
+		
+
+	<div class="tab-content">
+		<div class="tab-pane fade active in" id="operations-type-pane">
+			<div class="pull-center">
+				<button id="heuristics-compute" class="btn btn-info btn-small" disabled><i class="icon-repeat"></i> Recalculer</button>
+			</div>
+	
+			<table id="optypes-list" class="table table-striped table-bordered table-condensed table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Nom de l'opération</th>
+						<th>Type associé</th>
+						<th>Threshold</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% for(var i = 0; i < optypes.length; i++) { %>
+					<tr>
+						<td><%= i+1 %></td>
+						<td><%= optypes[i].nom %></td>
+						<td>
+							<div class="pull-center"><%= optypes[i].type != null ? optypes[i].type.name : '' %></div>
+						</td>
+						<td><%= optypes[i].threshold * 100 %> %</td>
+						<td>
+							<div class="pull-center">
+								<a id="optypes-edit" optype="<%= optypes[i].id %>" href=""><i class="icon-edit"></i></a>
+								<a id="optypes-del"  optype="<%= optypes[i].id %>" href=""><i class="icon-remove"></i></a>
+							</div> 
+						</td>
+					</tr>
+					<% } %>		
+				</tbody>
+			</table>
+		</div>
+
+		<div class="tab-pane fade" id="operations-name-pattern-pane">
+			
+			<table id="opnamepatterns-list" class="table table-striped table-bordered table-condensed table-hover">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Motif</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+
+					<% for(var i = 0; i < opnamepatterns.length; i++) { %>
+						<tr>
+							<td><%=(i+1)%></td>
+							<td><%=opnamepatterns[i].motif%></td>
+							<td><div class="pull-center">
+								<a class="pattern-del" href="#" pattern="<%=opnamepatterns[i].id%>"><i class="icon-trash"></i></a>
+							</div></td>
+						</tr>
+					<% } %>
+
+					<tr>
+						<td></td>
+						<td><input type="text" id="pattern" class="span8"></td>
+						<td><div class="pull-center">
+							<a id="pattern-add" href="#"><i class="icon-plus"></i></a>
+						</div></td>
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+
+		<div class="tab-pane fade" id="operations-name-heuristic-pane">
+			<p>Liste</p>
+		</div>
+	</div>
+</script>

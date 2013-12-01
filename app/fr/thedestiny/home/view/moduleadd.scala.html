@@ -1,0 +1,47 @@
+<script type="text/template" id="moduleadd-template">
+		<h1><%= isEditing ? 'Editer' : 'Ajouter' %> un module</h1>
+
+		<div class="subcontainer">
+
+		<form>
+		<table>
+			<tr>
+				<td>Nom du module</td>
+				<td>
+					<input type="text" name="name" placeholder="Nom du module"
+						<%= isEditing ? 'value="' + module.name + '"' : '' %>						
+					>
+				</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>
+					<textarea name="desc"><%= isEditing ? module.desc : '' %></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>Route</td>
+				<td class="pull-center">
+					<input type="text" name="route" placeholder="/module" 
+						<%= isEditing ? 'value="' + module.route + '"' : '' %>
+					>
+				</td>
+			</tr>
+			<tr>
+				<td>Actif?</td>
+				<td class="pull-center">
+					<input type="checkbox" name="active"
+						<%= isEditing && module.active ? 'checked' : '' %>
+					>
+				</td>
+			</tr>
+		</table>
+		</form>
+
+		<div class="pull-right">
+			<button id="moduleadd-validate" class="btn btn-success btn-small"><i class="icon-ok"></i> </button>
+			<button id="moduleadd-cancel"   class="btn btn-danger btn-small"><i class="icon-remove"></i> </button>
+		</div>
+
+		</div>
+</script>

@@ -1,0 +1,40 @@
+<script type="text/template" id="modules-template">
+		<h1>Modules</h1>
+
+		<p>Il y a <%= modules.length %> modules enregistrés.</p>
+
+		<div class="pull-right">
+			<button id="modules-add" class="btn btn-success btn-small"><i class="icon-plus"></i> </button>
+		</div>
+
+		<table id="modules-list" class="table table-striped table-bordered table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Nom</th>
+					<th>Route</th>
+					<th>Actif</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<% for(var i = 0; i < modules.length; i++) { %>
+				<tr>
+					<td><%= i+1 %></td>
+					<td><%= modules[i].name %></td>
+					<td><%= modules[i].route %></td>
+					<td>
+						<div class="pull-center">
+							<%= modules[i].active ? '<i class="icon-ok"></i>' : '' %></td>
+						</div>
+					<td>
+						<div class="pull-center">
+							<a id="modules-edit" module="<%= modules[i].id %>" href=""><i class="icon-edit"></i></a>
+							<a id="modules-del"  module="<%= modules[i].id %>" href=""><i class="icon-remove"></i></a>
+						</div> 
+					</td>
+				</tr>
+				<% } %>
+			</tbody>
+		</table>
+</script>

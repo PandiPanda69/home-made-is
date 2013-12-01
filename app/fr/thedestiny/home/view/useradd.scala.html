@@ -1,0 +1,75 @@
+<script type="text/template" id="useradd-template">
+		<h1><%= isEditing ? 'Editer' : 'Ajouter' %> un utilisateur</h1>
+
+		<div class="subcontainer">
+
+		<table>
+			<tr>
+				<td>Utilisateur</td>
+				<td>
+					<input type="text" id="username" placeholder="Nom d'utilisateur"
+						<%= isEditing ? 'value="' + user.username + '"' : '' %>						
+					>
+				</td>
+			</tr>
+			<tr>
+				<td>Mot de passe</td>
+				<td>
+					<input type="password" id="password">
+				</td>
+			</tr>
+			<tr>
+				<td>Prénom</td>
+				<td>
+					<input type="text" id="firstName" placeholder="Prénom"
+						<%= isEditing ? 'value="' + user.firstName + '"' : '' %>
+					>
+				</td>
+			</tr>
+			<tr>
+				<td>Administrateur?</td>
+				<td class="pull-center">
+					<input type="checkbox" id="isAdmin" 
+						<%= isEditing && user.isAdmin ? 'checked="checked"' : '' %>
+					>
+				</td>
+			</tr>
+			<tr><td>&nbsp;</td><td></td></tr>
+                                
+			<% $.each(modules, function(index, value) { %>
+            	<tr>
+	                <td class="pull-center">
+                        <%=value.name%>
+                    </td>
+                    <td class="pull-center">
+                    	<input type="checkbox" module="<%=value.id%>" class="user_rights"
+                                                        <%                         
+															if(isEditing) {                            
+                                                                var exists = false;
+                                                                $.each(user.modules, function(pos, m) {
+                                                                        if(m == value.id) {
+                                                                                exists = true;
+                                                                                return false;
+                                                                        }
+                                                                });
+                                                        
+                                                                if( isEditing && exists ) { %>
+                                                                         checked="checked"
+                                                                <%
+                                                                }
+															}
+                                                        %>
+                                                >
+                   </td>
+             	</tr>
+             <% }); %>
+
+		</table>
+
+		<div class="pull-right">
+			<button id="useradd-validate" class="btn btn-success btn-small"><i class="icon-ok"></i> </button>
+			<button id="useradd-cancel"   class="btn btn-danger btn-small"><i class="icon-remove"></i> </button>
+		</div>
+
+		</div>
+</script>

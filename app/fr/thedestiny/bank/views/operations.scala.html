@@ -1,0 +1,70 @@
+<script type="text/template" id="operations-template">
+	
+<ul class="nav nav-tabs">
+	<li class="active"><a href="#operations-list-pane" data-toggle="tab">Opérations</a></li>
+	<li><a href="#operations-sumup-pane" data-toggle="tab">Résumé</a></li>
+	<li><a href="#operations-stats-pane" data-toggle="tab">Statistiques</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane fade active in" id="operations-list-pane">
+	<table id="operations-list" class="table table-striped table-bordered table-condensed table-hover">
+		<thead>
+			<tr>
+				<th>Solde</th>
+				<th>Libellé</th>
+				<th>Montant</th>
+				<th>Date</th>
+				<th>Type</th>
+				<th>Cumul Mois</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<% for(var i = 0; i < operations.length; i++) { %>
+			<tr operation="<%= operations[i].id %>">
+				<td id="balance"></td>
+				<td>
+					<%= operations[i].nom %>
+					<% if( operations[i].nomComplet != null && operations[i].nomComplet.length > 0 ) { %>
+						<i class="icon-info-sign" data-toggle="tooltip"	data-placement="top" 
+						title="<%= operations[i].nomComplet %>"></i>
+					<% }
+					   if(operations[i].raison != null && operations[i].raison.length > 0) { %>
+						<i class="icon-tags" data-toggle="tooltip" data-placement="top"
+						title="<%=operations[i].raison %>"></i>
+					<% } %>
+				</td>
+				<td
+					<%= operations[i].montant >= 0 ? 'class="alert-success"' : 'class="alert-error"' %>
+				>
+					<%= parseFloat(operations[i].montant).toFixed(2) %> €
+				</td>
+				<td><%= operations[i].date %></td>
+				<td><%= operations[i].type != null ? operations[i].type.name : '' %> </td>
+				<td id="cumul"></td>
+				<td>
+					<div class="pull-center">
+						<a class="operations-edit" href=""><i class="icon-edit"></i></a>
+						<a class="operations-del"  href=""><i class="icon-remove"></i></a>
+					</div> 
+				</td>
+			</tr>
+			<% } %>
+			<tr id="operation-add">
+				
+			</tr>	
+		</tbody>
+	</table>
+  </div>
+
+  <div class="tab-pane fade" id="operations-sumup-pane">
+		@operationsabstract()
+  </div>
+
+  <div class="tab-pane fade" id="operations-stats-pane">
+		@operationsstats()
+  </div>
+</div>
+
+</script>

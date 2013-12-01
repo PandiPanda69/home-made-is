@@ -1,0 +1,64 @@
+<script type="text/template" id="import-preview-template">
+		<h1>Importer des données (3/3)</h1>
+
+		<div class="pull-center">
+
+				<p>Au dessus de chaque colonne, préciser le champ auquel la valeur correspond.</p>
+
+				<table class="table table-bordered table-condensed table-hover">
+
+				<%
+					var fieldsCount = 0;
+					var header = "";
+					var body = "";
+
+					var regexLine  = new RegExp("[\n]+", "g");
+					var regexDelim = new RegExp("[" + delim + "]+", "g");
+
+					var lines = data.split(regexLine);
+					for(var i in lines) {
+
+						if(lines[i].length == 0) {
+							continue;
+						}					
+
+						fieldsCount = 0;
+						body += "<tr>";
+
+						var fields = lines[i].split(regexDelim);
+						for(var j in fields) {
+							body += "<td>" + fields[j] + "</td>";
+							fieldsCount++;
+						}
+						
+						body += "</tr>";
+					}
+
+					// Prepare header thanks to fieldsCount
+					for(var i = 0; i < fieldsCount; i++) {
+						header += '<td>';
+						header += '<select id="field_' + i + '">';
+						header += '<option></option>';
+						header += '<option value="1">Nom</option>';
+						header += '<option value="2">Nom Complet</option>';
+						header += '<option value="3">Montant</option>';
+						header += '</select>';
+						header += '</td>';	
+					}
+				%>
+
+				<thead><tr>
+					<%=header%>
+				</tr></thead>
+				<tbody>
+					<%=body%>
+				</tbody>
+
+				</table>
+
+				<br/><br/>
+		
+				<button id="import-do" class="btn btn-success"><i class="icon-share-alt"></i> Importer</button>
+				<button id="import-cancel" class="btn btn-danger"><i class="icon-remove"></i> Annuler</button>
+		</div>
+</script>

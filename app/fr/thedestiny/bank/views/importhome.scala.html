@@ -1,0 +1,30 @@
+<script type="text/template" id="import-home-template">
+		<h1>Importer des données (1/3)</h1>
+
+		<div class="pull-center">
+
+				<p>Sélectionner le compte dans lequel importer les données :</p>
+				
+				<select id="import-account">
+					<option></option>
+					<% for(var i = 0; i < accounts.length; i++) { %>
+						<option value="<%=accounts[i].id%>"><%=accounts[i].nom%></option>
+					<% } %>
+				</select>
+
+				<% if( months != null ) { %>
+					<p>Sélectionner le mois :</p>
+	
+					<select id="import-month">
+						<option></option>
+						<% for(var i = 0; i < months.length; i++) { %>
+							<option value="<%=months[i].id%>"><%= month_names[months[i].mois] + ' ' + months[i].annee %></option>
+						<% } %>					
+					</select>
+				<% } %>
+
+				<br/>
+
+				<button id="import-continue" class="btn btn-info"><i class="icon-hand-right"></i> Continuer</button>
+		</div>
+</script>

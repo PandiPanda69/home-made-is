@@ -1,0 +1,37 @@
+<script type="text/template" id="operationshdr-template">
+		<h1>Opérations pour le compte <i><%= account.nom %></i></h1>
+
+		<div class="container">
+				Mois :
+				<select id="month">
+					<option value="NO_MONTH"></option>
+					<% if(months.length > 0) { %>						
+						<% for( var i = (months.length-1); i >= 0; i-- ) { %>
+							<option value="<%= months[i].id %>"><%= month_names[months[i].mois] + ' ' + months[i].annee %></option>
+						<% } %>
+					<% } %> 
+					<option value="ADD_MONTH">Ajouter un mois...</option>
+				</select>
+		</div>
+
+		<div class="row">
+			<div id="month_input_form" class="alert span4 offset4 pull-center hide" data-toggle="popover" 
+				data-placement="left" data-content="Saisir les informations du mois à ajouter." 
+				data-original-title="Ajout d'un mois">
+				Mois: 
+					<select id="num_month" class="input-small">
+						<% for( var i = 0; i < month_names.length; i++ ) { %>
+							<option value="<%= i %>"><%= month_names[i] %></option>
+						<% } %>
+					</select>
+				<br/>
+			    Année: <input type="text" id="num_year" class="input-small"><br/>
+			    <button id="month_add" class="btn btn-small btn-success"><i class="icon-plus"></i> </button>
+			    <button id="month_cancel" class="btn btn-small btn-danger"><i class="icon-remove"></i> </button>
+			</div>
+		</div>
+
+		<div id="operations-container">
+		</div>
+
+</script>

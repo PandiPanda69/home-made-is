@@ -1,0 +1,31 @@
+<script type="text/template" id="optypeadd-template">
+		<h1><%= isEditing ? 'Editer' : 'Ajouter' %> un type d'opération</h1>
+
+		<div class="subcontainer">
+
+		<table>
+			<tr>
+				<td>Libellé</td>
+				<td>
+					<input type="text" id="name" placeholder="Libellé du type d'opération"
+						<%= isEditing ? 'value="' + optype.name + '"' : '' %>						
+					>
+				</td>
+			</tr>
+			<tr>
+				<td>Icône</td>				
+				<td>
+					<input type="text" id="icon" placeholder="Icône"
+						<%= isEditing ? 'value="' + optype.icon + '"' : '' %>
+					>
+				</td>
+			</tr>			
+		</table>
+
+		<div class="pull-right">
+			<button id="optypeadd-validate" class="btn btn-success btn-small"><i class="icon-ok"></i> </button>
+			<button id="optypeadd-cancel"   class="btn btn-danger btn-small"><i class="icon-remove"></i> </button>
+		</div>
+
+		</div>
+</script>

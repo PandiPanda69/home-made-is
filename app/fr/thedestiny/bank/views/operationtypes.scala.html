@@ -1,0 +1,35 @@
+<script type="text/template" id="optypes-template">
+		<h1>Types d'opération</h1>
+
+		<div class="pull-right">
+			<button id="optypes-add" class="btn btn-success btn-small"><i class="icon-plus"></i> </button>
+		</div>
+
+		<table id="optypes-list" class="table table-striped table-bordered table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Libellé</th>
+					<th>Icône</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<% for(var i = 0; i < optypes.length; i++) { %>
+				<tr>
+					<td><%= i+1 %></td>
+					<td><%= optypes[i].name %></td>
+					<td>
+						<div class="pull-center"><%= optypes[i].icon %></div>
+					</td>
+					<td>
+						<div class="pull-center">
+							<a id="optypes-edit" optype="<%= optypes[i].id %>" href=""><i class="icon-edit"></i></a>
+							<a id="optypes-del"  optype="<%= optypes[i].id %>" href=""><i class="icon-remove"></i></a>
+						</div> 
+					</td>
+				</tr>
+				<% } %>		
+			</tbody>
+		</table>
+</script>

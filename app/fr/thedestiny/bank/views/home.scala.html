@@ -1,0 +1,54 @@
+<script type="text/template" id="home-template">
+	<h1>Accueil</h1>
+
+        <div class="row">
+          <div class="span4">
+			<h3>Statistiques</h3>
+
+			<% 
+			var assets = 0.00;
+			var saving = 0.00;
+			_.each(accounts, function(current) {
+				if(current.category == "ASSETS") {
+					assets += current.solde;
+				}
+				else if(current.category == "SAVING") {
+					saving += current.solde;
+				}
+			}); %>
+
+			<ul>
+				<li>Avoirs <b id="bank-assets"> <%=assets.toFixed(2)%> €</b></li>
+
+				<ul>
+				<% _.each(accounts, function(current) { 
+					if(current.category == "ASSETS") { %>
+						<li><%=current.nom%>: <b> <%=current.solde.toFixed(2)%> €</b></li>
+				<%	}
+				 }); %>
+				</ul>
+
+			</ul>
+
+			<ul>
+				<li>Epargne <b id="bank-saving"> <%=saving.toFixed(2)%> €</b></li>
+				<ul>
+				<% _.each(accounts, function(current) {
+					if(current.category == "SAVING") { %>
+						<li><%=current.nom%>: <b> <%=current.solde.toFixed(2)%> €</b></li>
+				<%	}
+				 }); %>
+				</ul>
+			</ul>
+          </div>
+
+          <div class="span8 pull-center">
+       	   <h3>Graphiques</h3>
+
+			<div id="bank-abstract-chart" class="span8">
+				&nbsp;
+			</div>
+
+          </div>
+        </div>
+</script>

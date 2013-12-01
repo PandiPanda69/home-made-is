@@ -1,0 +1,22 @@
+<script type="text/template" id="home-template">
+		<h1 class="paddingB25">Accueil</h1>
+
+		<ul class="paddingB25">
+		<% 
+			$.each(modules, function(index, value) {
+
+				if( value.active == false ) return true;
+				%>
+				
+				<li class="inline marginR50">
+					<div class="box bordered" module="<%=value.id%>">
+						<h4><%=value.name%></h4>
+
+						<p><%=value.desc%></p>
+					</div>
+				</li>
+				<%	
+			});
+		%>
+		</ul>
+</script>

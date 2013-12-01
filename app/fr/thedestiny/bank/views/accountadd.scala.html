@@ -1,0 +1,35 @@
+<script type="text/template" id="accountadd-template">
+		<h1><%= isEditing ? 'Editer' : 'Ajouter' %> un compte</h1>
+
+		<div class="subcontainer">
+
+		<table>
+			<tr>
+				<td>Libellé</td>
+				<td>
+					<input type="text" id="nom" placeholder="Nom du compte"
+						<%= isEditing ? 'value="' + account.nom + '"' : '' %>						
+					>
+				</td>
+			</tr>
+			<tr>
+				<td>Type</td>
+				<td>
+					<select id="type">
+						<% $.each(types, function(index, element) { %>
+							<option value="<%=element.id%>"
+							<%=(isEditing && account.typeId == element.id) ? 'selected' : '' %> 
+							><%=element.libelle%></option>
+						<% }); %>
+					</select>
+				</td>
+			</tr>			
+		</table>
+
+		<div class="pull-right">
+			<button id="accountadd-validate" class="btn btn-success btn-small"><i class="icon-ok"></i> </button>
+			<button id="accountadd-cancel"   class="btn btn-danger btn-small"><i class="icon-remove"></i> </button>
+		</div>
+
+		</div>
+</script>

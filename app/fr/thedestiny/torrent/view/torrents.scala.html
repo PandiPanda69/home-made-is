@@ -1,0 +1,79 @@
+	<script type="text/template" id="torrents-template">
+		<h1>Torrents</h1>
+
+		<div class="alert">
+			<h3>Filtres</h3>
+
+			<div class="span4">
+				Statut 
+				<select id="status" class="span2">
+					<option value="ALL">Tous</option>
+					<option value="ACTIVE" selected>Actif</option>
+					<option value="DELETED">Supprimé</option>
+				</select>
+			</div>
+
+			<div>
+				Activité 
+				<select id="timeValue" class="span1">
+					<option value="1" selected>1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+				</select>
+				<select id="timeUnit" class="span2">
+					<option value="WEEK">Semaine</option>
+					<option value="MONTH" selected>Mois</option>
+				</select>
+
+				<div class="pull-right">
+					<button id="torrent-filter" class="btn btn-info small-btn">Filtrer</button>
+				</div>
+			</div>
+
+		</div>
+
+		<table id="torrents-list" class="table table-striped table-bordered table-condensed table-hover">
+			<thead>
+                                <tr>
+                                        <th></th>
+                                        <th>Nom</th>
+					<th>Status</th>
+                                        <th>Date de détection</th>
+					<th>Dernière activité</th>
+                                        <th>Téléchargé</th>
+                                        <th>Uploadé</th>
+					<th>Activité</th>
+                                        <th></th>
+                                </tr>
+                        </thead>
+                        <tbody>
+
+		<%
+		$.each(torrents, function(id, element) {
+
+		%>
+				<tr>
+					<td><%=element.id%></td>
+					<td><%=element.name.substring(0,35)%><%=element.name.length > 35 ? '...' : '' %>
+					</td>
+					<td><%=element.status%></td>
+					<td><%=element.creationDate%></td>
+					<td><%=element.lastUpdateDate != null ? element.lastUpdateDate : '> 1 mois' %></td>
+					<td><%=element.downloadedAmount.toFixed(2)%> <%=element.downloadedUnit%></td>
+					<td><%=element.uploadedAmount != null ? element.uploadedAmount.toFixed(2): '-' %> <%=element.uploadedUnit%></td>
+					<td>
+						<%=element.deltaAmount != null ? 
+							element.deltaAmount.toFixed(2) + ' ' + element.deltaUnit + ' (' + element.activityRate.toFixed(2) + '%)'
+							: ' - ' %>
+					</td>
+					<td><a class="torrent-remove" torrent-id="<%=element.id%>"><i class="icon-remove"></i></a></td>
+				</tr>	
+		<%
+		});
+		%>
+
+			</tbody>
+		</table>
+
+	</script>
+

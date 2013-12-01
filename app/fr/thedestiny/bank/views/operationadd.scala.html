@@ -1,0 +1,49 @@
+<script type="text/template" id="operationadd-template">
+				
+				<td></td>
+				<td>
+					<input id="nom" type="text" class="input-medium"
+						<%= isEditing ? 'value="' + operation.nom + '"' : '' %>
+					> <br/>
+					<textarea id="nomComplet"><%= isEditing ? operation.nomComplet : '' %></textarea>
+				</td>
+				<td>
+					<div class="input-append">  							
+						<input id="montant" type="text" class="span1"
+							<%= isEditing ? 'value="' + parseFloat(operation.montant).toFixed(2) + '"' : '' %>
+						>
+						<span class="add-on">€</span>
+					</div>
+				</td>
+				<td>
+					<input id="date" type="text" class="span1" <%= isEditing ? 'value="' + operation.date + '"' : '' %>>
+				</td>
+				<td>
+					<select id="type">
+						<option></option>
+						<% for( var i = 0; i < types.length; i++ ) { %>
+							<option value="<%= types[i].id %>"
+								<%= isEditing && operation.type != null && operation.type.id == types[i].id ? 'selected' : '' %>
+							><%= types[i].name %></option>
+						<% } %>
+					</select>
+				</td>
+				<td></td>
+				<td>
+					<div class="pull-center">
+						<% if( isEditing ) { %>
+							<a id="operationadd-validate" href="">
+								<i class="icon-ok"></i>
+							</a>
+							<a id="operationadd-cancel" href="">
+								<i class="icon-remove"></i>
+							</a>
+						<% } else { %>
+							<a id="operationadd-validate" href="">
+								<i class="icon-plus"></i>
+							</a>			
+						<% } %>			
+					</div>
+				</td>			
+
+</script>

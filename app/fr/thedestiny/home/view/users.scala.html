@@ -1,0 +1,39 @@
+<script type="text/template" id="users-template">
+		<h1>Utilisateurs</h1>
+
+		<p>Il y a <%= users.length %> utilisateurs enregistrés.</p>
+
+		<div class="pull-right">
+			<button id="users-add" class="btn btn-success btn-small"><i class="icon-plus"></i> </button>
+		</div>
+
+		<table id="users-list" class="table table-striped table-bordered table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Utilisateur</th>
+					<th>Prénom</th>
+					<th>Admin?</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<% for(var i = 0; i < users.length; i++) { %>
+				<tr>
+					<td><%= i+1 %></td>
+					<td><%= users[i].username %></td>
+					<td><%= users[i].firstName %></td>
+					<td>
+						<div class="pull-center"><%= users[i].isAdmin ? '<i class="icon-ok"></i>' : '' %></div>
+					</td>
+					<td>
+						<div class="pull-center">
+							<a id="users-edit" user="<%= users[i].id %>" href=""><i class="icon-edit"></i></a>
+							<a id="users-del"  user="<%= users[i].id %>" href=""><i class="icon-remove"></i></a>
+						</div> 
+					</td>
+				</tr>
+				<% } %>
+			</tbody>
+		</table>
+</script>

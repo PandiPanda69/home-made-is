@@ -1,0 +1,19 @@
+.inline {
+	display: inline;
+}
+
+.marginR50 {
+	margin-right: 50px;
+}
+
+.paddingT25 {
+	padding-top: 25px;
+}
+
+.paddingB25 {
+	padding-bottom: 25px;
+}
+
+.horizontal-separator {
+	border-top: 1px solid #d0d0d0;	
+}
