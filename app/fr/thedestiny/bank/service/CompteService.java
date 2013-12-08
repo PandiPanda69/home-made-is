@@ -11,11 +11,11 @@ import org.hibernate.MappingException;
 import fr.thedestiny.bank.dao.CompteDao;
 import fr.thedestiny.bank.dao.SoldeDao;
 import fr.thedestiny.bank.dto.CompteDto;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.dto.StatsDto;
 import fr.thedestiny.bank.models.Compte;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.models.Solde;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionAction;
 

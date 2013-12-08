@@ -2,8 +2,7 @@ App.Menu = Backbone.View.extend({
 
 	events: {
 		"click #menu-home":     "displayHome",
-		"click #menu-weight": "displayWeight",
-		"click #menu-food":	"displayFood",
+		"click #menu-calendar": "displayCalendar",
 	},
 	initialize: function() {
 		this.$el = $("#menu");
@@ -15,11 +14,8 @@ App.Menu = Backbone.View.extend({
 	displayHome: function(e) {
 		App.Router.navigate("", {trigger: true});
 	},
-	displayWeight: function(e) {
-		App.Router.navigate("weight", {trigger: true});
-	},
-	displayFood: function(e) {
-		App.Router.navigate("food", {trigger: true});
+	displayCalendar: function(e) {
+		App.Router.navigate("calendar", {trigger: true});
 	}
 });
 

@@ -10,9 +10,9 @@ import org.hibernate.MappingException;
 import play.Logger;
 import fr.thedestiny.bank.dao.CompteDao;
 import fr.thedestiny.bank.dao.MoisAnneeDao;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.models.Compte;
 import fr.thedestiny.bank.models.MoisAnnee;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionAction;
 

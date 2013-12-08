@@ -7,8 +7,8 @@ import javax.persistence.EntityManager;
 import org.hibernate.MappingException;
 
 import fr.thedestiny.bank.dao.OperationTypeDao;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.models.OperationType;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionAction;
 

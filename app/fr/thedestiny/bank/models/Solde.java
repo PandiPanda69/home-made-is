@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import fr.thedestiny.global.model.Model;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

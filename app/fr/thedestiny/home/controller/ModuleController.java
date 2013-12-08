@@ -12,7 +12,7 @@ import fr.thedestiny.auth.model.Module;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.auth.service.ModuleService;
-import fr.thedestiny.bank.dto.GenericModelDto;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
 @org.springframework.stereotype.Controller

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import fr.thedestiny.auth.dao.ModuleDao;
 import fr.thedestiny.auth.model.Module;
-import fr.thedestiny.bank.dto.GenericModelDto;
+import fr.thedestiny.global.dto.GenericModelDto;
 
 @Service
 public class ModuleService {

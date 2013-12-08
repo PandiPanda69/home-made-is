@@ -33,6 +33,9 @@ table {
 
 .pull-center {
 	text-align: center;
+
+	margin: auto auto;
+	padding: auto auto;
 }
 
 .bordered {
@@ -73,4 +76,8 @@ table {
 	color: #000000;
 	
 	padding-bottom: 0px;
+}
+
+#calendar-table .date:hover {
+	background:	#ddd;
 }

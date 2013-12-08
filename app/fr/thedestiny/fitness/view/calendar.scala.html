@@ -1,0 +1,110 @@
+	<script type="text/template" id="calendar-template">
+		<h1>Calendrier</h1>
+
+		<h3 class="pull-center">
+			<i id="prev-month" class="valign-center icon-backward"></i> <%=MonthNames.months[month]%> <%=year%> <i id="next-month" class="valign-center icon-forward"></i>
+		</h3>
+
+		
+
+		<table id="calendar-table" class="full-width pull-center marginT25">
+			<thead>
+				<tr>
+					<th>Lun</th>
+					<th>Mar</th>
+					<th>Mer</th>
+					<th>Jeu</th>
+					<th>Ven</th>
+					<th>Sam</th>
+					<th>Dim</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<%
+						var firstDateOfMonth = new Date(year, month, 1);						
+						var firstDayOfMonth  = firstDateOfMonth.getDay();
+						var lastDayOfMonth   = (new Date(year, month+1, 0)).getDate();
+						var todayDate		 = new Date;
+						var today			 = todayDate.getDate();
+						
+						if(firstDateOfMonth.getFullYear() != todayDate.getFullYear() ||
+								firstDateOfMonth.getMonth() != todayDate.getMonth()) {
+							today = -1;
+						}
+						
+						// Note: 1st day = sunday
+						var emptyCellCount = (firstDayOfMonth == 0) ? 6 : firstDayOfMonth - 1;
+						
+						for(var i = 0; i < emptyCellCount; i++) {
+					%>
+							<td></td>
+					<%
+						}					
+					
+						var dayCount = 1;
+						for(var i = emptyCellCount; i < 7; i++) {
+						
+							var spanClass = '';
+							$.each(events, function(id, element) {
+								if(element.date.getDate() == dayCount) {
+									spanClass = 'badge badge-info';
+									return false;
+								}
+							});
+							
+							if(dayCount == today && spanClass.length == 0) {
+								spanClass = "badge badge-important";
+							}
+							else if(dayCount == today && spanClass.length > 0) {
+								spanClass = "badge badge-success";
+							}
+					%>
+							<td class="date">
+								<span class="<%=spanClass%>"><%=dayCount%></span>
+							</td>
+					<%
+							dayCount++;
+						}
+						
+					%>
+						</tr>
+					<%
+						
+						while(dayCount <= lastDayOfMonth) {
+					%>
+							<tr>
+					<%
+							for(var i = 0; i < 7 && dayCount <= lastDayOfMonth; i++) {
+							
+								var spanClass = '';
+								$.each(events, function(id, element) {
+									if(element.date.getDate() == dayCount) {
+										spanClass = 'badge badge-info';
+										return false;
+									}
+								});
+								
+								if(dayCount == today && spanClass.length == 0) {
+									spanClass = "badge badge-important";
+								}
+								else if(dayCount == today && spanClass.length > 0) {
+									spanClass = "badge badge-success";
+								}
+					%>
+								<td class="date">
+									<span class="<%=spanClass%>"><%=dayCount%></span>
+								</td>
+					<%
+								dayCount++;
+							}
+					%>
+							</tr>
+					<%													
+						}
+					%>						
+			</tbody>
+		</table>
+
+	</script>
+

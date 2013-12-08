@@ -7,11 +7,7 @@ object ApplicationBuild extends Build {
   val appName         = "raspberry-bank"
   val appVersion      = "1.0-SNAPSHOT"
 
-  val authName	      = "rpi-auth"
   val commonName      = "rpi-common"
-  val homeName	      = "rpi-home"
-  val torrentName     = "rpi-torrent"
-  val fitnessName     = "rpi-fitness"
 
   val modulesPathName = "modules/"
 
@@ -34,23 +30,9 @@ object ApplicationBuild extends Build {
 
   lazy val common  = play.Project(commonName,  appVersion, appDependencies, path = file(modulesPathName + "common"))
 
-  lazy val authentication = play.Project(authName, appVersion, appDependencies, path = file(modulesPathName + "authentication"))
-  lazy val home    = play.Project(homeName,    appVersion, appDependencies, path = file(modulesPathName + "home"))
-  lazy val torrent = play.Project(torrentName, appVersion, appDependencies, path = file(modulesPathName + "torrent"))
-  lazy val fitness = play.Project(fitnessName, appVersion, appDependencies, path = file(modulesPathName + "fitness"))
-
-  authentication.dependsOn(common)
-  home.dependsOn(common)
-  torrent.dependsOn(common)
-  fitness.dependsOn(common)
-
   lazy val main = play.Project(appName, appVersion, appDependencies).settings(
     // Add your own project settings here      
   )
   .dependsOn(common)
-  .dependsOn(home).aggregate(home)
-  .dependsOn(torrent).aggregate(torrent)
-  .dependsOn(fitness).aggregate(fitness)
-  .aggregate(authentication)
 
 }

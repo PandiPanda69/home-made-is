@@ -1,13 +1,14 @@
-@(user: fr.thedestiny.auth.dto.UserDto)
+@(version: String)
 
 <!DOCTYPE html>
 
 <html>
     <head>
-        <title>RPi-Bank</title>
+        <title>RPi-Fitness</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/util.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/rpi-bank.png")">           
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/rpi-fitness.png")">           
     </head>
     <body>
 
@@ -20,13 +21,12 @@
                     <span class="icon-bar"></span>
                   </a>
 
-    			  <a class="brand" href="/"><img src="@routes.Assets.at("images/rpi-bank.png")" style="width: 28px;"/> RPi Bank</a>
+    			  <a class="brand" href="/"><img src="@routes.Assets.at("images/rpi-fitness.png")" style="width: 28px;"/> RPi Fitness</a>
 
                   <div id="menu" class="nav-collapse collapse">
                     <ul class="nav">
                       <li class="active"><a id="menu-home">Accueil</a></li>
-                      <li><a id="menu-accounts">Comptes</a></li>
-                      <li><a id="menu-params">Paramètrage</a></li>
+		      		  <li><a id="menu-calendar">Mon Calendrier</a></li>
                     </ul>
                   </div>
 
@@ -39,10 +39,20 @@
         </div>
 
         <div class="footer">
-                RPi-Bank V 
-                @fr.thedestiny.Constants.BANK_VERSION
+                RPi-Fitness V 
+                @version
                  &mdash; &copy; Krwkrw 2013
         </div>
+
+	@home()
+	
+	@calendar()
+	
+	@calendarpopup()
+
+	@loading()
+
+	@popup()
 
 		<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
@@ -55,60 +65,33 @@
 		<script src="@routes.Assets.at("javascripts/backbone.remoteStorage.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/base64.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/highcharts.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-fitness.js")" type="text/javascript"></script>
+
+		<script src="@routes.Assets.at("javascripts/global/popup.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/global/error_popup.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/global/loading.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/global/months_translation.js")" type="text/javascript"></script>
+
+		<script src="@routes.Assets.at("javascripts/rpi-fitness/router.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-fitness/menu.js")" type="text/javascript"></script>
 		
-		<script type="text/javascript">
-		 $('.container').tooltip({
+		<script src="@routes.Assets.at("javascripts/rpi-fitness/model/calendar-event.js")" type="text/javascript"></script>
+		
+		<script src="@routes.Assets.at("javascripts/rpi-fitness/view/home.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-fitness/view/calendar.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-fitness/view/calendar-popup.js")" type="text/javascript"></script>		
+
+	<script type="text/javascript">
+	 $('.container').tooltip({
       		selector: "a,i[data-toggle=tooltip]"
     	 });
     	 
     	 var globals = {
-    	 	rootUrl : '/bank'
+    	 	rootUrl : '/fitness'
     	 };
-    	 
-    	 var App = {
-    	 	Models: {},
-    	 	Views: {}
-    	 };
-    	</script>
-		
-		<script src="@routes.Assets.at("javascripts/global/months_translation.js")" type="text/javascript"></script>
-		<script src="@routes.Assets.at("javascripts/rpi-bank/menu.js")" type="text/javascript"></script>
-		<script src="@routes.Assets.at("javascripts/rpi-bank/model/accounttype.js")" type="text/javascript"></script>
-		
-		<script src="@routes.Assets.at("javascripts/rpi-bank.js")" type="text/javascript"></script>		
 
-	@home()
-	
-	@loading()
-	
-	@params()
-	
-	@operationtypes()
-	
-	@operationtypeadd()
-	
-	@accounts()
-	
-	@accountadd()
-
-	@operationsheader()
-
-	@operations()
-	
-	@operationadd()
-
-	@importhome()
-
-	@importinput()
-	
-	@importpreview()
-
-	@heuristics()
-	
-	@accounttypes()
-	
-	@accounttypeadd()
-
+	 	App.init();
+   	</script>
     </body>
 </html>
 

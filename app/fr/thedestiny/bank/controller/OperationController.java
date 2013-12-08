@@ -13,12 +13,12 @@ import play.mvc.Result;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.bank.dao.HeuristiqueTypeDao;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.dto.OperationDto;
 import fr.thedestiny.bank.models.HeuristiqueType;
 import fr.thedestiny.bank.models.Operation;
 import fr.thedestiny.bank.service.OperationService;
 import fr.thedestiny.bank.service.SoldeService;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
 public class OperationController extends Controller {

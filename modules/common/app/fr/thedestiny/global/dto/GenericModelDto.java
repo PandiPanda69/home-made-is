@@ -1,4 +1,4 @@
-package fr.thedestiny.bank.dto;
+package fr.thedestiny.global.dto;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import play.libs.Json;
-import fr.thedestiny.bank.models.Model;
+import fr.thedestiny.global.model.Model;
 
 /**
  * DTO générique pour l'ensemble des modèles

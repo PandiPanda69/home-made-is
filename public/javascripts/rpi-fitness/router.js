@@ -1,6 +1,7 @@
 App.Router = Backbone.Router.extend({
 
-	homeView:    null,
+	homeView:     null,
+	calendarView: null,
 
 	initialize: function() {
 	},
@@ -8,8 +9,7 @@ App.Router = Backbone.Router.extend({
 	routes: {
 		"":     "home",
 		"home": "home",
-		"weight": "weight",
-		"food": "food"
+		"calendar": "calendar",
 	},
 
 	home: function() {
@@ -20,10 +20,12 @@ App.Router = Backbone.Router.extend({
 		App.Menu.activateButton($("#menu-home"));
 		this.homeView.render();
 	},
-	weight: function() {
-		App.Menu.activateButton($("#menu-weight"));
-	},
-	food: function() {
-		App.Menu.activateButton($("#menu-food"));
+	calendar: function() {
+		if(this.calendarView == null) {
+			this.calendarView = new App.Views.Calendar;
+		}
+
+		App.Menu.activateButton($("#menu-calendar"));
+		this.calendarView.render();
 	}
 })

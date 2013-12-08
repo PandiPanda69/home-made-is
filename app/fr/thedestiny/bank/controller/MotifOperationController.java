@@ -6,10 +6,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.dto.MotifOperationDto;
 import fr.thedestiny.bank.models.MotifOperation;
 import fr.thedestiny.bank.service.MotifOperationService;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
 public class MotifOperationController extends Controller {

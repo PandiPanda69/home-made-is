@@ -11,10 +11,10 @@ import fr.thedestiny.auth.dto.UserDto;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.bank.dto.CompteDto;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.dto.StatsDto;
 import fr.thedestiny.bank.models.Compte;
 import fr.thedestiny.bank.service.CompteService;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
 public class CompteController extends Controller {

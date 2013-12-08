@@ -10,9 +10,9 @@ import play.mvc.Result;
 import fr.thedestiny.auth.dto.UserDto;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.service.MoisAnneeService;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
 public class MoisAnneeController extends Controller {

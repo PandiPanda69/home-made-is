@@ -1,0 +1,15 @@
+	<script type="text/template" id="calendar-popup-template">
+
+				<div class="pull-center paddingB25">
+					<h3><%=date.day%> <%=MonthNames.months[date.month]%> <%=date.year%></h3>
+					
+					<div class="row">
+						<label for="weight" class="inline">Poids :</label>
+						<input type="text" id="weight" class="paddingB25 span1" value="<%=weight%>">
+					</div>
+					
+					<button id="ok-btn" class="btn btn-success btn-small">Valider</button>
+					<button id="cancel-btn" class="btn btn-danger btn-small">Fermer</button>
+				</div>
+	</script>
+

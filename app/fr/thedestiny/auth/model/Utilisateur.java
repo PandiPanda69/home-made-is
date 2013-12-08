@@ -16,7 +16,7 @@ import javax.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import fr.thedestiny.bank.models.Model;
+import fr.thedestiny.global.model.Model;
 
 @Entity
 @AllArgsConstructor

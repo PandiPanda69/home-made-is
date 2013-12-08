@@ -11,11 +11,11 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import fr.thedestiny.auth.security.Security;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.dto.TypeCompteDto;
 import fr.thedestiny.bank.models.TypeCompte;
 import fr.thedestiny.bank.service.TypeCompteService;
 import fr.thedestiny.bank.service.exception.TypeCompteInUseException;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
 public class TypeCompteController extends Controller {

@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
 
+import fr.thedestiny.global.model.Model;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

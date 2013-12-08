@@ -7,11 +7,11 @@ import javax.persistence.EntityManager;
 
 import fr.thedestiny.bank.dao.TauxInteretDao;
 import fr.thedestiny.bank.dao.TypeCompteDao;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.dto.TypeCompteDto;
 import fr.thedestiny.bank.models.TauxInteret;
 import fr.thedestiny.bank.models.TypeCompte;
 import fr.thedestiny.bank.service.exception.TypeCompteInUseException;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionAction;
 

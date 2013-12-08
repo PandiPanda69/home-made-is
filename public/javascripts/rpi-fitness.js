@@ -3,7 +3,6 @@ var App = {
 	Models: {},
 
 	init: function() {
-		// this.Models.Torrent = new App.Models.Torrent;
 
 		this.Popup = new App.Popup;
 		this.ErrorPopup = new App.ErrorPopup;

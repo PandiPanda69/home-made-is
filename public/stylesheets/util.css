@@ -6,6 +6,10 @@
 	margin-right: 50px;
 }
 
+.marginT25 {
+	margin-top: 25px;
+}
+
 .paddingT25 {
 	padding-top: 25px;
 }
@@ -16,4 +20,13 @@
 
 .horizontal-separator {
 	border-top: 1px solid #d0d0d0;	
+}
+
+
+.full-width {
+	width: 100%;
+}
+
+.valign-center {
+	vertical-align: middle;
 }

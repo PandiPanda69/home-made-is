@@ -1,5 +1,6 @@
 package fr.thedestiny.bank.models;
 
+import fr.thedestiny.global.model.Model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;

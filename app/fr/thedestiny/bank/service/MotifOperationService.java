@@ -8,9 +8,9 @@ import javax.persistence.EntityManager;
 import org.hibernate.MappingException;
 
 import fr.thedestiny.bank.dao.MotifOperationDao;
-import fr.thedestiny.bank.dto.GenericModelDto;
 import fr.thedestiny.bank.dto.MotifOperationDto;
 import fr.thedestiny.bank.models.MotifOperation;
+import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionAction;
 
