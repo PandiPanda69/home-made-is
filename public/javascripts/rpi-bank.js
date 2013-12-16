@@ -15,22 +15,6 @@ $(function() {
 		}
 	});
 
-	// models/account.js
-        var Account = Backbone.Model.extend({
-
-                urlRoot: globals.rootUrl + '/accounts',
-		initialized: false,
-                id: null,
-                defaults: function() {
-                        return {
-                                nom: null,
-				type: null,
-				lastUpdate: null,
-				solde: 0.00
-                        };
-                }
-        });
-
 	// models/heuristicpattern.js
         var HeuristicPattern = Backbone.Model.extend({
 
@@ -111,19 +95,8 @@ $(function() {
                         };
                 }
         });
-	// dao/account.js
-        /*******************************************
-        * DAO
-        *******************************************/
-        var AccountList = Backbone.Collection.extend({
 
-                model: Account,
-                url: globals.rootUrl + '/accounts',
-                initialized: false,
-                comparator: 'order'
-        });
-
-        var Accounts = new AccountList;
+        var Accounts = new App.Models.Account;
 	// dao/heuristicpattern.js
         /*******************************************
         * DAO
@@ -1151,7 +1124,9 @@ $(function() {
                 operationHeaderTemplate: _.template($('#operationshdr-template').html()),
 
 		currentAccountId: null,
+		currentAccount: null,
 		operationView: null,
+		accountSynth: null,
 
                 events: {
 			"change #month":	   "changeMonth",
@@ -1171,9 +1146,9 @@ $(function() {
 			}
 
 			// Get account.
-			var account = Accounts.get(this.currentAccountId);
+			this.currentAccount = Accounts.get(this.currentAccountId);
 
-			if(!account) {
+			if(!this.currentAccount) {
 				LoadingDialog.dispose();
 				alert('Le compte est introuvable.');
 				Routes.navigate('accounts', {trigger: true});
@@ -1185,10 +1160,17 @@ $(function() {
 			}
 
 			this.main.html(this.operationHeaderTemplate({
-					account: account.toJSON(), 
+					account: this.currentAccount.toJSON(), 
 					months: Months.toJSON(), 
 					month_names: MonthNames.months
 			}));
+
+			
+			if(this.accountSynth == null) {
+				this.accountSynth = new App.Views.AccountSynth;
+			}
+			this.accountSynth.render(this.currentAccount);
+			
 
 			LoadingDialog.dispose();
                 },
@@ -1253,7 +1235,7 @@ $(function() {
 				// Loading Dialog is disposed by the render function :-)
 			}
 			else {
-				$("#operations-container").html('');
+				this.accountSynth.render(this.currentAccount);
 			}
 		},
 		addMonth: function() {

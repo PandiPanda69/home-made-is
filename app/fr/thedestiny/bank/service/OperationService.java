@@ -2,6 +2,7 @@ package fr.thedestiny.bank.service;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -311,5 +312,16 @@ public class OperationService extends AbstractService {
 
 		String[] buf = date.split("\\/");
 		return new GregorianCalendar(Integer.valueOf(buf[2]), Integer.valueOf(buf[1]) - 1, Integer.valueOf(buf[0]));
+	}
+
+	public List<OperationDto> getCurrentYearOperation(Integer accountId) {
+
+		List<Operation> operations = operationDao.findOperationOfYear(accountId, Calendar.getInstance().get(Calendar.YEAR));
+		List<OperationDto> dto = new ArrayList<OperationDto>();
+		for (Operation op : operations) {
+			dto.add(new OperationDto(op));
+		}
+
+		return dto;
 	}
 }

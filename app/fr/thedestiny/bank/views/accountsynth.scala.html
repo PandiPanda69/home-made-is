@@ -1,0 +1,52 @@
+<script type="text/template" id="accountsynth-template">
+
+		<div class="span7 paddingL50">
+
+			<h3>Synthèse du compte</h3>
+		
+			<table id="saving-list" class="table table-striped table-bordered table-condensed table-hover">
+				<thead>
+					<tr>
+						<th>Valeur</th>
+						<th>Montant</th>
+						<th>%</th>
+						<th>Intérêts</th>
+					</tr>
+				</thead>
+				<tbody>
+				<%
+					var total = 0;
+					$.each(content, function(id, row) {
+
+						var day = '' + row.value.getDate();
+						day = day.length == 1 ? ('0' + day) : day;
+
+						var month = '' + (row.value.getMonth() + 1);
+						month = month.length == 1 ? ('0' + month) : month;
+
+						var theValue = day + '/' + month + '/' + row.value.getFullYear();
+
+						total += row.interests;
+				%>
+					<tr>
+						<td><%=theValue%></td>
+						<td><%=row.amount.toFixed(2)%> €</td>
+						<td><%=row.rate.toFixed(2)%> %</td>
+						<td><%=row.interests.toFixed(2)%> €</td>
+					</tr>
+				<%
+					});
+				%>
+
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><b><%=total.toFixed(2)%> €</b></td>
+				</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+</script>

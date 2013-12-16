@@ -97,6 +97,7 @@ public class OperationController extends Controller {
 		return ResultFactory.OK;
 	}
 
+	@Deprecated
 	@Security
 	@Transactional
 	public static Result importData(Integer idAccount, Integer idMois) {
@@ -128,5 +129,12 @@ public class OperationController extends Controller {
 		}
 
 		return ResultFactory.OK;
+	}
+
+	@Security
+	public static Result currentYearOp(Integer accountId) {
+
+		List<OperationDto> dto = operationService.getCurrentYearOperation(accountId);
+		return ok(Json.toJson(dto));
 	}
 }

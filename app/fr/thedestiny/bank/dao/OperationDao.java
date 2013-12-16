@@ -49,4 +49,19 @@ public class OperationDao extends AbstractDao<Operation> {
 			throw new Exception("Failure");
 		}
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<Operation> findOperationOfYear(Integer accountId, Integer year) {
+
+		return JPA.em(persistenceContext).createQuery(
+				"from Operation op " +
+						"join fetch op.mois mois " +
+						"join fetch op.compte compte " +
+						"where compte.id = :accountId " +
+						"and mois.annee = :year " +
+						"order by mois.mois")
+				.setParameter("accountId", accountId)
+				.setParameter("year", year)
+				.getResultList();
+	}
 }

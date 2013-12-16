@@ -37,6 +37,8 @@ DELETE 	/bank/accounts/type/:id			fr.thedestiny.bank.controller.TypeCompteContro
 GET		/bank/accounts/:idAccount/months	fr.thedestiny.bank.controller.MoisAnneeController.list(idAccount: Integer)
 POST	/bank/accounts/:idAccount/months	fr.thedestiny.bank.controller.MoisAnneeController.add(idAccount: Integer)
 
+GET		/bank/accounts/:idAccount/months/currentYear/operations	fr.thedestiny.bank.controller.OperationController.currentYearOp(idAccount: Integer)
+
 GET		/bank/accounts/:idAccount/months/:idMonth/operations	fr.thedestiny.bank.controller.OperationController.list(idAccount: Integer, idMonth: Integer)
 POST	/bank/accounts/:idAccount/months/:idMonth/operations	fr.thedestiny.bank.controller.OperationController.add(idAccount: Integer, idMonth: Integer)
 PUT		/bank/accounts/:idAccount/months/:idMonth/operations/:id	fr.thedestiny.bank.controller.OperationController.edit(idAccount: Integer, idMonth: Integer, id: Integer)
