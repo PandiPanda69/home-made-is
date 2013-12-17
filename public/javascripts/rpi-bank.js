@@ -1126,7 +1126,6 @@ $(function() {
 		currentAccountId: null,
 		currentAccount: null,
 		operationView: null,
-		accountSynth: null,
 
                 events: {
 			"change #month":	   "changeMonth",
@@ -1166,9 +1165,7 @@ $(function() {
 			}));
 
 			
-			if(this.accountSynth == null) {
-				this.accountSynth = new App.Views.AccountSynth;
-			}
+			this.accountSynth = new App.Views.AccountSynth;
 			this.accountSynth.render(this.currentAccount);
 			
 

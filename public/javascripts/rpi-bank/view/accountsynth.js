@@ -23,33 +23,38 @@ App.Views.AccountSynth = Backbone.View.extend({
 			var accountId = account.get('id');
 			$.get(globals.rootUrl + '/accounts/' + accountId + '/months/currentYear/operations', $.proxy(function(data) {
 				var theType = this.accountTypes.get(account.get('typeId'));
-				var tableContent = this._prepareData(theType.get('taux'), data, accountId);
+				var tableContent = this._prepareData(theType.get('taux'), data, account);
 
 				this.$el.html(this.template({content: tableContent}));
 			}, this));
 		}, this));
 	},
-	_prepareData: function(rates, operations, accountId) {
+	_prepareData: function(rates, operations, account) {
 
-		if(rates.length == 0 || operations.length == 0) {
+		if(rates.length == 0) {
 			return new Array;
 		}
 
 		var result = new Array;
 		var currentYear = (new Date).getFullYear()
 
-		var firstOpMonthId = operations[0].moisAnneeId;
-		var initialBalance = 0.00;
-		$.ajax({
-			url: globals.rootUrl + '/accounts/' + accountId + '/months/' + firstOpMonthId + '/balance', 
-			async: false,
-			success: function(data) {
-				initialBalance = data.solde;
-			}
-		});
+		var initialBalance = null;
+		if(operations.length > 0) {
+			initialBalance = 0.00;
+			var firstOpMonthId = operations[0].moisAnneeId;
+			$.ajax({
+				url: globals.rootUrl + '/accounts/' + account.get('id') + '/months/' + firstOpMonthId + '/balance', 
+				async: false,
+				success: function(data) {
+					initialBalance = data.solde;
+				}
+			});
+		}
+		else {
+			initialBalance = account.get('solde');
+		}
 
 
-		var firstRateFound = true;
 		var currentOpIndex = 0;
 		for(var i = 1; i < rates.length + 1; i++) {
 			// First, get the rates for the current year. If none found, then it means
@@ -60,32 +65,17 @@ App.Views.AccountSynth = Backbone.View.extend({
 			var currentRateDate = currentRate != null ? new Date(currentRate.date) : null;
 			if(currentRate == null || currentRateDate.getFullYear() == currentYear) {
 
-				var previousRateDate = new Date(previousRate);
+				var previousRateDate = new Date(previousRate.date);
 
-				if(firstRateFound) {
-					var theRate = 0;
-					if(currentRateDate.getMonth() == 0 && currentRateDate.getDay() == 1) {
-						theRate = currentRate.rate;
-					}
-					else {
-						theRate = previousRate.rate;
-					}
-
-					result.push({
-						value:	new Date(currentYear, 0, 1),
-						amount: initialBalance,
-						rate:   theRate
-					});
-					firstRateFound = false;
-				}
-
+				var operationAdded = false;
 				for(currentOpIndex; currentOpIndex < operations.length; currentOpIndex++) {
 					var currentOp = operations[currentOpIndex];
 
 					// Only work with previous rate which covers the current period
 					var currentOpDate = this._formatDate(currentOp.date);
 					if(currentRateDate == null || 
-						(currentOpDate.getMonth() < currentRateDate.getMonth() && currentOpDate.getDate() < currentRateDate.getDate())) {
+						(currentOpDate.getMonth() <  currentRateDate.getMonth()) ||
+						(currentOpDate.getMonth() == currentRateDate.getMonth() && currentOpDate.getDate() < currentRateDate.getDate())) {
 
 						var value = this._getValueForDate(currentOpDate);
 
@@ -96,11 +86,26 @@ App.Views.AccountSynth = Backbone.View.extend({
 							amount: initialBalance,
 							rate:   previousRate.rate
 						});
+
+						operationAdded = true;
 					}
 					else {
 						// Break in place so can be resume where paused.
 						break;
 					}
+				}
+
+				if(!operationAdded) {
+					var value = previousRateDate;
+					if(value.getFullYear() < currentYear) {
+						value = new Date(currentYear, 0, 1);
+					}
+
+					result.push({
+						value:  value,
+						amount: initialBalance,
+						rate:   previousRate.rate
+					});
 				}
 			}
 		}
