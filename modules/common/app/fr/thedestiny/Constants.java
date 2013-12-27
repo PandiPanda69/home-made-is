@@ -6,7 +6,7 @@ public class Constants {
 
 	public static final String HOME_VERSION = "1.1";
 	public static final String AUTH_VERSION = "1.1";
-	public static final String BANK_VERSION = "2.8a";
+	public static final String BANK_VERSION = "2.8b";
 	public static final String TORRENT_VERSION = "1.6a";
 	public static final String FITNESS_VERSION = "1.1";
 }

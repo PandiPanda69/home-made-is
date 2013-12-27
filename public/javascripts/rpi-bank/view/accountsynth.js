@@ -1,6 +1,7 @@
 App.Views.AccountSynth = Backbone.View.extend({
 	
 	DAY_IN_MS: 1000 * 60 * 60 * 24,
+	MONTH_VALUES: [1, 16],
 
 	initialize: function() {
 		this.$el      = $('#operations-container');
@@ -38,22 +39,7 @@ App.Views.AccountSynth = Backbone.View.extend({
 		var result = new Array;
 		var currentYear = (new Date).getFullYear()
 
-		var initialBalance = null;
-		if(operations.length > 0) {
-			initialBalance = 0.00;
-			var firstOpMonthId = operations[0].moisAnneeId;
-			$.ajax({
-				url: globals.rootUrl + '/accounts/' + account.get('id') + '/months/' + firstOpMonthId + '/balance', 
-				async: false,
-				success: function(data) {
-					initialBalance = data.solde;
-				}
-			});
-		}
-		else {
-			initialBalance = account.get('solde');
-		}
-
+		var initialBalance = this._getInitialBalance(operations, account);
 
 		var currentOpIndex = 0;
 		for(var i = 1; i < rates.length + 1; i++) {
@@ -81,13 +67,19 @@ App.Views.AccountSynth = Backbone.View.extend({
 
 						initialBalance += currentOp.montant;
 
-						result.push({
-							value:  value,
-							amount: initialBalance,
-							rate:   previousRate.rate
-						});
+						// Check value isn't the same as previously, else edit previous entry
+						if(result.length > 0 && result[result.length-1].value.getTime() === value.getTime()) {
+							result[result.length-1].amount = initialBalance;
+						}
+						else {
+							result.push({
+								value:  value,
+								amount: initialBalance,
+								rate:   previousRate.rate
+							});
 
-						operationAdded = true;
+							operationAdded = true;
+						}
 					}
 					else {
 						// Break in place so can be resume where paused.
@@ -137,16 +129,36 @@ App.Views.AccountSynth = Backbone.View.extend({
 	},
 	_getValueForDate: function(date) {
 		var value = null;
-		if(date.getDate() > 1 && date.getDate() <= 15) {
-			value = new Date(date.getFullYear(), date.getMonth(), 15);
+		if(date.getDate() >= this.MONTH_VALUES[0] && date.getDate() <= this.MONTH_VALUES[1]) {
+			value = new Date(date.getFullYear(), date.getMonth(), this.MONTH_VALUES[1]);
 		}
-		else if(date.getDate() == 1) {
-			value = new Date(date.getFullYear(), date.getMonth(), 1);
+		else if(date.getDate() == this.MONTH_VALUES[0]) {
+			value = new Date(date.getFullYear(), date.getMonth(), this.MONTH_VALUES[0]);
 		}
 		else {
-			value = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+			value = new Date(date.getFullYear(), date.getMonth() + 1, this.MONTH_VALUES[0]);
 		}
 
 		return value;
+	},
+	_getInitialBalance: function(operations, account) {
+		var initialBalance = null;
+
+                if(operations.length > 0) {
+                        initialBalance = 0.00;
+                        var firstOpMonthId = operations[0].moisAnneeId;
+                        $.ajax({
+                                url: globals.rootUrl + '/accounts/' + account.get('id') + '/months/' + firstOpMonthId + '/balance',
+                                async: false,
+                                success: function(data) {
+                                        initialBalance = data.solde;
+                                }
+                        });
+                }
+                else {
+                        initialBalance = account.get('solde');
+                }
+
+		return initialBalance;
 	}
 });
