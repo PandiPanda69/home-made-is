@@ -22,7 +22,7 @@ public class CalendarEventDao extends AbstractDao<CalendarEvent> {
 	@SuppressWarnings("unchecked")
 	public List<CalendarEvent> findAll(Integer userId) {
 
-		return JPA.em(this.persistenceContext).createQuery("from CalendarEvent where userId = :userId")
+		return JPA.em(this.persistenceContext).createQuery("from CalendarEvent where userId = :userId order by date")
 				.setParameter("userId", userId)
 				.getResultList();
 	}

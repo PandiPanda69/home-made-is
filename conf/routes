@@ -68,6 +68,8 @@ GET     /torrent/stats/home             fr.thedestiny.torrent.controller.StatsCo
 
 GET		/fitness						@fr.thedestiny.fitness.controller.HomeController.index()
 
+GET		/fitness/stats					@fr.thedestiny.fitness.controller.HomeController.stats()
+
 GET		/fitness/calendar/:year/:month	@fr.thedestiny.fitness.controller.CalendarEventController.list(month: Integer, year: Integer)
 POST	/fitness/calendar				@fr.thedestiny.fitness.controller.CalendarEventController.add()
 PUT		/fitness/calendar/:id			@fr.thedestiny.fitness.controller.CalendarEventController.edit(id: Integer)

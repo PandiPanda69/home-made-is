@@ -1,6 +1,7 @@
 var App = {
 	Views: {},
 	Models: {},
+	Utils: {},
 
 	init: function() {
 

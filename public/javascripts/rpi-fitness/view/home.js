@@ -8,10 +8,9 @@ App.Views.Home = Backbone.View.extend({
 
 	render: function() {
 	
-		/*
 		App.Loading.render();
 
-		$.get(globals.rootUrl + "/stats/home", $.proxy(function(data) {
+		$.get(globals.rootUrl + "/stats", $.proxy(function(data) {
 			this.$el.html(this.template({stats: data}));
 			this._setupGraphic(data);
 
@@ -23,54 +22,87 @@ App.Views.Home = Backbone.View.extend({
 			App.ErrorPopup.render();
 
 			App.Loading.dispose();
-		}); */
-
-		this.$el.html(this.template());
-	}/*,
+		});
+	},
 	_setupGraphic: function(data) {
 
-		var splittedDate = data.graph.pointStart.split('/');
-		var startingDate = new Date(splittedDate[2], splittedDate[1] - 1, splittedDate[0]);
+		var xLabels = new Array;
+		var values  = new Array;
 
-		$('#torrents-abstract-chart').highcharts({
-			chart: {
-				zoomType: 'x',
-				spacingRight: 20,
-				type: 'spline'
-			},
-			title: {
-				text: 'Activité des torrents sur les 3 derniers mois'
-			},
-			xAxis: {
-				type: 'datetime',
-				maxZoom: 7 * 24 * 60 * 60 * 1000,
-				title: null
-			},
-			yAxis: {
-				title: null
-			},
-			plotOptions: {
-				spline: {
-					marker: {
-						enabled: false
-					}
+		var previousDate = null;
+		$.each(data.elements, $.proxy(function(index, element) {
+			var theDate = new Date(element.timestamp);
+
+			// If dates are not consecutive, then fill array to have an 'understable' X scale
+			if(previousDate != null && !App.Utils.DateUtil.checkDaysBetweenDates(theDate, previousDate, 1)) {
+
+				// Compute weight average to smooth the curve
+				var currentWeight = data.elements[index-1].val;
+
+				var dayCount = App.Utils.DateUtil.getDaysBetweenDates(theDate, previousDate);
+				var step = this._computeAverage(currentWeight, element.val, dayCount);
+
+				while(!App.Utils.DateUtil.checkDaysBetweenDates(theDate, previousDate, 1)) {
+					// Get next day and push data
+					previousDate = new Date(App.Utils.DateUtil.DAY_IN_MS + previousDate.getTime())
+					
+					currentWeight += step;
+
+					xLabels.push(this._formatDate(previousDate));
+					values.push(currentWeight);
 				}
-			},
+			}
+
+			xLabels.push(this._formatDate(theDate));
+			values.push(element.val);
+
+			previousDate = theDate;
+		}, this));
+
+		$('#fitness-abstract-chart').highcharts({
+                        title: {
+                                text: 'Courbe de poids',
+                                x: -20
+                        },
+			xAxis: {
+                                categories: xLabels,
+				minTickInterval: 10,
+				type: 'datetime'
+                        },
+                        yAxis: {
+                                title: {
+                                        text: 'Poids (kg)'
+                                },
+                                plotLines: [{
+                                        value: 0,
+                                        width: 1,
+                                        color: '#808080'
+                                }]
+                        },
 			tooltip: {
-                                pointFormat: '{series.name}: <b>{point.y} bytes</b>'
+			    pointFormat: '{series.name}: <b>{point.y}</b><br/>',
+			    valueSuffix: ' kg'
 			},
-			series: [{
-				name: 'Downloaded',
-				pointInterval: data.graph.pointInterval,
-				pointStart: startingDate.getTime(),
-				data: [
-				]
-			}, {
-				name: 'Uploaded',
-				pointInterval: data.graph.pointInterval,
-				pointStart: startingDate.getTime(),
-				data: data.graph.elements
-			}]
+                        series: [{
+                                name: 'Poids',
+                                data: values
+                        }]
+
 		});
-	}*/
+	},
+	_formatDate: function(theDate) {
+		var day = theDate.getDate();
+		var month = theDate.getMonth() + 1;
+		var year = theDate.getFullYear();
+
+		if(day < 10)   day   = '0' + day;
+		if(month < 10) month = '0' + month;
+
+		return day + '/' + month + '/' + year;
+	},
+	_computeAverage: function(weight1, weight2, days) {
+		var step = weight2 - weight1;
+		return (step/days);
+	}
+	
 });
