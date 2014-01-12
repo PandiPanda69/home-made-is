@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionAction;
 import fr.thedestiny.global.util.DataUnit;
@@ -17,19 +20,14 @@ import fr.thedestiny.torrent.dto.TorrentDto;
 import fr.thedestiny.torrent.dto.TorrentFilterDto;
 import fr.thedestiny.torrent.model.Torrent;
 
+@Service
 public class TorrentService extends AbstractService {
 
-	private static TorrentService thisInstance = new TorrentService();
-
-	private TorrentDao torrentDao = null;
-
-	public static TorrentService getInstance() {
-		return thisInstance;
-	}
+	@Autowired
+	private TorrentDao torrentDao;
 
 	private TorrentService() {
 		super("torrent");
-		this.torrentDao = new TorrentDao("torrent");
 	}
 
 	public List<TorrentDto> findAllTorrentsMatchingFilter(TorrentFilterDto filter) {
@@ -40,6 +38,7 @@ public class TorrentService extends AbstractService {
 		List<TorrentDto> result = new ArrayList<TorrentDto>();
 
 		List<Torrent> torrents = torrentDao.findAll(null, statusFilter);
+		// TODO: Optim
 		List<Map<String, Object>> activityData = torrentDao.getLastTorrentActivityData(null, filter.getTimeValue(), unitFilter, statusFilter);
 
 		for (Torrent current : torrents) {

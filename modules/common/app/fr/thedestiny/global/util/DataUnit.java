@@ -23,9 +23,6 @@ public class DataUnit implements Comparable<DataUnit> {
 
 	private final static Map<String, Long> units = new HashMap<String, Long>();
 
-	//	private final static long[] units = { TB, GB, MB, KB, B };
-	//	private final static String[] unitNames = { "To", "Go", "Mo", "Ko", "octets" };
-
 	static {
 		units.put("octets", B);
 		units.put("Ko", KB);

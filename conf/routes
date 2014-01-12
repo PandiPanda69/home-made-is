@@ -57,14 +57,14 @@ GET		/bank/heuristics/name/pattern	fr.thedestiny.bank.controller.MotifOperationC
 POST	/bank/heuristics/name/pattern	fr.thedestiny.bank.controller.MotifOperationController.add()
 DELETE	/bank/heuristics/name/pattern/:id fr.thedestiny.bank.controller.MotifOperationController.delete(id: Integer)
 
-GET     /torrent                        fr.thedestiny.torrent.controller.HomeController.index()
+GET     /torrent                        @fr.thedestiny.torrent.controller.TorrentHomeController.index()
 
-GET     /torrent/torrents               fr.thedestiny.torrent.controller.TorrentsController.list()
-DELETE  /torrent/torrents/:idTorrent    fr.thedestiny.torrent.controller.TorrentsController.delete(idTorrent: Integer)
+GET     /torrent/torrents               @fr.thedestiny.torrent.controller.TorrentsController.list()
+DELETE  /torrent/torrents/:idTorrent    @fr.thedestiny.torrent.controller.TorrentsController.delete(idTorrent: Integer)
 
-POST    /torrent/torrents/filter        fr.thedestiny.torrent.controller.TorrentsController.filter()
+POST    /torrent/torrents/filter        @fr.thedestiny.torrent.controller.TorrentsController.filter()
 
-GET     /torrent/stats/home             fr.thedestiny.torrent.controller.StatsController.home()
+GET     /torrent/stats/home             @fr.thedestiny.torrent.controller.StatsController.home()
 
 GET		/fitness						@fr.thedestiny.fitness.controller.HomeController.index()
 

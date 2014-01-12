@@ -26,8 +26,7 @@ App.Views.Home = Backbone.View.extend({
 	},
 	_setupGraphic: function(data) {
 
-		var splittedDate = data.graph.pointStart.split('/');
-		var startingDate = new Date(splittedDate[2], splittedDate[1] - 1, splittedDate[0]);
+		var startingDate = new Date(data.uploadGraph.pointStart);
 
 		$('#torrents-abstract-chart').highcharts({
 			chart: {
@@ -44,7 +43,8 @@ App.Views.Home = Backbone.View.extend({
 				title: null
 			},
 			yAxis: {
-				title: null
+				title: null,
+				min: 0
 			},
 			plotOptions: {
 				spline: {
@@ -58,15 +58,14 @@ App.Views.Home = Backbone.View.extend({
 			},
 			series: [{
 				name: 'Downloaded',
-				pointInterval: data.graph.pointInterval,
+				pointInterval: data.downloadGraph.pointInterval,
 				pointStart: startingDate.getTime(),
-				data: [
-				]
+				data: data.downloadGraph.elements
 			}, {
 				name: 'Uploaded',
-				pointInterval: data.graph.pointInterval,
+				pointInterval: data.uploadGraph.pointInterval,
 				pointStart: startingDate.getTime(),
-				data: data.graph.elements
+				data: data.uploadGraph.elements
 			}]
 		});
 	}

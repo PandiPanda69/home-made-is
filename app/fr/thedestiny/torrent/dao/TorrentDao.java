@@ -8,20 +8,26 @@ import javax.persistence.EntityManager;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
+import org.springframework.stereotype.Repository;
 
 import play.db.jpa.JPA;
 import fr.thedestiny.global.dao.AbstractDao;
 import fr.thedestiny.global.util.TimeUnit;
 import fr.thedestiny.torrent.model.Torrent;
 
+@Repository
 public class TorrentDao extends AbstractDao<Torrent> {
 
 	public static enum TorrentStatus {
 		ALL, ACTIVE, DELETED
 	};
 
-	public TorrentDao(String persistenceContext) {
-		super(persistenceContext);
+	public static enum StatType {
+		DOWNLOAD, UPLOAD
+	};
+
+	public TorrentDao() {
+		super("torrent");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -44,7 +50,10 @@ public class TorrentDao extends AbstractDao<Torrent> {
 			em = JPA.em(persistenceContext);
 		}
 
-		return (Integer) em.unwrap(Session.class).createSQLQuery("select count(*) from Torrent where status != 'DELETED'").uniqueResult();
+		return (Integer) em.unwrap(Session.class)
+				.createSQLQuery("select count(*) from Torrent where status != :status")
+				.setParameter("status", TorrentStatus.DELETED.name())
+				.uniqueResult();
 	}
 
 	public Integer countActiveTorrent(EntityManager em) {
@@ -52,39 +61,23 @@ public class TorrentDao extends AbstractDao<Torrent> {
 			em = JPA.em(persistenceContext);
 		}
 
-		return (Integer) em.unwrap(Session.class).createSQLQuery("select count(distinct id_torrent) from TorrentStat where dat_snapshot >= datetime('now', '-1 months')").uniqueResult();
+		return (Integer) em.unwrap(Session.class)
+				.createSQLQuery(
+						"select count(distinct A.id_torrent) " +
+								"from TorrentStat A " +
+								"inner join Torrent B on A.id_torrent = B.id " +
+								"where A.dat_snapshot >= datetime('now', '-1 months') AND B.status != :status")
+				.setParameter("status", TorrentStatus.DELETED.name())
+				.uniqueResult();
 	}
 
-	public Integer getDownloadedBytesOverTime(EntityManager em, int unitCount, TimeUnit unit) {
-		if (em == null) {
-			em = JPA.em(persistenceContext);
-		}
-
-		String unitString = getUnitString(unit);
-
-		String sqlQuery = "select coalesce(sum(downloadedBytes),0) from Torrent where dat_creprod >= datetime('now', '-" + unitCount + " " + unitString + "')";
-		return (Integer) em.unwrap(Session.class).createSQLQuery(sqlQuery).uniqueResult();
-	}
-
-	public Integer getUploadedBytesOverTime(EntityManager em, int unitCount, TimeUnit unit) {
-		if (em == null) {
-			em = JPA.em(persistenceContext);
-		}
-
-		String unitString = getUnitString(unit);
-
-		String sqlQuery = "select coalesce(sum(A.uploadedBytes - B.uploadedBytes), 0) " + "from TorrentStat A " + "inner join TorrentStat B on A.id_torrent = B.id_torrent " + "where A.dat_snapshot >= datetime('now', '-" + unitCount + " " + unitString + "') " + "	and B.dat_snapshot = (" + "		select max(dat_snapshot) " + "		from TorrentStat " + "		where id_torrent = B.id_torrent " + "			and dat_snapshot < datetime('now', '-" + unitCount + " " + unitString + "')" + "	)";
-		return (Integer) em.unwrap(Session.class).createSQLQuery(sqlQuery).uniqueResult();
-	}
-
-	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getLastTorrentActivityData(EntityManager em, int unitCount, TimeUnit unit, TorrentStatus status) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
 
 		String unitString = null;
-		if(unit != TimeUnit.WEEK) {
+		if (unit != TimeUnit.WEEK) {
 			unitString = getUnitString(unit);
 		}
 		else {
@@ -132,5 +125,17 @@ public class TorrentDao extends AbstractDao<Torrent> {
 
 	public void logicalDelete(EntityManager em, Integer torrentId) {
 		em.createQuery("update Torrent set status = 'DELETED' where id = :torrentId").setParameter("torrentId", torrentId).executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getTorrentStatHistory(StatType type) {
+
+		String sqlQuery = "select dat_stat, cast(byteAmount as text) as byteAmount from DailyStats where type = :type order by dat_stat";
+
+		return JPA.em(persistenceContext).unwrap(Session.class)
+				.createSQLQuery(sqlQuery)
+				.setParameter("type", type.name())
+				.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP)
+				.list();
 	}
 }

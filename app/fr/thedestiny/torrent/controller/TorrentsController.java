@@ -3,6 +3,7 @@ package fr.thedestiny.torrent.controller;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
 import play.db.jpa.Transactional;
@@ -15,13 +16,15 @@ import fr.thedestiny.torrent.dto.TorrentDto;
 import fr.thedestiny.torrent.dto.TorrentFilterDto;
 import fr.thedestiny.torrent.service.TorrentService;
 
+@org.springframework.stereotype.Controller
 public class TorrentsController extends Controller {
 
-	private static TorrentService torrentService = TorrentService.getInstance();
+	@Autowired
+	private TorrentService torrentService;
 
 	@Transactional(readOnly = true)
 	@Security
-	public static Result list() {
+	public Result list() {
 
 		// Create default filter
 		TorrentFilterDto dto = new TorrentFilterDto();
@@ -35,7 +38,7 @@ public class TorrentsController extends Controller {
 
 	@Transactional(readOnly = true)
 	@Security
-	public static Result filter() throws Exception {
+	public Result filter() throws Exception {
 
 		TorrentFilterDto dto = new ObjectMapper().readValue(ctx().request().body().asJson(), TorrentFilterDto.class);
 		List<TorrentDto> torrents = torrentService.findAllTorrentsMatchingFilter(dto);
@@ -45,7 +48,7 @@ public class TorrentsController extends Controller {
 
 	@Transactional
 	@Security
-	public static Result delete(Integer torrentId) {
+	public Result delete(Integer torrentId) {
 
 		try {
 			torrentService.deleteTorrent(torrentId);

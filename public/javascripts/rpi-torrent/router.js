@@ -2,6 +2,7 @@ App.Router = Backbone.Router.extend({
 
 	homeView:    null,
 	torrentView: null,
+	paramView:   null,
 
 	initialize: function() {
 	},
@@ -34,6 +35,11 @@ App.Router = Backbone.Router.extend({
 		App.Menu.activateButton($("#menu-queue"));
 	},
 	params: function() {
+		if(this.paramView == null) {
+			this.paramView = new App.Views.Parameters;
+		}
+
 		App.Menu.activateButton($("#menu-params"));
+		this.paramView.render();
 	}
 })

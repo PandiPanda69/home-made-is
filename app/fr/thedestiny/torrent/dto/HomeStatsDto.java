@@ -18,7 +18,11 @@ public class HomeStatsDto extends AbstractDto {
 	private Double uploadedAmount;
 	private String uploadedUnit;
 
-	private GraphDto<Long> graph = new GraphDto<Long>();
+	private GraphDto<Long> uploadGraph = new GraphDto<Long>();
+	private GraphDto<Long> downloadGraph = new GraphDto<Long>();
+
+	private Double spaceLeftOnDeviceAmount;
+	private String spaceLeftOnDeviceUnit;
 
 	public HomeStatsDto() {
 	}

@@ -6,10 +6,13 @@
 				<h3>Statistiques</h3>
 
 				<ul>
-                                	<li>Nombres de torrents enregistrés : <b><%=stats.registeredTorrents%></b></li>
+                    <li>Nombres de torrents enregistrés : <b><%=stats.registeredTorrents%></b></li>
 					<li>Nombres de torrents inactifs : <b><%=stats.inactiveTorrents%></b></li>
 					<li>Total téléchargé 24h : <b><%=stats.downloadedAmount.toFixed(2)%> <%=stats.downloadedUnit%></b></li>
 					<li>Total uploadé 24h : <b><%=stats.uploadedAmount.toFixed(2)%> <%=stats.uploadedUnit%></b></li>
+				</ul>
+				<ul>
+					<li>Espace disque disponible : <b><%=stats.spaceLeftOnDeviceAmount.toFixed(2)%> <%=stats.spaceLeftOnDeviceUnit%></b></li>
 				</ul>
                         </div>
                         <div class="span8 pull-center">
