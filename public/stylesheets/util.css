@@ -2,12 +2,20 @@
 	display: inline;
 }
 
+.marginL50 {
+	margin-left: 50px;
+}
+
 .marginR50 {
 	margin-right: 50px;
 }
 
 .marginT25 {
 	margin-top: 25px;
+}
+
+.marginT50 {
+	margin-top: 50px;
 }
 
 .paddingL50 {

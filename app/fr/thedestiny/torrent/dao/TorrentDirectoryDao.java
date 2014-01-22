@@ -10,14 +10,30 @@ import fr.thedestiny.global.util.DataUnit;
 @Repository
 public class TorrentDirectoryDao {
 
+	private static final String PROPERTY_TARGET = "torrent.target";
+	private static final String PROPERTY_REPOSITORY = "torrent.repository";
+	private static final String PROPERTY_MIN_SPACE = "torrent.min_space";
+
 	public TorrentDirectoryDao() {
 	}
 
 	public DataUnit getFreeSpaceInTargetDirectory() {
 
-		String torrentDirectory = Play.application().configuration().getString("torrent.target");
+		String torrentDirectory = getTargetDirectory();
 		File targetDirectory = new File(torrentDirectory);
 
 		return new DataUnit(targetDirectory.getFreeSpace());
+	}
+
+	public String getTargetDirectory() {
+		return Play.application().configuration().getString(PROPERTY_TARGET);
+	}
+
+	public String getRepositoryDirectory() {
+		return Play.application().configuration().getString(PROPERTY_REPOSITORY);
+	}
+
+	public Long getMinimumSpaceLimit() {
+		return Play.application().configuration().getLong(PROPERTY_MIN_SPACE);
 	}
 }
