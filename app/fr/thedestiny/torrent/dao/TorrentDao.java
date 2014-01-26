@@ -128,9 +128,21 @@ public class TorrentDao extends AbstractDao<Torrent> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> getTorrentStatHistory(StatType type) {
+	public List<Map<String, Object>> getTorrentStatHistory(StatType type, int unitCount, TimeUnit unit) {
 
-		String sqlQuery = "select dat_stat, cast(byteAmount as text) as byteAmount from DailyStats where type = :type order by dat_stat";
+		String unitString = null;
+		if (unit != TimeUnit.WEEK) {
+			unitString = getUnitString(unit);
+		}
+		else {
+			unitString = "days";
+			unitCount = unitCount * 7;
+		}
+
+		String sqlQuery = "select dat_stat, cast(byteAmount as text) as byteAmount " +
+				"from DailyStats " +
+				"where type = :type and dat_stat >= date(current_date, '-" + unitCount + " " + unitString + "') " +
+				"order by dat_stat";
 
 		return JPA.em(persistenceContext).unwrap(Session.class)
 				.createSQLQuery(sqlQuery)

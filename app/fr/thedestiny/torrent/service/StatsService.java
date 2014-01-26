@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.thedestiny.global.util.DataUnit;
+import fr.thedestiny.global.util.TimeUnit;
 import fr.thedestiny.torrent.dao.TorrentDao;
 import fr.thedestiny.torrent.dao.TorrentDao.StatType;
 import fr.thedestiny.torrent.dao.TorrentDirectoryDao;
@@ -32,8 +33,8 @@ public class StatsService {
 		dto.setRegisteredTorrents(torrentDao.countRegisteredTorrent(null));
 		dto.setInactiveTorrents(dto.getRegisteredTorrents() - torrentDao.countActiveTorrent(null));
 
-		List<Map<String, Object>> uploadStats = torrentDao.getTorrentStatHistory(StatType.UPLOAD);
-		List<Map<String, Object>> downloadStats = torrentDao.getTorrentStatHistory(StatType.DOWNLOAD);
+		List<Map<String, Object>> uploadStats = torrentDao.getTorrentStatHistory(StatType.UPLOAD, 4, TimeUnit.MONTH);
+		List<Map<String, Object>> downloadStats = torrentDao.getTorrentStatHistory(StatType.DOWNLOAD, 4, TimeUnit.MONTH);
 
 		dto.getUploadGraph().setPointStart(uploadStats.get(0).get("dat_stat").toString());
 		dto.getUploadGraph().setPointInterval(1000L * 60 * 60 * 24);

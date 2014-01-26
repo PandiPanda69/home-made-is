@@ -35,7 +35,7 @@ App.Views.Home = Backbone.View.extend({
 				type: 'spline'
 			},
 			title: {
-				text: 'Activité des torrents sur les 3 derniers mois'
+				text: 'Activité des torrents sur les 4 derniers mois'
 			},
 			xAxis: {
 				type: 'datetime',
