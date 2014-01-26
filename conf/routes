@@ -66,7 +66,9 @@ POST    /torrent/torrents/filter        @fr.thedestiny.torrent.controller.Torren
 
 GET     /torrent/stats/home             @fr.thedestiny.torrent.controller.StatsController.home()
 
-GET     /torrent/params             @fr.thedestiny.torrent.controller.ParametersController.home()
+GET		/torrent/queue					@fr.thedestiny.torrent.controller.TorrentQueueController.list()				
+
+GET     /torrent/params             	@fr.thedestiny.torrent.controller.ParametersController.home()
 
 GET		/fitness						@fr.thedestiny.fitness.controller.HomeController.index()
 

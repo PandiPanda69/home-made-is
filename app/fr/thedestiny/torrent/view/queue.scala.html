@@ -1,0 +1,34 @@
+	<script type="text/template" id="queue-template">
+		<h1>File d'attente</h1>
+
+		<table id="torrents-queue" class="table table-striped table-bordered table-condensed table-hover">
+			<thead>
+				<tr>
+                	<th></th>
+                    <th>Nom</th>
+					<th>Taille</th>
+                    <th>Date de création</th>
+					<th>Statut</th>
+				</tr>
+			</thead>
+            <tbody>
+	
+			<%
+				$.each(queue, function(id, element) {
+			%>
+				<tr>
+					<td></td>
+					<td><%=element.name%></td>
+					<td><%=element.sizeAmount.toFixed(2)%> <%=element.sizeUnit%></td>
+					<td><%=element.creationDate%></td>
+					<td><%=element.status%></td>
+				</tr>
+			<%				
+				});
+			%>
+	
+			</tbody>
+		</table>
+
+	</script>
+

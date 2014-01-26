@@ -37,7 +37,7 @@
                                 <tr>
                                         <th></th>
                                         <th>Nom</th>
-					<th>Status</th>
+					<th>Statut</th>
                                         <th>Date de détection</th>
 					<th>Dernière activité</th>
                                         <th>Téléchargé</th>
@@ -58,7 +58,7 @@
 					</td>
 					<td><%=element.status%></td>
 					<td><%=element.creationDate%></td>
-					<td><%=element.lastUpdateDate != null ? element.lastUpdateDate : '> 1 mois' %></td>
+					<td><%=element.lastUpdateDate != null ? element.lastUpdateDate : '' %></td>
 					<td><%=element.downloadedAmount.toFixed(2)%> <%=element.downloadedUnit%></td>
 					<td><%=element.uploadedAmount != null ? element.uploadedAmount.toFixed(2): '-' %> <%=element.uploadedUnit%></td>
 					<td>

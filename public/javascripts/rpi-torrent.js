@@ -4,6 +4,7 @@ var App = {
 
 	init: function() {
 		this.Models.Torrent = new App.Models.Torrent;
+		this.Models.QueueElement = new App.Models.QueueElement;
 
 		this.Popup = new App.Popup;
 		this.ErrorPopup = new App.ErrorPopup;

@@ -24,7 +24,8 @@ object ApplicationBuild extends Build {
     "commons-collections" % "commons-collections" % "3.2.1",
     "org.springframework" % "spring-context" % "3.2.5.RELEASE",
     "org.springframework" % "spring-tx" % "3.2.5.RELEASE",
-    "org.springframework" % "spring-orm" % "3.2.5.RELEASE"
+    "org.springframework" % "spring-orm" % "3.2.5.RELEASE",
+    "fr.thedestiny" % "bencod-parser" % "1.0"
   )
 
 
