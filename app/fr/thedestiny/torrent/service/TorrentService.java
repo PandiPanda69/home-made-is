@@ -3,7 +3,6 @@ package fr.thedestiny.torrent.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -18,7 +17,7 @@ import fr.thedestiny.torrent.dao.TorrentDao;
 import fr.thedestiny.torrent.dao.TorrentDao.TorrentStatus;
 import fr.thedestiny.torrent.dto.TorrentDto;
 import fr.thedestiny.torrent.dto.TorrentFilterDto;
-import fr.thedestiny.torrent.model.Torrent;
+import fr.thedestiny.torrent.model.TorrentStat;
 
 @Service
 public class TorrentService extends AbstractService {
@@ -37,34 +36,25 @@ public class TorrentService extends AbstractService {
 
 		List<TorrentDto> result = new ArrayList<TorrentDto>();
 
-		List<Torrent> torrents = torrentDao.findAll(null, statusFilter);
-		// TODO: Optim
-		List<Map<String, Object>> activityData = torrentDao.getLastTorrentActivityData(null, filter.getTimeValue(), unitFilter, statusFilter);
+		List<TorrentStat> stats = torrentDao.getLastTorrentActivityData(null, filter.getTimeValue(), unitFilter, statusFilter);
 
-		for (Torrent current : torrents) {
-			TorrentDto dto = new TorrentDto(current);
+		for (TorrentStat current : stats) {
+			TorrentDto dto = new TorrentDto(current.getTorrent());
 
-			Map<String, Object> data = null;
-			for (Map<String, Object> currentData : activityData) {
-				if (((Integer) currentData.get("torrentId")).equals(current.getId())) {
-					data = currentData;
-					break;
-				}
-			}
+			dto.setLastUpdateDate(current.getUnformattedLastActivityDate());
 
-			if (data != null) {
-				activityData.remove(data);
+			DataUnit uploadedBytes = new DataUnit(current.getTotalUploaded());
+			dto.setUploadedAmount(uploadedBytes.getValue());
+			dto.setUploadedUnit(uploadedBytes.getUnit());
 
-				dto.setLastUpdateDate((String) data.get("lastActivityDate"));
-
-				DataUnit uploadedBytes = new DataUnit(Long.valueOf((String) data.get("uploadedBytes")));
-				dto.setUploadedAmount(uploadedBytes.getValue());
-				dto.setUploadedUnit(uploadedBytes.getUnit());
-
-				DataUnit delta = new DataUnit(Long.valueOf((String) data.get("delta")));
+			if (current.getUploadedOnLastMonth() != null) {
+				DataUnit delta = new DataUnit(current.getUploadedOnLastMonth());
 				dto.setDeltaAmount(delta.getValue());
 				dto.setDeltaUnit(delta.getUnit());
 			}
+
+			double ratio = (double) current.getTotalUploaded() / (double) current.getTorrent().getDownloadedBytes();
+			dto.setRatio(ratio);
 
 			result.add(dto);
 		}

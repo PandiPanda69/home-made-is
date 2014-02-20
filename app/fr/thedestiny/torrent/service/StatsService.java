@@ -30,8 +30,8 @@ public class StatsService {
 	public HomeStatsDto getStatsForHomepage() {
 		HomeStatsDto dto = new HomeStatsDto();
 
-		dto.setRegisteredTorrents(torrentDao.countRegisteredTorrent(null));
-		dto.setInactiveTorrents(dto.getRegisteredTorrents() - torrentDao.countActiveTorrent(null));
+		dto.setRegisteredTorrents(torrentDao.countRegisteredTorrent(null).intValue());
+		dto.setInactiveTorrents(dto.getRegisteredTorrents() - torrentDao.countActiveTorrent(null).intValue());
 
 		List<Map<String, Object>> uploadStats = torrentDao.getTorrentStatHistory(StatType.UPLOAD, 4, TimeUnit.MONTH);
 		List<Map<String, Object>> downloadStats = torrentDao.getTorrentStatHistory(StatType.DOWNLOAD, 4, TimeUnit.MONTH);

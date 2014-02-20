@@ -15,12 +15,12 @@
 
 			<div>
 				Activité 
-				<select id="timeValue" class="span1">
+				<select id="timeValue" class="span1" disabled="disabled">
 					<option value="1" selected>1</option>
 					<option value="2">2</option>
 					<option value="3">3</option>
 				</select>
-				<select id="timeUnit" class="span2">
+				<select id="timeUnit" class="span2" disabled="disabled">
 					<option value="WEEK">Semaine</option>
 					<option value="MONTH" selected>Mois</option>
 				</select>
@@ -37,12 +37,13 @@
                                 <tr>
                                         <th></th>
                                         <th>Nom</th>
-					<th>Statut</th>
+										<th>Statut</th>
                                         <th>Date de détection</th>
-					<th>Dernière activité</th>
+										<th>Dernière activité</th>
                                         <th>Téléchargé</th>
                                         <th>Uploadé</th>
-					<th>Activité</th>
+                                        <th>Ratio</th>
+										<th>Activité</th>
                                         <th></th>
                                 </tr>
                         </thead>
@@ -56,11 +57,50 @@
 					<td><%=element.id%></td>
 					<td><%=element.name.substring(0,35)%><%=element.name.length > 35 ? '...' : '' %>
 					</td>
-					<td><%=element.status%></td>
-					<td><%=element.creationDate%></td>
-					<td><%=element.lastUpdateDate != null ? element.lastUpdateDate : '' %></td>
+					<td>
+						<% if(element.status === "ACTIVE") { %>
+							<i class="icon-ok"></i>
+						<% } else { %>
+							<i class="icon-remove"></i>
+						<% } %>
+					</td>
+					<td>
+						<%
+						var formattedCreationDate = ""; 
+						{
+							var creationDate = new Date(element.creationDate);
+							var creDay  = creationDate.getDate();
+							var creMonth = creationDate.getMonth() + 1;
+							var creYear  = creationDate.getFullYear();
+							
+							creDay   = creDay   < 10 ? '0' + creDay   : creDay;
+							creMonth = creMonth < 10 ? '0' + creMonth : creMonth;
+							
+							formattedCreationDate = creDay + '/' + creMonth + '/' + creYear;
+						} %>
+						
+						<%=formattedCreationDate%>
+					</td>
+					<td>
+						<%
+						var formattedUpdateDate = ""; 
+						if(element.lastUpdateDate != null) {
+							var updateDate = new Date(element.lastUpdateDate);
+							var upDay   = updateDate.getDate();
+							var upMonth = updateDate.getMonth() + 1;
+							var upYear  = updateDate.getFullYear();
+							
+							upDay   = upDay   < 10 ? '0' + upDay   : upDay;
+							upMonth = upMonth < 10 ? '0' + upMonth : upMonth;
+							
+							formattedUpdateDate = upDay + '/' + upMonth + '/' + upYear; 
+						} %>
+						
+						<%=formattedUpdateDate%>
+					</td>
 					<td><%=element.downloadedAmount.toFixed(2)%> <%=element.downloadedUnit%></td>
 					<td><%=element.uploadedAmount != null ? element.uploadedAmount.toFixed(2): '-' %> <%=element.uploadedUnit%></td>
+					<td><%=element.ratio.toFixed(2)%></td>
 					<td>
 						<%=element.deltaAmount != null ? 
 							element.deltaAmount.toFixed(2) + ' ' + element.deltaUnit + ' (' + element.activityRate.toFixed(2) + '%)'

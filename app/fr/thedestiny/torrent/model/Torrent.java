@@ -3,12 +3,10 @@ package fr.thedestiny.torrent.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import lombok.Data;
 import lombok.ToString;
@@ -37,12 +35,10 @@ public class Torrent {
 	@Column(name = "dat_supprod")
 	private String unformattedSuppressionDate;
 
-	@OneToMany(mappedBy = "torrent")
-	private List<TorrentStat> snaphots;
-
 	public Torrent() {
 	}
 
+	// TODO Why ?!
 	public Calendar getCreationDate() {
 		try {
 			Calendar cal = Calendar.getInstance();
@@ -54,6 +50,7 @@ public class Torrent {
 		}
 	}
 
+	// TODO Why ?!
 	public Calendar getSuppressionDate() {
 		try {
 			Calendar cal = Calendar.getInstance();

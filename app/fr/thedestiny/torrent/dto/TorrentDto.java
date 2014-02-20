@@ -21,6 +21,7 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 	private String downloadedUnit;
 	private Double uploadedAmount;
 	private String uploadedUnit;
+	private Double ratio;
 	private Double deltaAmount;
 	private String deltaUnit;
 
@@ -42,10 +43,12 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 	@Override
 	public int compareTo(TorrentDto other) {
 
-		if (this.deltaAmount == null)
+		if (this.deltaAmount == null) {
 			return -1;
-		if (other.deltaAmount == null)
+		}
+		if (other.deltaAmount == null) {
 			return 1;
+		}
 
 		DataUnit thisDelta = new DataUnit(this.deltaAmount, this.deltaUnit);
 		DataUnit otherDelta = new DataUnit(other.deltaAmount, other.deltaUnit);

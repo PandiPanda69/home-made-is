@@ -23,7 +23,6 @@ App.Views.Torrents = Backbone.View.extend({
 	},
 
 	render: function() {
-
 		this.$el.html(this.template({torrents: App.Models.Torrent.toJSON()}));
 	},
 	_onError: function(msg) {
