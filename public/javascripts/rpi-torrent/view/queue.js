@@ -10,9 +10,12 @@ App.Views.Queue = Backbone.View.extend({
 	},
 	render: function() {
 
+		App.Loading.render();
+
 		$.when(App.Models.QueueElement.fetch())
 		.done($.proxy(function() {
 			this.$el.html(this.template({queue: App.Models.QueueElement.toJSON()}));
+			App.Loading.dispose();
 		}, this))
 		.fail($.proxy(function(xhr, error, errorMsg) {
 			this._onError('Une erreur est survenue lors du chargement des données: ' + errorMsg);
