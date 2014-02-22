@@ -4,6 +4,7 @@ App.Views.Home = Backbone.View.extend({
 	statsPerMonths: null,
 
 	_initialized: false,
+	_selectedAccountId: null,
 
 	initialize: function() {
 		this.homeTemplate =  _.template($('#home-template').html());
@@ -16,12 +17,12 @@ App.Views.Home = Backbone.View.extend({
 
 		App.Models.Account.fetch({
 			success: $.proxy(function() {
-				var firstAccount = App.Models.Account.at(0);
-				this.statsPerMonths.compte = firstAccount.id;
+				this._selectedAccountId = App.Models.Account.at(0).id;
+				this.statsPerMonths.compte = this._selectedAccountId;
 
 				this.statsPerMonths.fetch({
 					success: $.proxy(function() {
-						App.Models.Month.compte = firstAccount.id;
+						App.Models.Month.compte = this._selectedAccountId
 						App.Models.Month.fetch({
 							success: $.proxy(function() {
 								this._initialized = true;
@@ -75,15 +76,15 @@ App.Views.Home = Backbone.View.extend({
 	_getSeries: function() {
 		var data = [];
 
-		this.statsPerMonths.each(function(element) {
+		this.statsPerMonths.each($.proxy(function(element) {
 
-			if(element.get('accountId') == App.Models.Account.at(0).id ) {
+			if(element.get('accountId') == this._selectedAccountId ) {
 				_.each(element.get('elements'), function(current) {
 					data.push(current.val);
 				});
 				return false;
 			}
-		});
+		}, this));
 
 		return _.last(data, 12);
 	},
@@ -118,6 +119,8 @@ App.Views.Home = Backbone.View.extend({
 		}
 
 		this.main.html(this.homeTemplate({accounts: App.Models.Account.toJSON()}));
+		// Register event
+		$('.bank-graph-selection').click($.proxy(this._onAccountClick, this));
 
 		$('#bank-abstract-chart').highcharts({
 			title: {
@@ -125,7 +128,7 @@ App.Views.Home = Backbone.View.extend({
 				x: -20
 			},
 			subtitle: {
-				text: App.Models.Account.at(0).get('nom'),
+				text: App.Models.Account.get(this._selectedAccountId).get('nom'),
 				x: -20
 			},
 			xAxis: {
@@ -149,6 +152,24 @@ App.Views.Home = Backbone.View.extend({
 				name: 'Tendance',
 				data: this._getTrend()
 			}]
+		});
+	},
+	_onAccountClick: function(evt) {
+		this._selectedAccountId = $(evt.currentTarget).attr('account');
+
+		this.statsPerMonths.compte = this._selectedAccountId;
+		this.statsPerMonths.fetch({
+			success: $.proxy(function() {
+				App.Models.Month.compte = this._selectedAccountId;
+				App.Models.Month.fetch({
+					success: $.proxy(function() {
+						this._initialized = true;
+						this.render();
+					}, this),
+					error: this._onError
+				});
+			}, this),
+			error: this._onError
 		});
 	}
 });

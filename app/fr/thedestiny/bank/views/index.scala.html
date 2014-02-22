@@ -64,14 +64,13 @@
     	 var globals = {
     	 	rootUrl : '/bank'
     	 };
-    	 
-    	 var App = {
-    	 	Models: {},
-    	 	Views: {}
-    	 };
     	</script>
 		
+		<script src="@routes.Assets.at("javascripts/rpi-bank.js")" type="text/javascript"></script>		
+
+		<script src="@routes.Assets.at("javascripts/global/loading.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/global/months_translation.js")" type="text/javascript"></script>
+
 		<script src="@routes.Assets.at("javascripts/rpi-bank/menu.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/rpi-bank/model/accounttype.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/rpi-bank/model/account.js")" type="text/javascript"></script>
@@ -80,7 +79,11 @@
 		<script src="@routes.Assets.at("javascripts/rpi-bank/view/accountsynth.js")" type="text/javascript"></script>
 		<script src="@routes.Assets.at("javascripts/rpi-bank/view/home.js")" type="text/javascript"></script>
 		
-		<script src="@routes.Assets.at("javascripts/rpi-bank.js")" type="text/javascript"></script>		
+		<script src="@routes.Assets.at("javascripts/rpi-bank-jumble.js")" type="text/javascript"></script>		
+
+	<script type="text/javascript">
+    	 App.init();
+	</script>
 
 	@home()
 	

@@ -24,4 +24,3 @@ App.Menu = Backbone.View.extend({
 	}
 });
 
-App.Menu = new App.Menu;
