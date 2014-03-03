@@ -15,6 +15,7 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 	private Integer id;
 	private String name;
 	private String status;
+	private Integer grade;
 	private String creationDate;
 	private String lastUpdateDate;
 	private Double downloadedAmount;
@@ -33,6 +34,7 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 		this.id = torrent.getId();
 		this.name = torrent.getName();
 		this.status = torrent.getStatus();
+		this.grade = torrent.getGrade();
 		this.creationDate = torrent.getUnformattedCreationDate();
 
 		DataUnit downloaded = new DataUnit(torrent.getDownloadedBytes());

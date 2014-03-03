@@ -17,6 +17,7 @@ import fr.thedestiny.torrent.dao.TorrentDao;
 import fr.thedestiny.torrent.dao.TorrentDao.TorrentStatus;
 import fr.thedestiny.torrent.dto.TorrentDto;
 import fr.thedestiny.torrent.dto.TorrentFilterDto;
+import fr.thedestiny.torrent.model.Torrent;
 import fr.thedestiny.torrent.model.TorrentStat;
 
 @Service
@@ -70,6 +71,19 @@ public class TorrentService extends AbstractService {
 			@Override
 			public <T> T doWork(EntityManager em) throws Exception {
 				torrentDao.logicalDelete(em, torrentId);
+				return null;
+			}
+		});
+	}
+
+	public void updateTorrentGrade(final Integer torrentId, final Integer grade) throws Exception {
+		this.processInTransaction(new InTransactionAction() {
+
+			@Override
+			public <T> T doWork(EntityManager em) throws Exception {
+				Torrent torrent = torrentDao.find(em, torrentId);
+				torrent.setGrade(grade);
+
 				return null;
 			}
 		});

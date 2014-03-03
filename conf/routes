@@ -60,6 +60,7 @@ DELETE	/bank/heuristics/name/pattern/:id fr.thedestiny.bank.controller.MotifOper
 GET     /torrent                        @fr.thedestiny.torrent.controller.TorrentHomeController.index()
 
 GET     /torrent/torrents               @fr.thedestiny.torrent.controller.TorrentsController.list()
+PUT		/torrent/torrents/:idTorrent	@fr.thedestiny.torrent.controller.TorrentsController.update(idTorrent: Integer)
 DELETE  /torrent/torrents/:idTorrent    @fr.thedestiny.torrent.controller.TorrentsController.delete(idTorrent: Integer)
 
 POST    /torrent/torrents/filter        @fr.thedestiny.torrent.controller.TorrentsController.filter()

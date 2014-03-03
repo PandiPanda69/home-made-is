@@ -39,9 +39,9 @@
                                 <tr>
                                         <th></th>
                                         <th>Nom</th>
-										<th>Statut</th>
+					<th>Statut</th>
                                         <th>Date de détection</th>
-										<th>Dernière activité</th>
+					<th>Notation</th>
                                         <th>Téléchargé</th>
                                         <th>Uploadé</th>
                                         <th>Ratio</th>
@@ -83,22 +83,7 @@
 						
 						<%=formattedCreationDate%>
 					</td>
-					<td>
-						<%
-						var formattedUpdateDate = ""; 
-						if(element.lastUpdateDate != null) {
-							var updateDate = new Date(element.lastUpdateDate);
-							var upDay   = updateDate.getDate();
-							var upMonth = updateDate.getMonth() + 1;
-							var upYear  = updateDate.getFullYear();
-							
-							upDay   = upDay   < 10 ? '0' + upDay   : upDay;
-							upMonth = upMonth < 10 ? '0' + upMonth : upMonth;
-							
-							formattedUpdateDate = upDay + '/' + upMonth + '/' + upYear; 
-						} %>
-						
-						<%=formattedUpdateDate%>
+					<td class="grade" torrent-id="<%=element.id%>">
 					</td>
 					<td><%=element.downloadedAmount.toFixed(2)%> <%=element.downloadedUnit%></td>
 					<td><%=element.uploadedAmount != null ? element.uploadedAmount.toFixed(2): '-' %> <%=element.uploadedUnit%></td>

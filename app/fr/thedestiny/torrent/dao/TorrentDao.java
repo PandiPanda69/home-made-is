@@ -46,6 +46,10 @@ public class TorrentDao extends AbstractDao<Torrent> {
 				.getResultList();
 	}
 
+	public Torrent find(EntityManager em, Integer torrentId) {
+		return em.find(Torrent.class, torrentId);
+	}
+
 	public Long countRegisteredTorrent(EntityManager em) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);

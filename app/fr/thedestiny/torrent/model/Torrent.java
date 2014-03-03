@@ -29,6 +29,9 @@ public class Torrent {
 	@Column
 	private String status;
 
+	@Column
+	private Integer grade;
+
 	@Column(name = "dat_creprod")
 	private String unformattedCreationDate;
 

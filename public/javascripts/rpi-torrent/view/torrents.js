@@ -21,9 +21,16 @@ App.Views.Torrents = Backbone.View.extend({
 			}, this));
 		}
 	},
-
 	render: function() {
 		this.$el.html(this.template({torrents: App.Models.Torrent.toJSON()}));
+
+		$('.grade').each($.proxy(function(id, el) {
+			var $el = $(el);
+			var torrentId = $el.attr('torrent-id');
+			var grade = App.Models.Torrent.get(torrentId).get('grade');
+
+			$el.grade(grade, $.proxy(this._onChangeGrade, this), torrentId);
+		}, this));
 	},
 	_onError: function(msg) {
 		App.ErrorPopup.setMessage(msg);
@@ -72,5 +79,17 @@ App.Views.Torrents = Backbone.View.extend({
 
 			App.Loading.dispose();
 		}, this));
+	},
+	_onChangeGrade: function(newGrade, torrentId) {
+		$.ajax({
+			type: 'PUT',
+			url: globals.rootUrl + '/torrents/' + torrentId,
+			async: false,
+			contentType: 'application/json',
+			data: JSON.stringify({grade: newGrade}),
+			error: $.proxy(function(model, response, options) {
+				this._onError('Erreur lors de la mise à jour de la note : ' + response.statusText);
+			}, this)
+		});
 	}
 });
