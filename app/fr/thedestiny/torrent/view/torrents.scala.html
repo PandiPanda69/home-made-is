@@ -10,6 +10,7 @@
 					<option value="ALL">Tous</option>
 					<option value="ACTIVE" selected>Actif</option>
 					<option value="DELETED">Supprimé</option>
+					<option value="EXPIRED">Expiré</option>
 				</select>
 			</div>
 
@@ -32,7 +33,7 @@
 
 		</div>
 
-		<p class="pull-right"><i><%=torrents.length%> résultats.</i></p>
+		<p class="pull-right"><i><span id="torrent-count"><%=torrents.length%></span> résultats.</i></p>
 
 		<table id="torrents-list" class="table table-striped table-bordered table-condensed table-hover">
 			<thead>
@@ -54,10 +55,17 @@
 		<%
 		$.each(torrents, function(id, element) {
 
+				if(element == null) return;
 		%>
 				<tr>
 					<td><%=element.id%></td>
-					<td><%=element.name.substring(0,35)%><%=element.name.length > 35 ? '...' : '' %>
+					<td>
+						<span data-toggle="tooltip" data-placement="top" title="<%=element.name%>">
+							<%=element.name.substring(0,30)%><%=element.name.length > 30 ? '...' : '' %>
+						</span>
+						<% if(element.trackerError !== null && element.trackerError.length > 0) { %>
+							<i class="icon-warning-sign" data-toggle="tooltip" data-placement="top" title="<%=element.trackerError%>"></i>
+						<% } %>
 					</td>
 					<td>
 						<% if(element.status === "ACTIVE") { %>
@@ -87,13 +95,18 @@
 					</td>
 					<td><%=element.downloadedAmount.toFixed(2)%> <%=element.downloadedUnit%></td>
 					<td><%=element.uploadedAmount != null ? element.uploadedAmount.toFixed(2): '-' %> <%=element.uploadedUnit%></td>
-					<td><%=element.ratio.toFixed(2)%></td>
+					<td><%=element.ratio != null ? element.ratio.toFixed(2) : '-'%></td>
 					<td>
 						<%=element.deltaAmount != null ? 
-							element.deltaAmount.toFixed(2) + ' ' + element.deltaUnit + ' (' + element.activityRate.toFixed(2) + '%)'
-							: ' - ' %>
+							element.deltaAmount.toFixed(2) + ' ' + element.deltaUnit : ' - ' %>
+						<%=element.activityRate != null ?
+							' (' + element.activityRate.toFixed(2) + '%)' : '' %>
 					</td>
-					<td><a class="torrent-remove" torrent-id="<%=element.id%>"><i class="icon-remove"></i></a></td>
+					<td>
+						<% if(element.status === "ACTIVE") { %>
+							<a class="torrent-remove" torrent-id="<%=element.id%>"><i class="icon-remove"></i></a>
+						<% } %>
+					</td>
 				</tr>	
 		<%
 		});

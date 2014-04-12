@@ -3,6 +3,8 @@ package fr.thedestiny.torrent.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,13 +40,16 @@ public class Torrent {
 	@Column(name = "dat_supprod")
 	private String unformattedSuppressionDate;
 
+	@Column
+	private String trackerError;
+
 	public Torrent() {
 	}
 
 	// TODO Why ?!
 	public Calendar getCreationDate() {
 		try {
-			Calendar cal = Calendar.getInstance();
+			GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+1"));
 			cal.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(unformattedCreationDate));
 			return cal;
 		} catch (ParseException ex) {
@@ -56,7 +61,7 @@ public class Torrent {
 	// TODO Why ?!
 	public Calendar getSuppressionDate() {
 		try {
-			Calendar cal = Calendar.getInstance();
+			GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+1"));
 			cal.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(unformattedSuppressionDate));
 			return cal;
 		} catch (ParseException ex) {

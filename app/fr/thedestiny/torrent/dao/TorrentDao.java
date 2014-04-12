@@ -20,7 +20,7 @@ import fr.thedestiny.torrent.model.TorrentStat;
 public class TorrentDao extends AbstractDao<Torrent> {
 
 	public static enum TorrentStatus {
-		ALL, ACTIVE, DELETED
+		ALL, ACTIVE, DELETED, EXPIRED
 	};
 
 	public static enum StatType {
@@ -33,12 +33,16 @@ public class TorrentDao extends AbstractDao<Torrent> {
 
 	@SuppressWarnings("unchecked")
 	public List<Torrent> findAll(EntityManager em, TorrentStatus status) {
+
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
 
 		if (status == TorrentStatus.ALL) {
 			return em.createQuery("from Torrent").getResultList();
+		}
+		else if (status == TorrentStatus.EXPIRED) {
+			throw new UnsupportedOperationException("Status EXPIRED is not supported for this operation.");
 		}
 
 		return em.createQuery("from Torrent where status = :status")
@@ -77,7 +81,7 @@ public class TorrentDao extends AbstractDao<Torrent> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public/* List<Map<String, Object>> */List<TorrentStat> getLastTorrentActivityData(EntityManager em, int unitCount, TimeUnit unit, TorrentStatus status) {
+	public List<TorrentStat> getLastTorrentActivityData(EntityManager em, int unitCount, TimeUnit unit, TorrentStatus status) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
@@ -95,11 +99,21 @@ public class TorrentDao extends AbstractDao<Torrent> {
 		String query = "from TorrentStat s join fetch s.torrent t";
 		if (status != TorrentStatus.ALL) {
 			query += " WHERE t.status = :status";
+
+			if (status == TorrentStatus.EXPIRED) {
+				query += " AND ((s.uploadedOnLastMonth = null OR s.uploadedOnLastMonth = 0)";
+				query += " OR length(t.trackerError) > 0)";
+			}
 		}
 
 		Query q = em.createQuery(query, TorrentStat.class);
 		if (status != TorrentStatus.ALL) {
-			q.setParameter("status", status.toString());
+			if (status == TorrentStatus.EXPIRED) {
+				q.setParameter("status", TorrentStatus.ACTIVE.toString());
+			}
+			else {
+				q.setParameter("status", status.toString());
+			}
 		}
 
 		return q.getResultList();

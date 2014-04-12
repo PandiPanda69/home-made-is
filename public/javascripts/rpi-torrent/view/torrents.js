@@ -1,6 +1,7 @@
 App.Views.Torrents = Backbone.View.extend({
 
 	template: _.template($("#torrents-template").html()),
+	_torrentData: null,
 
 	events: {
 		"click .torrent-remove": "_remove",
@@ -10,27 +11,51 @@ App.Views.Torrents = Backbone.View.extend({
 		this.$el = $("#main-container");
 
 		App.Loading.render();
-		if(App.Models.Torrent.initialized == false) {
-			$.when(App.Models.Torrent.fetch())
-			.fail( $.proxy(function(xhr, error, errorMsg) { 
-				this._onError('Une erreur est survenue lors du chargement des données : ' + errorMsg);
-			}, this))
-			.done( $.proxy(function() { 
-				this.render();
-				App.Loading.dispose();
-			}, this));
-		}
-	},
-	render: function() {
-		this.$el.html(this.template({torrents: App.Models.Torrent.toJSON()}));
 
+		$.ajax({
+                        url: globals.rootUrl + '/torrents',
+                        contentType: 'application/json',
+                        type: 'GET'
+                })
+                .fail($.proxy(function(xhr, error, errorMsg) {
+                        this._onError('Une erreur est survenue lors de la récupération des torrents : ' + errorMsg);
+                }, this))
+                .done($.proxy(function(data) {
+			this._wrapData(data);
+			this.render(data);
+			App.Loading.dispose();
+		}, this));
+	},
+	render: function(data) {
+		this.$el.html(this.template({torrents: data}));
+		this._initGrades();
+	},
+	_initGrades: function() {
 		$('.grade').each($.proxy(function(id, el) {
 			var $el = $(el);
 			var torrentId = $el.attr('torrent-id');
-			var grade = App.Models.Torrent.get(torrentId).get('grade');
+			var grade = this._torrentData[torrentId].grade;
 
 			$el.grade(grade, $.proxy(this._onChangeGrade, this), torrentId);
 		}, this));
+	},
+	_wrapData: function(data) {
+		this._torrentData = [];
+
+		$.each(data, $.proxy(function(id, el) {
+			this._torrentData[el.id] = el;
+		}, this));
+	},
+	_refreshCounter: function() {
+		var cpt = 0;
+
+		$.each(this._torrentData, function(id, el) {
+			if(el !== null && typeof el !== "undefined") {
+				cpt++;
+			}
+		});
+
+		$('#torrent-count').html(cpt);
 	},
 	_onError: function(msg) {
 		App.ErrorPopup.setMessage(msg);
@@ -42,12 +67,21 @@ App.Views.Torrents = Backbone.View.extend({
 		var $target = $(evt.currentTarget);
 		var id = $target.attr('torrent-id');
 
-		$.when(App.Models.Torrent.get(id).destroy())
-		.fail($.proxy(function(xhr, error, errorMsg) {
-			this._onError('Une erreur est survenue lors de la suppression du torrent #' + id + ' : ' + errorMsg);
-		}, this))
-		.done($.proxy(function() {
-			this.render();
+		$.ajax({
+                        url: globals.rootUrl + '/torrents/' + id,
+                        type: 'DELETE'
+                })
+                .fail($.proxy(function(xhr, error, errorMsg) {
+                        this._onError('Une erreur est survenue lors de la suppression du torrent: ' + errorMsg);
+                }, this))
+                .done($.proxy(function() {
+			// Remove element from array
+			this._torrentData.splice(id, 1);
+
+			// Then remove dom node and refresh counter
+			$target.closest('tr').remove();
+
+			this._refreshCounter();
 		}, this));
 	},
 	_filter: function(evt) {
@@ -71,11 +105,17 @@ App.Views.Torrents = Backbone.View.extend({
 			this._onError('Une erreur est survenue lors du filtrage des torrents : ' + errorMsg);
 		}, this))
 		.done($.proxy(function(data) {
+			this._wrapData(data);
+
 			this.$el.html(this.template({torrents: data}));
 
 			$('#status').val(status);
 			$('#timeUnit').val(timeUnit);
 			$('#timeValue').val(timeValue);
+
+			this._initGrades();
+
+			this._refreshCounter();
 
 			App.Loading.dispose();
 		}, this));

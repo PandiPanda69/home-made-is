@@ -25,6 +25,7 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 	private Double ratio;
 	private Double deltaAmount;
 	private String deltaUnit;
+	private String trackerError;
 
 	public TorrentDto() {
 	}
@@ -36,6 +37,7 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 		this.status = torrent.getStatus();
 		this.grade = torrent.getGrade();
 		this.creationDate = torrent.getUnformattedCreationDate();
+		this.trackerError = torrent.getTrackerError();
 
 		DataUnit downloaded = new DataUnit(torrent.getDownloadedBytes());
 		this.downloadedAmount = downloaded.getValue();
@@ -58,12 +60,12 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 	}
 
 	public Double getActivityRate() {
-		DataUnit downloaded = new DataUnit(this.downloadedAmount, this.downloadedUnit);
 
-		if (deltaAmount == null) {
+		if (deltaAmount == null || deltaAmount == 0d || downloadedAmount == null || downloadedAmount == 0d) {
 			return null;
 		}
 
+		DataUnit downloaded = new DataUnit(this.downloadedAmount, this.downloadedUnit);
 		DataUnit delta = new DataUnit(this.deltaAmount, this.deltaUnit);
 
 		Double downloadedBytes = downloaded.getValue("octets");

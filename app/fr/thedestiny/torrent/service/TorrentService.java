@@ -1,6 +1,7 @@
 package fr.thedestiny.torrent.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,9 +36,17 @@ public class TorrentService extends AbstractService {
 		TorrentStatus statusFilter = TorrentStatus.valueOf(filter.getStatus());
 		TimeUnit unitFilter = TimeUnit.valueOf(filter.getTimeUnit());
 
-		List<TorrentDto> result = new ArrayList<TorrentDto>();
+		boolean filterExpiredOnly = (statusFilter == TorrentStatus.EXPIRED);
+
+		List<TorrentDto> torrents = new ArrayList<TorrentDto>();
 
 		List<TorrentStat> stats = torrentDao.getLastTorrentActivityData(null, filter.getTimeValue(), unitFilter, statusFilter);
+
+		Calendar expirationLimitCalendar = null;
+		if (filterExpiredOnly) {
+			expirationLimitCalendar = Calendar.getInstance();
+			expirationLimitCalendar.add(Calendar.MONTH, -1);
+		}
 
 		for (TorrentStat current : stats) {
 			TorrentDto dto = new TorrentDto(current.getTorrent());
@@ -54,15 +63,25 @@ public class TorrentService extends AbstractService {
 				dto.setDeltaUnit(delta.getUnit());
 			}
 
-			double ratio = (double) current.getTotalUploaded() / (double) current.getTorrent().getDownloadedBytes();
-			dto.setRatio(ratio);
+			if (current.getTorrent().getDownloadedBytes() != 0) {
+				double ratio = (double) current.getTotalUploaded() / (double) current.getTorrent().getDownloadedBytes();
+				dto.setRatio(ratio);
+			}
 
-			result.add(dto);
+			// Gather expired torrents
+			if (filterExpiredOnly) {
+				if ((expirationLimitCalendar.getTimeInMillis() - current.getTorrent().getCreationDate().getTimeInMillis()) > 0) {
+					torrents.add(dto);
+				}
+			}
+			else {
+				torrents.add(dto);
+			}
 		}
 
-		Collections.sort(result);
+		Collections.sort(torrents);
 
-		return result;
+		return torrents;
 	}
 
 	public void deleteTorrent(final Integer torrentId) throws Throwable {
