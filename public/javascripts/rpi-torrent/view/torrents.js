@@ -9,10 +9,11 @@ App.Views.Torrents = Backbone.View.extend({
 	},
 	initialize: function() {
 		this.$el = $("#main-container");
+	},
+	render: function(data) {
+                App.Loading.render();
 
-		App.Loading.render();
-
-		$.ajax({
+                $.ajax({
                         url: globals.rootUrl + '/torrents',
                         contentType: 'application/json',
                         type: 'GET'
@@ -21,14 +22,11 @@ App.Views.Torrents = Backbone.View.extend({
                         this._onError('Une erreur est survenue lors de la récupération des torrents : ' + errorMsg);
                 }, this))
                 .done($.proxy(function(data) {
-			this._wrapData(data);
-			this.render(data);
-			App.Loading.dispose();
-		}, this));
-	},
-	render: function(data) {
-		this.$el.html(this.template({torrents: data}));
-		this._initGrades();
+                        this._wrapData(data);
+			this.$el.html(this.template({torrents: data}));
+			this._initGrades();
+                        App.Loading.dispose();
+                }, this));
 	},
 	_initGrades: function() {
 		$('.grade').each($.proxy(function(id, el) {

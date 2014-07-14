@@ -24,6 +24,9 @@ public class StatsService {
 	@Autowired
 	private TorrentDirectoryDao directoryDao;
 
+	@Autowired
+	private TorrentService torrentService;
+
 	private StatsService() {
 	}
 
@@ -31,7 +34,7 @@ public class StatsService {
 		HomeStatsDto dto = new HomeStatsDto();
 
 		dto.setRegisteredTorrents(torrentDao.countRegisteredTorrent(null).intValue());
-		dto.setInactiveTorrents(dto.getRegisteredTorrents() - torrentDao.countActiveTorrent(null).intValue());
+		dto.setInactiveTorrents(torrentService.countInactiveTorrents(1, TimeUnit.MONTH));
 
 		List<Map<String, Object>> uploadStats = torrentDao.getTorrentStatHistory(StatType.UPLOAD, 4, TimeUnit.MONTH);
 		List<Map<String, Object>> downloadStats = torrentDao.getTorrentStatHistory(StatType.DOWNLOAD, 4, TimeUnit.MONTH);

@@ -42,10 +42,9 @@ public class TorrentService extends AbstractService {
 
 		List<TorrentStat> stats = torrentDao.getLastTorrentActivityData(null, filter.getTimeValue(), unitFilter, statusFilter);
 
-		Calendar expirationLimitCalendar = null;
+		long expirationLimitTime = 0;
 		if (filterExpiredOnly) {
-			expirationLimitCalendar = Calendar.getInstance();
-			expirationLimitCalendar.add(Calendar.MONTH, -1);
+			expirationLimitTime = getTorrentExpirationTimestamp();
 		}
 
 		for (TorrentStat current : stats) {
@@ -70,7 +69,7 @@ public class TorrentService extends AbstractService {
 
 			// Gather expired torrents
 			if (filterExpiredOnly) {
-				if ((expirationLimitCalendar.getTimeInMillis() - current.getTorrent().getCreationDate().getTimeInMillis()) > 0) {
+				if (isTorrentInactive(current.getTorrent(), expirationLimitTime)) {
 					torrents.add(dto);
 				}
 			}
@@ -106,5 +105,34 @@ public class TorrentService extends AbstractService {
 				return null;
 			}
 		});
+	}
+
+	public int countInactiveTorrents(int timeValue, TimeUnit timeUnit) {
+		int result = 0;
+		List<TorrentStat> rawTorrents = torrentDao.getLastTorrentActivityData(null, timeValue, timeUnit, TorrentStatus.EXPIRED);
+
+		long expirationLimitTime = getTorrentExpirationTimestamp();
+
+		for (TorrentStat current : rawTorrents) {
+			if (isTorrentInactive(current.getTorrent(), expirationLimitTime)) {
+				result++;
+			}
+		}
+
+		return result;
+	}
+
+	public boolean isTorrentInactive(Torrent torrent, long expirationLimitTime) {
+		long torrentCreationDate = torrent.getCreationDate().getTimeInMillis();
+		String trackerError = torrent.getTrackerError();
+
+		return ((expirationLimitTime - torrentCreationDate) > 0) || (trackerError != null && trackerError.length() > 0);
+	}
+
+	private long getTorrentExpirationTimestamp() {
+		Calendar expirationLimitCalendar = Calendar.getInstance();
+		expirationLimitCalendar.add(Calendar.MONTH, -1);
+
+		return expirationLimitCalendar.getTimeInMillis();
 	}
 }

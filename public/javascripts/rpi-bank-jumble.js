@@ -123,11 +123,15 @@ $(function() {
 
                 model: Month,
                 initialized: false,
-                comparator: 'order',
 		compte: null,
 
 		url: function() {
 			return globals.rootUrl + '/accounts/' + this.compte + '/months';
+		},
+		comparator: function(model) {
+			var m = model.get('mois');
+			var a = model.get('annee');
+			return (a * a) + m;
 		}
         });
 
@@ -280,61 +284,6 @@ $(function() {
 			LoadingDialog.dispose();
 			Routes.navigate('accounts', {trigger: true});
 		}
-        });
-
-	// views/accountlisting.js
-	/*******************************************
-        * View
-        *******************************************/
-        var AccountView = Backbone.View.extend({
-
-                el: $("#main-container"),
-                main: $("#main-container"),
-                accountTemplate: _.template($('#accounts-template').html()),
-
-                events: {
-                        "click #accounts-add":     "addAccount",
-                        "click #accounts-edit":    "editAccount",
-                        "click #accounts-del":     "delAccount",
-			"click #accounts-view":	   "viewAccount"
-                },
-                render: function() {
-                        Menu.activateButton($('#menu-accounts'));
-
-                        //if(Users.isEmpty()) {
-                                LoadingDialog.render();
-
-                                var self = this;
-                                Accounts.fetch({
-                                        success: function() {
-                                                LoadingDialog.dispose();
-                                                self.main.html(self.accountTemplate({accounts: Accounts.toJSON()}));
-                                        }
-                                });
-                        //}
-                        //else {
-                        //      this.main.html(this.userTemplate({users: Users.toJSON()}));
-                        //}
-                },
-                addAccount: function() {
-                        Routes.navigate('accounts/add', {trigger: true});
-                },
-                editAccount: function(e) {
-                        var id = $(e.currentTarget).attr('account');
-                        Routes.navigate('accounts/edit/' + id, {trigger: true});
-                        return false;
-                },
-                delAccount: function(e) {
-                        var id = $(e.currentTarget).attr('account');
-                        Accounts.get(id).destroy({success: $.proxy(this.render, this)});
-                        return false;
-                },
-		viewAccount: function(e) {
-			var id = $(e.currentTarget).attr('account');
-			Routes.navigate('accounts/' + id + '/operations', {trigger: true});
-			return false;
-		}
-
         });
 
 	// views/heuristics.js
@@ -1681,7 +1630,7 @@ $(function() {
 		paramsView:   new ParamsView,
 		optypeListView:  new OperationTypeView,
 		optypeAddView:   new OperationTypeAddView,
-		accountListView: new AccountView,
+		accountListView: null,
 		accountAddView:  new AccountAddView,
 		operationHeaderView:	 new OperationHeaderView,
 		importView:	 new ImportView,
@@ -1733,6 +1682,10 @@ $(function() {
 			this.render(this.optypeAddView, id);
 		},
 		accountsHome: function() {
+			if(!this.accountListView) {
+				this.accountListView = new App.Views.Account;
+			}
+
 			this.render(this.accountListView);
 		},
 		accountsAdd: function() {

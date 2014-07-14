@@ -113,6 +113,8 @@ App.Views.Home = Backbone.View.extend({
 	},
 	render: function() {
 
+		App.Menu.activateButton($('#menu-home'));
+
 		if(!this._initialized) {
 			this._prepareData();
 			return;

@@ -64,22 +64,6 @@ public class TorrentDao extends AbstractDao<Torrent> {
 				.getSingleResult();
 	}
 
-	public Long countActiveTorrent(EntityManager em) {
-		if (em == null) {
-			em = JPA.em(persistenceContext);
-		}
-
-		String query = "" +
-				"select count(s) " +
-				"from TorrentStat s " +
-				"join s.torrent t " +
-				"where t.status != :status and s.uploadedOnLastMonth != 0";
-
-		return (Long) em.createQuery(query)
-				.setParameter("status", TorrentStatus.DELETED.name())
-				.getSingleResult();
-	}
-
 	@SuppressWarnings("unchecked")
 	public List<TorrentStat> getLastTorrentActivityData(EntityManager em, int unitCount, TimeUnit unit, TorrentStatus status) {
 		if (em == null) {

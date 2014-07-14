@@ -23,7 +23,7 @@
 				<ul>
 				<% _.each(accounts, function(current) { 
 					if(current.category == "ASSETS") { %>
-						<li><a class="bank-graph-selection" account="<%=current.id%>"><%=current.nom%></a>: <b> <%=current.solde.toFixed(2)%> €</b></li>
+						<li><a class="bank-graph-selection" account="<%=current.id%>"><%=current.nom%></a>: <b> <%=Math.abs(current.solde.toFixed(2)) === 0 ? ' - ' : current.solde.toFixed(2)%> €</b></li>
 				<%	}
 				 }); %>
 				</ul>
@@ -35,7 +35,7 @@
 				<ul>
 				<% _.each(accounts, function(current) {
 					if(current.category == "SAVING") { %>
-						<li><a class="bank-graph-selection" account="<%=current.id%>"><%=current.nom%></a>: <b> <%=current.solde.toFixed(2)%> €</b></li>
+						<li><a class="bank-graph-selection" account="<%=current.id%>"><%=current.nom%></a>: <b> <%=Math.abs(current.solde.toFixed(2)) === 0 ? ' - ' : current.solde.toFixed(2)%> €</b></li>
 				<%	}
 				 }); %>
 				</ul>
