@@ -1,7 +1,7 @@
 package fr.thedestiny.global.helper;
 
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.mvc.Controller;
 import play.mvc.Result;

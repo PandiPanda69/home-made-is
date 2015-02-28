@@ -2,14 +2,15 @@ package fr.thedestiny.bank.controller;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import play.Logger;
 import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.bank.dao.HeuristiqueTypeDao;
@@ -21,6 +22,7 @@ import fr.thedestiny.bank.service.SoldeService;
 import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
+@org.springframework.stereotype.Controller
 public class OperationController extends Controller {
 
 	private static OperationService operationService = OperationService.getInstance();
@@ -28,7 +30,7 @@ public class OperationController extends Controller {
 
 	@Security
 	@Transactional(readOnly = true)
-	public static Result list(Integer idAccount, Integer idMonth) {
+	public Result list(Integer idAccount, Integer idMonth) {
 
 		List<OperationDto> list = operationService.findAllOperationsForMonth(SecurityHelper.getLoggedUserId(), idAccount, idMonth);
 		return ok(Json.toJson(list));
@@ -36,13 +38,13 @@ public class OperationController extends Controller {
 
 	@Security
 	@Transactional
-	public static Result add(Integer idAccount, Integer idMonth) throws Exception {
+	public Result add(Integer idAccount, Integer idMonth) throws Exception {
 
 		OperationDto dto = null;
 		try {
 			Integer userId = SecurityHelper.getLoggedUserId();
 
-			dto = new ObjectMapper().readValue(ctx().request().body().asJson(), OperationDto.class);
+			dto = new ObjectMapper().readValue(ctx().request().body().asJson().toString(), OperationDto.class);
 			dto = operationService.addOperation(dto, userId, idAccount, idMonth);
 
 			// Update month solds (chained)
@@ -58,11 +60,11 @@ public class OperationController extends Controller {
 
 	@Security
 	@Transactional
-	public static Result edit(Integer idAccount, Integer idMonth, Integer id) {
+	public Result edit(Integer idAccount, Integer idMonth, Integer id) {
 
 		OperationDto dto = null;
 		try {
-			dto = new ObjectMapper().readValue(ctx().request().body().asJson(), OperationDto.class);
+			dto = new ObjectMapper().readValue(ctx().request().body().asJson().toString(), OperationDto.class);
 
 			Integer userId = SecurityHelper.getLoggedUserId();
 
@@ -81,7 +83,7 @@ public class OperationController extends Controller {
 
 	@Security
 	@Transactional
-	public static Result delete(Integer idAccount, Integer idMois, Integer id) {
+	public Result delete(Integer idAccount, Integer idMois, Integer id) {
 
 		try {
 			Integer userId = SecurityHelper.getLoggedUserId();
@@ -100,7 +102,7 @@ public class OperationController extends Controller {
 	@Deprecated
 	@Security
 	@Transactional
-	public static Result importData(Integer idAccount, Integer idMois) {
+	public Result importData(Integer idAccount, Integer idMois) {
 
 		JsonNode body = ctx().request().body().asJson();
 
@@ -112,7 +114,7 @@ public class OperationController extends Controller {
 				current = body.get(i);
 				dto = new GenericModelDto<Operation>(current, Operation.class);
 
-				// FIXME Nettoyer cette caca
+				// FIXME Nettoyer ce caca
 				Operation model = dto.asObject();
 				HeuristiqueType type = HeuristiqueTypeDao.findByNom(model.getNom());
 				if (type != null) {
@@ -132,7 +134,7 @@ public class OperationController extends Controller {
 	}
 
 	@Security
-	public static Result currentYearOp(Integer accountId) {
+	public Result currentYearOp(Integer accountId) {
 
 		List<OperationDto> dto = operationService.getCurrentYearOperation(accountId);
 		return ok(Json.toJson(dto));

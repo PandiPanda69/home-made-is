@@ -1,6 +1,6 @@
 package fr.thedestiny.global.dto;
 
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.Json;
 

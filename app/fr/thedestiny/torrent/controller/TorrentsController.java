@@ -3,7 +3,6 @@ package fr.thedestiny.torrent.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
@@ -11,6 +10,9 @@ import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.global.helper.ResultFactory;
 import fr.thedestiny.torrent.dto.TorrentDto;
@@ -44,7 +46,7 @@ public class TorrentsController extends Controller {
 	@Security
 	public Result filter() throws Exception {
 
-		TorrentFilterDto dto = objectMapper.readValue(ctx().request().body().asJson(), TorrentFilterDto.class);
+		TorrentFilterDto dto = objectMapper.readValue(ctx().request().body().asJson().toString(), TorrentFilterDto.class);
 		List<TorrentDto> torrents = torrentService.findAllTorrentsMatchingFilter(dto);
 
 		return ok(Json.toJson(torrents));
@@ -55,7 +57,7 @@ public class TorrentsController extends Controller {
 	@SuppressWarnings("unchecked")
 	public Result update(Integer torrentId) throws Exception {
 
-		Map<String, Object> data = objectMapper.readValue(ctx().request().body().asJson(), Map.class);
+		Map<String, Object> data = objectMapper.readValue(ctx().request().body().asJson().toString(), Map.class);
 		Integer grade = (Integer) data.get("grade");
 
 		torrentService.updateTorrentGrade(torrentId, grade);

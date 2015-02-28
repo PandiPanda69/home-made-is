@@ -2,8 +2,8 @@ package fr.thedestiny.bank.controller;
 
 import java.util.List;
 
-import org.codehaus.jackson.node.JsonNodeFactory;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import play.Logger;
 import play.db.jpa.Transactional;

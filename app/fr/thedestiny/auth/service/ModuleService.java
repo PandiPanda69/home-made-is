@@ -2,25 +2,37 @@ package fr.thedestiny.auth.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.thedestiny.auth.dao.ModuleDao;
 import fr.thedestiny.auth.model.Module;
 import fr.thedestiny.global.dto.GenericModelDto;
+import fr.thedestiny.global.service.AbstractService;
+import fr.thedestiny.global.service.InTransactionAction;
 
 @Service
-public class ModuleService {
+public class ModuleService extends AbstractService {
 
 	@Autowired
 	private ModuleDao moduleDao;
 
-	public List<Module> findAllModules(Integer userId, boolean isAdmin) {
-		if (isAdmin) {
-			return moduleDao.findAll();
-		}
+	public List<Module> findAllModules(final Integer userId, final boolean isAdmin) throws Exception {
 
-		return moduleDao.findModulesForUser(userId);
+		return this.processInTransaction(new InTransactionAction() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public List<Module> doWork(EntityManager em) throws Exception {
+				if (isAdmin) {
+					return moduleDao.findAll(em);
+				}
+
+				return moduleDao.findModulesForUser(em, userId);
+			}
+		});
 	}
 
 	public GenericModelDto<Module> saveModule(GenericModelDto<Module> dto) {

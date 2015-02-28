@@ -2,12 +2,13 @@ package fr.thedestiny.global.dto;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import play.libs.Json;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.thedestiny.global.model.Model;
 
 /**
@@ -39,7 +40,7 @@ public class GenericModelDto<T> {
 	public GenericModelDto(JsonNode json, Class<? extends Model> modelClass) throws JsonParseException, JsonMappingException, IOException, ClassNotFoundException {
 
 		ObjectMapper mapper = new ObjectMapper();
-		model = (T) mapper.readValue(json, modelClass);
+		model = (T) mapper.readValue(json.toString(), modelClass);
 	}
 
 	/**

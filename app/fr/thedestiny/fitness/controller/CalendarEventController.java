@@ -2,7 +2,7 @@ package fr.thedestiny.fitness.controller;
 
 import java.util.List;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.db.jpa.Transactional;

@@ -141,7 +141,8 @@ public class TorrentDao extends AbstractDao<Torrent> {
 				"where type = :type and dat_stat >= date(current_date, '-" + unitCount + " " + unitString + "') " +
 				"order by dat_stat";
 
-		return JPA.em(persistenceContext).unwrap(Session.class)
+		return JPA.em(persistenceContext)
+				.unwrap(Session.class)
 				.createSQLQuery(sqlQuery)
 				.setParameter("type", type.name())
 				.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP)

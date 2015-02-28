@@ -2,7 +2,6 @@ package fr.thedestiny.home.controller;
 
 import java.util.List;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
@@ -10,6 +9,9 @@ import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.thedestiny.auth.dto.UserDto;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.service.UserService;
@@ -37,7 +39,7 @@ public class UtilisateurController extends Controller {
 
 		UserDto dto = null;
 		try {
-			dto = mapper.readValue(ctx().request().body().asJson(), UserDto.class);
+			dto = mapper.readValue(ctx().request().body().asJson().toString(), UserDto.class);
 
 			if (dto.getId() != null) {
 				throw new Exception("Cannot have Id.");
@@ -59,7 +61,7 @@ public class UtilisateurController extends Controller {
 
 		UserDto dto = null;
 		try {
-			dto = mapper.readValue(ctx().request().body().asJson(), UserDto.class);
+			dto = mapper.readValue(ctx().request().body().asJson().toString(), UserDto.class);
 
 			if (dto.getId() == null) {
 				throw new Exception("Cannot have empty id");
