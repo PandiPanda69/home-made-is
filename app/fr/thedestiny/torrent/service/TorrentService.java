@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionAction;
 import fr.thedestiny.global.util.DataUnit;
+import fr.thedestiny.global.util.DataUnitHelper;
 import fr.thedestiny.global.util.TimeUnit;
 import fr.thedestiny.torrent.dao.TorrentDao;
 import fr.thedestiny.torrent.dao.TorrentDao.TorrentStatus;
@@ -52,14 +53,14 @@ public class TorrentService extends AbstractService {
 
 			dto.setLastUpdateDate(current.getUnformattedLastActivityDate());
 
-			DataUnit uploadedBytes = new DataUnit(current.getTotalUploaded());
+			DataUnit uploadedBytes = DataUnitHelper.fit(current.getTotalUploaded());
 			dto.setUploadedAmount(uploadedBytes.getValue());
-			dto.setUploadedUnit(uploadedBytes.getUnit());
+			dto.setUploadedUnit(uploadedBytes.getUnit().getSymbol());
 
 			if (current.getUploadedOnLastMonth() != null) {
-				DataUnit delta = new DataUnit(current.getUploadedOnLastMonth());
+				DataUnit delta = DataUnitHelper.fit(current.getUploadedOnLastMonth());
 				dto.setDeltaAmount(delta.getValue());
-				dto.setDeltaUnit(delta.getUnit());
+				dto.setDeltaUnit(delta.getUnit().getSymbol());
 			}
 
 			if (current.getTorrent().getDownloadedBytes() != 0) {

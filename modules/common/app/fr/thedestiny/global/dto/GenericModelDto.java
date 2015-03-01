@@ -16,7 +16,7 @@ import fr.thedestiny.global.model.Model;
  * @author Sébastien
  * @param <T> Le type du modèle à mapper
  */
-public class GenericModelDto<T> {
+public class GenericModelDto<T> extends AbstractDto {
 
 	protected T model;
 
@@ -47,7 +47,8 @@ public class GenericModelDto<T> {
 	 * Map l'objet en noeud JSON
 	 * @return Un noeud JSON
 	 */
-	public JsonNode asJson() {
+	@Override
+	public JsonNode toJson() {
 		return Json.toJson(model);
 	}
 

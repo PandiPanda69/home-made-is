@@ -38,7 +38,7 @@ public class OperationTypeController extends Controller {
 			return ResultFactory.FAIL;
 		}
 
-		return ok(optype.asJson());
+		return ok(optype.toJson());
 	}
 
 	@Security
@@ -54,7 +54,7 @@ public class OperationTypeController extends Controller {
 			return ResultFactory.FAIL;
 		}
 
-		return ok(optype.asJson());
+		return ok(optype.toJson());
 	}
 
 	@Security

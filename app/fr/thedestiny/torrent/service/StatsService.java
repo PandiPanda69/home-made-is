@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.thedestiny.global.util.DataUnit;
+import fr.thedestiny.global.util.DataUnitHelper;
 import fr.thedestiny.global.util.TimeUnit;
 import fr.thedestiny.torrent.dao.TorrentDao;
 import fr.thedestiny.torrent.dao.TorrentDao.StatType;
@@ -63,9 +64,9 @@ public class StatsService {
 			dto.setDownloadedUnit("octets");
 		}
 		else {
-			DataUnit downloaded = new DataUnit(Long.valueOf(lastDownloadedStat.get("byteAmount").toString()));
+			DataUnit downloaded = DataUnitHelper.fit(Long.valueOf(lastDownloadedStat.get("byteAmount").toString()));
 			dto.setDownloadedAmount(downloaded.getValue());
-			dto.setDownloadedUnit(downloaded.getUnit());
+			dto.setDownloadedUnit(downloaded.getUnit().getSymbol());
 		}
 
 		if (lastUploadedStat == null || !currentDate.equals(lastUploadedStat.get("dat_stat").toString())) {
@@ -73,14 +74,14 @@ public class StatsService {
 			dto.setUploadedUnit("octets");
 		}
 		else {
-			DataUnit uploaded = new DataUnit(Long.valueOf(lastUploadedStat.get("byteAmount").toString()));
+			DataUnit uploaded = DataUnitHelper.fit(Long.valueOf(lastUploadedStat.get("byteAmount").toString()));
 			dto.setUploadedAmount(uploaded.getValue());
-			dto.setUploadedUnit(uploaded.getUnit());
+			dto.setUploadedUnit(uploaded.getUnit().getSymbol());
 		}
 
 		DataUnit freeSpace = directoryDao.getFreeSpaceInTargetDirectory();
 		dto.setSpaceLeftOnDeviceAmount(freeSpace.getValue());
-		dto.setSpaceLeftOnDeviceUnit(freeSpace.getUnit());
+		dto.setSpaceLeftOnDeviceUnit(freeSpace.getUnit().getSymbol());
 
 		return dto;
 	}

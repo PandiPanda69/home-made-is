@@ -1,105 +1,82 @@
 package fr.thedestiny.global.util;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import lombok.Getter;
 
-/**
- * Classe gérant les unités de volume, permettant ainsi la conversion automatique
- * de mesures.
- * @author Sébastien
- */
 public class DataUnit implements Comparable<DataUnit> {
 
-	public final static long B = 1;
-	public final static long KB = 1024;
-	public final static long MB = KB * KB;
-	public final static long GB = MB * KB;
-	public final static long TB = GB * KB;
+	public static enum Unit {
 
-	private final static Map<String, Long> units = new HashMap<String, Long>();
+		BYTES("octets", 1L),
+		KILOBYTES("ko", 1024L),
+		MEGABYTES("Mo", 1024L * 1024L),
+		GIGABYTES("Go", 1024L * 1024L * 1024L),
+		TERABYTES("To", 1024L * 1024L * 1024L * 1024L);
 
-	static {
-		units.put("octets", B);
-		units.put("Ko", KB);
-		units.put("Mo", MB);
-		units.put("Go", GB);
-		units.put("To", TB);
-	}
+		@Getter
+		private final String symbol;
+		@Getter
+		private final long value;
+
+		private Unit(final String symbol, final long value) {
+			this.symbol = symbol;
+			this.value = value;
+		}
+
+		public static Unit fromSymbol(final String symbol) {
+			Unit result = null;
+
+			for (Unit unit : Unit.values()) {
+				if (unit.getSymbol().equals(symbol)) {
+					result = unit;
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		public static Unit fromValue(final long value) {
+			Unit result = null;
+
+			for (Unit unit : Unit.values()) {
+				if (unit.getValue() == value) {
+					result = unit;
+					break;
+				}
+			}
+
+			return result;
+		}
+	};
 
 	@Getter
-	private Double value = null;
-	private Long unit = B;
+	private final double value;
+	@Getter
+	private final Unit unit;
 
-	/**
-	 * Constructeur
-	 * @param value Bytes
-	 */
-	public DataUnit(Long value) {
-		this.value = .0d;
-		this.unit = B;
-
-		for (long currentUnit : units.values()) {
-			if (currentUnit > this.unit && value >= currentUnit) {
-				this.value = (double) value / (double) currentUnit;
-				this.unit = currentUnit;
-			}
-		}
+	public DataUnit(final long value) {
+		this.value = value;
+		this.unit = Unit.BYTES;
 	}
 
-	/**
-	 * Constructeur
-	 * @param value
-	 * @param unit
-	 */
-	public DataUnit(Double value, Long unit) {
+	public DataUnit(final double value, final Unit unit) {
 		this.value = value;
 		this.unit = unit;
 	}
 
-	public DataUnit(Double value, String unit) {
-		this.value = value;
-		this.unit = units.get(unit);
-	}
-
-	private Double convertInByte(Double value, Long unit) {
-		return value * unit;
-	}
-
-	public String getUnit() {
-
-		Set<Entry<String, Long>> unitEntries = units.entrySet();
-		for (Entry<String, Long> current : unitEntries) {
-			if (this.unit.equals(current.getValue())) {
-				return current.getKey();
-			}
-		}
-
-		return "?";
-	}
-
-	public Double getValue(String unit) {
-		Double bytes = convertInByte(this.value, this.unit);
-
-		Long divider = units.get(unit);
-		if (divider == null) {
-			return null;
-		}
-
-		return bytes / divider;
+	public long getInBytes() {
+		return (long) (this.value * this.unit.getValue());
 	}
 
 	@Override
 	public String toString() {
-		return new DecimalFormat("# ##0,#").format(this.value) + " " + getUnit();
+		return DecimalFormat.getInstance().format(this.value) + " " + getUnit().getSymbol();
 	}
 
 	@Override
 	public int compareTo(DataUnit other) {
-		return (int) (convertInByte(this.value, this.unit) - convertInByte(other.value, other.unit));
+		return (int) (getInBytes() - other.getInBytes());
 	}
 }

@@ -49,6 +49,6 @@ public class MoisAnneeController extends Controller {
 			return ResultFactory.FAIL;
 		}
 
-		return ok(mois.asJson());
+		return ok(mois.toJson());
 	}
 }

@@ -12,7 +12,7 @@ public class AbstractService {
 		this.persistenceContext = "default";
 	}
 
-	protected AbstractService(String persistenceContext) {
+	protected AbstractService(final String persistenceContext) {
 		this.persistenceContext = persistenceContext;
 	}
 

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import fr.thedestiny.global.dto.AbstractDto;
 import fr.thedestiny.global.util.DataUnit;
+import fr.thedestiny.global.util.DataUnitHelper;
 import fr.thedestiny.torrent.model.Torrent;
 
 @Data
@@ -39,9 +40,9 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 		this.creationDate = torrent.getUnformattedCreationDate();
 		this.trackerError = torrent.getTrackerError();
 
-		DataUnit downloaded = new DataUnit(torrent.getDownloadedBytes());
+		DataUnit downloaded = DataUnitHelper.fit(torrent.getDownloadedBytes());
 		this.downloadedAmount = downloaded.getValue();
-		this.downloadedUnit = downloaded.getUnit();
+		this.downloadedUnit = downloaded.getUnit().getSymbol();
 	}
 
 	@Override
@@ -54,8 +55,8 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 			return 1;
 		}
 
-		DataUnit thisDelta = new DataUnit(this.deltaAmount, this.deltaUnit);
-		DataUnit otherDelta = new DataUnit(other.deltaAmount, other.deltaUnit);
+		DataUnit thisDelta = new DataUnit(this.deltaAmount, DataUnit.Unit.fromSymbol(this.deltaUnit));
+		DataUnit otherDelta = new DataUnit(other.deltaAmount, DataUnit.Unit.fromSymbol(other.deltaUnit));
 		return thisDelta.compareTo(otherDelta);
 	}
 
@@ -65,12 +66,12 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 			return null;
 		}
 
-		DataUnit downloaded = new DataUnit(this.downloadedAmount, this.downloadedUnit);
-		DataUnit delta = new DataUnit(this.deltaAmount, this.deltaUnit);
+		DataUnit downloaded = new DataUnit(this.downloadedAmount, DataUnit.Unit.fromSymbol(this.downloadedUnit));
+		DataUnit delta = new DataUnit(this.deltaAmount, DataUnit.Unit.fromSymbol(this.deltaUnit));
 
-		Double downloadedBytes = downloaded.getValue("octets");
-		Double deltaBytes = delta.getValue("octets");
+		double downloadedBytes = downloaded.getInBytes();
+		double deltaBytes = delta.getInBytes();
 
-		return deltaBytes / downloadedBytes * 100.0d;
+		return (deltaBytes / downloadedBytes) * 100.0d;
 	}
 }

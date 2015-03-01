@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import play.Play;
 import fr.thedestiny.global.util.DataUnit;
+import fr.thedestiny.global.util.DataUnitHelper;
 
 @Repository
 public class TorrentDirectoryDao {
@@ -22,7 +23,7 @@ public class TorrentDirectoryDao {
 		String torrentDirectory = getTargetDirectory();
 		File targetDirectory = new File(torrentDirectory);
 
-		return new DataUnit(targetDirectory.getFreeSpace());
+		return DataUnitHelper.fit(targetDirectory.getFreeSpace());
 	}
 
 	public String getTargetDirectory() {

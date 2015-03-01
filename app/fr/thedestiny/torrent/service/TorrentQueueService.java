@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import fr.thedestiny.bencod.io.BencodFileInputStream;
 import fr.thedestiny.bencod.parser.BencodParser;
 import fr.thedestiny.global.util.DataUnit;
+import fr.thedestiny.global.util.DataUnitHelper;
 import fr.thedestiny.torrent.dao.TorrentDirectoryDao;
 import fr.thedestiny.torrent.dto.TorrentQueueDto;
 
@@ -58,11 +59,11 @@ public class TorrentQueueService {
 
 				String name = info.get("name").toString();
 				String lastModification = sdf.format(new Date(current.lastModified()));
-				DataUnit ftSize = new DataUnit(size);
+				DataUnit ftSize = DataUnitHelper.fit(size);
 
 				bfis.close();
 
-				result.add(new TorrentQueueDto(name, ftSize.getValue(), ftSize.getUnit(), files.size(), lastModification, "NOT AVAIL."));
+				result.add(new TorrentQueueDto(name, ftSize.getValue(), ftSize.getUnit().getSymbol(), files.size(), lastModification, "NOT AVAIL."));
 			} catch (Exception ex) {
 				// TODO
 			}

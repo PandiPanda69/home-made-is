@@ -43,7 +43,7 @@ public class ModuleController extends Controller {
 			return ResultFactory.FAIL;
 		}
 
-		return ok(dto.asJson());
+		return ok(dto.toJson());
 	}
 
 	@Transactional
@@ -60,7 +60,7 @@ public class ModuleController extends Controller {
 			return ResultFactory.FAIL;
 		}
 
-		return ok(dto.asJson());
+		return ok(dto.toJson());
 	}
 
 	@Transactional
