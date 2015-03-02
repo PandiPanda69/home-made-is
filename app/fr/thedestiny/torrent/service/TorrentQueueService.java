@@ -3,6 +3,7 @@ package fr.thedestiny.torrent.service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,10 +13,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import play.Logger;
 import fr.thedestiny.bencod.io.BencodFileInputStream;
+import fr.thedestiny.bencod.parser.BencodFileFormatException;
 import fr.thedestiny.bencod.parser.BencodParser;
+import fr.thedestiny.global.helper.DataUnitHelper;
 import fr.thedestiny.global.util.DataUnit;
-import fr.thedestiny.global.util.DataUnitHelper;
 import fr.thedestiny.torrent.dao.TorrentDirectoryDao;
 import fr.thedestiny.torrent.dto.TorrentQueueDto;
 
@@ -24,6 +27,9 @@ public class TorrentQueueService {
 
 	@Autowired
 	private TorrentDirectoryDao directoryDao;
+
+	protected TorrentQueueService() {
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<TorrentQueueDto> findQueuedTorrents() throws FileNotFoundException {
@@ -44,8 +50,7 @@ public class TorrentQueueService {
 		List<TorrentQueueDto> result = new ArrayList<TorrentQueueDto>();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		for (File current : torrents) {
-			try {
-				BencodFileInputStream bfis = new BencodFileInputStream(current);
+			try (BencodFileInputStream bfis = new BencodFileInputStream(current)) {
 				BencodParser parser = new BencodParser(bfis);
 
 				Map<String, Object> torrentContent = (Map<String, Object>) parser.parse();
@@ -61,11 +66,12 @@ public class TorrentQueueService {
 				String lastModification = sdf.format(new Date(current.lastModified()));
 				DataUnit ftSize = DataUnitHelper.fit(size);
 
-				bfis.close();
-
 				result.add(new TorrentQueueDto(name, ftSize.getValue(), ftSize.getUnit().getSymbol(), files.size(), lastModification, "NOT AVAIL."));
-			} catch (Exception ex) {
-				// TODO
+			} catch (IOException ex) {
+				Logger.error("Cannot open file.", ex);
+			} catch (BencodFileFormatException ex) {
+				Logger.error("Error while parsing file.", ex);
+				result.add(new TorrentQueueDto("???", .0d, DataUnit.Unit.BYTES.getSymbol(), 0, "", "NOT AVAIL."));
 			}
 		}
 

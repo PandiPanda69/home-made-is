@@ -24,7 +24,8 @@ import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.models.MotifOperation;
 import fr.thedestiny.bank.models.Operation;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
+import fr.thedestiny.global.service.InTransactionProcedure;
 
 public class OperationService extends AbstractService {
 
@@ -69,7 +70,7 @@ public class OperationService extends AbstractService {
 
 	public OperationDto addOperation(final OperationDto dto, final Integer userId, final Integer accountId, final Integer moisId) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -129,7 +130,7 @@ public class OperationService extends AbstractService {
 
 	public OperationDto updateOperation(final OperationDto dto, final Integer userId, final Integer idAccount, final Integer idMois) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -189,11 +190,10 @@ public class OperationService extends AbstractService {
 
 	public void deleteOperation(final Integer userId, final Integer idAccount, final Integer idMois, final Integer id) throws Exception {
 
-		this.processInTransaction(new InTransactionAction() {
+		this.processInTransaction(new InTransactionProcedure() {
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public Object doWork(EntityManager em) throws Exception {
+			public void doWork(EntityManager em) throws Exception {
 
 				// Vérification que l'utilisateur possède bien le compte
 				Compte compte = compteDao.findById(em, idAccount);
@@ -223,8 +223,6 @@ public class OperationService extends AbstractService {
 				compte.setSolde(newSolde);
 
 				compteDao.save(em, compte);
-
-				return null;
 			}
 		});
 	}

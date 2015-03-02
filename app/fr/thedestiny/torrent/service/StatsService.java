@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.thedestiny.global.helper.DataUnitHelper;
 import fr.thedestiny.global.util.DataUnit;
-import fr.thedestiny.global.util.DataUnitHelper;
 import fr.thedestiny.global.util.TimeUnit;
 import fr.thedestiny.torrent.dao.TorrentDao;
 import fr.thedestiny.torrent.dao.TorrentDao.StatType;
@@ -28,9 +28,10 @@ public class StatsService {
 	@Autowired
 	private TorrentService torrentService;
 
-	private StatsService() {
+	protected StatsService() {
 	}
 
+	// TODO : Refacto !!
 	public HomeStatsDto getStatsForHomepage() {
 		HomeStatsDto dto = new HomeStatsDto();
 
@@ -61,7 +62,7 @@ public class StatsService {
 		String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		if (lastDownloadedStat == null || !currentDate.equals(lastDownloadedStat.get("dat_stat").toString())) {
 			dto.setDownloadedAmount(.0d);
-			dto.setDownloadedUnit("octets");
+			dto.setDownloadedUnit(DataUnit.Unit.BYTES.getSymbol());
 		}
 		else {
 			DataUnit downloaded = DataUnitHelper.fit(Long.valueOf(lastDownloadedStat.get("byteAmount").toString()));
@@ -71,7 +72,7 @@ public class StatsService {
 
 		if (lastUploadedStat == null || !currentDate.equals(lastUploadedStat.get("dat_stat").toString())) {
 			dto.setUploadedAmount(.0d);
-			dto.setUploadedUnit("octets");
+			dto.setUploadedUnit(DataUnit.Unit.BYTES.getSymbol());
 		}
 		else {
 			DataUnit uploaded = DataUnitHelper.fit(Long.valueOf(lastUploadedStat.get("byteAmount").toString()));

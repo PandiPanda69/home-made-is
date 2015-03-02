@@ -27,31 +27,30 @@ public class TorrentDao extends AbstractDao<Torrent> {
 		DOWNLOAD, UPLOAD
 	};
 
-	public TorrentDao() {
+	protected TorrentDao() {
 		super("torrent");
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Torrent> findAll(EntityManager em, TorrentStatus status) {
+	public List<Torrent> findAll(EntityManager em, final TorrentStatus status) {
 
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
 
 		if (status == TorrentStatus.ALL) {
-			return em.createQuery("from Torrent").getResultList();
+			return em.createQuery("from Torrent", Torrent.class).getResultList();
 		}
 		else if (status == TorrentStatus.EXPIRED) {
 			throw new UnsupportedOperationException("Status EXPIRED is not supported for this operation.");
 		}
 
-		return em.createQuery("from Torrent where status = :status")
+		return em.createQuery("from Torrent where status = :status", Torrent.class)
 				.setParameter("status", status.toString())
 				.getResultList();
 	}
 
-	public Torrent find(EntityManager em, Integer torrentId) {
-		return em.find(Torrent.class, torrentId);
+	public Torrent find(EntityManager em, final int torrentId) {
+		return findById(em, torrentId, Torrent.class);
 	}
 
 	public Long countRegisteredTorrent(EntityManager em) {

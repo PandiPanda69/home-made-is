@@ -16,7 +16,7 @@ public class AbstractService {
 		this.persistenceContext = persistenceContext;
 	}
 
-	protected <T> T processInTransaction(InTransactionAction action) throws Exception {
+	protected <T> T processInTransaction(final InTransactionFunction action) {
 		T result = null;
 
 		EntityManager em = JPA.em(persistenceContext);
@@ -26,11 +26,11 @@ public class AbstractService {
 			JPA.bindForCurrentThread(em);
 			result = action.doWork(em);
 			em.getTransaction().commit();
-		} catch (Exception ex) {
+		} catch (Throwable t) {
 			if (em.getTransaction().isActive()) {
 				em.getTransaction().rollback();
 			}
-			throw ex;
+			throw new RuntimeException(t);
 		} finally {
 			JPA.bindForCurrentThread(null);
 			if (em != null) {
@@ -39,5 +39,27 @@ public class AbstractService {
 		}
 
 		return result;
+	}
+
+	protected void processInTransaction(final InTransactionProcedure action) {
+
+		EntityManager em = JPA.em(persistenceContext);
+
+		em.getTransaction().begin();
+		try {
+			JPA.bindForCurrentThread(em);
+			action.doWork(em);
+			em.getTransaction().commit();
+		} catch (Throwable t) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			throw new RuntimeException(t);
+		} finally {
+			JPA.bindForCurrentThread(null);
+			if (em != null) {
+				em.close();
+			}
+		}
 	}
 }

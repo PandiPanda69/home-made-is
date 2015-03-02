@@ -11,7 +11,7 @@ import fr.thedestiny.auth.dao.ModuleDao;
 import fr.thedestiny.auth.model.Module;
 import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
 
 @Service
 public class ModuleService extends AbstractService {
@@ -21,11 +21,11 @@ public class ModuleService extends AbstractService {
 
 	public List<Module> findAllModules(final Integer userId, final boolean isAdmin) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public List<Module> doWork(EntityManager em) throws Exception {
+			public List<Module> doWork(EntityManager em) {
 				if (isAdmin) {
 					return moduleDao.findAll(em);
 				}

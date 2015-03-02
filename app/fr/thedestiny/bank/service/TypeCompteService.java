@@ -13,7 +13,8 @@ import fr.thedestiny.bank.models.TypeCompte;
 import fr.thedestiny.bank.service.exception.TypeCompteInUseException;
 import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
+import fr.thedestiny.global.service.InTransactionProcedure;
 
 public class TypeCompteService extends AbstractService {
 
@@ -45,7 +46,7 @@ public class TypeCompteService extends AbstractService {
 
 	public TypeCompteDto saveTypeCompte(final GenericModelDto<TypeCompte> dto) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -66,11 +67,11 @@ public class TypeCompteService extends AbstractService {
 
 	public void deleteTypeCompte(final Integer typeId) throws Exception {
 
-		this.processInTransaction(new InTransactionAction() {
+		this.processInTransaction(new InTransactionProcedure() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public TypeCompteDto doWork(EntityManager em) throws Exception {
+			public void doWork(EntityManager em) throws TypeCompteInUseException, Exception {
 
 				// Check type isn't in use.
 				boolean isUsed = typeDao.isTypeInUse(typeId);
@@ -79,8 +80,6 @@ public class TypeCompteService extends AbstractService {
 				}
 
 				typeDao.delete(em, typeId);
-
-				return null;
 			}
 		});
 	}

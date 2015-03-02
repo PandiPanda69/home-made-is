@@ -14,7 +14,7 @@ import fr.thedestiny.bank.models.Compte;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
 
 public class MoisAnneeService extends AbstractService {
 
@@ -46,11 +46,11 @@ public class MoisAnneeService extends AbstractService {
 
 	public GenericModelDto<MoisAnnee> addMonth(final GenericModelDto<MoisAnnee> dto, final Integer accountId, final Integer userId) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public GenericModelDto<MoisAnnee> doWork(EntityManager em) throws Exception {
+			public GenericModelDto<MoisAnnee> doWork(EntityManager em) {
 
 				MoisAnnee mois = dto.asObject();
 

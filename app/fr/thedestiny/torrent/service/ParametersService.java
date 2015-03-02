@@ -6,8 +6,7 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.thedestiny.global.util.DataUnit;
-import fr.thedestiny.global.util.DataUnitHelper;
+import fr.thedestiny.global.helper.DataUnitHelper;
 import fr.thedestiny.torrent.dao.TorrentDirectoryDao;
 
 @Service
@@ -16,11 +15,11 @@ public class ParametersService {
 	@Autowired
 	private TorrentDirectoryDao directoryDao;
 
-	public ParametersService() {
+	protected ParametersService() {
 	}
 
 	public Map<String, String> getParameters() {
-		Map<String, String> parameters = new TreeMap<String, String>();
+		Map<String, String> parameters = new TreeMap<>();
 
 		parameters.put("target", directoryDao.getTargetDirectory());
 		parameters.put("repository", directoryDao.getRepositoryDirectory());
@@ -28,12 +27,10 @@ public class ParametersService {
 		String minSpace = null;
 		Long minimumSpaceLimit = directoryDao.getMinimumSpaceLimit();
 		if (minimumSpaceLimit != null) {
-			DataUnit minimumSpaceUnit = DataUnitHelper.fit(minimumSpaceLimit);
-			minSpace = minimumSpaceUnit.getValue() + " " + minimumSpaceUnit.getUnit();
+			minSpace = DataUnitHelper.fit(minimumSpaceLimit).toString();
 		}
 		else {
-			// TODO : Internationalisation
-			minSpace = "Non défini";
+			minSpace = "N/A";
 		}
 
 		parameters.put("minSpace", minSpace);

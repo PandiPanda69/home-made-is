@@ -10,25 +10,11 @@ import fr.thedestiny.auth.security.SecurityHelper;
 @org.springframework.stereotype.Controller
 public class TorrentHomeController extends Controller {
 
-	public static final String KEY_CACHED_INDEX = "cachedRPiTorrentIndex";
-
 	@Transactional(readOnly = true)
 	@Security
 	public Result index() {
 
 		UserDto user = SecurityHelper.getLoggedUser();
-		if (user == null) {
-			//			return AuthenticationController.index();
-		}
-
-		//		Result cachedIndex = (Result) Cache.get(KEY_CACHED_INDEX);
-		//		if (cachedIndex == null) {
-		//			cachedIndex = ok(fr.thedestiny.bank.views.html.index.render(user));
-		//			Cache.set(KEY_CACHED_INDEX, cachedIndex);
-		//		}
-		//
-		//		return cachedIndex;
-
 		return ok(fr.thedestiny.torrent.view.html.index.render(user));
 	}
 }

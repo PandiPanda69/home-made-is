@@ -5,8 +5,8 @@ import java.io.File;
 import org.springframework.stereotype.Repository;
 
 import play.Play;
+import fr.thedestiny.global.helper.DataUnitHelper;
 import fr.thedestiny.global.util.DataUnit;
-import fr.thedestiny.global.util.DataUnitHelper;
 
 @Repository
 public class TorrentDirectoryDao {
@@ -15,7 +15,7 @@ public class TorrentDirectoryDao {
 	private static final String PROPERTY_REPOSITORY = "torrent.repository";
 	private static final String PROPERTY_MIN_SPACE = "torrent.min_space";
 
-	public TorrentDirectoryDao() {
+	protected TorrentDirectoryDao() {
 	}
 
 	public DataUnit getFreeSpaceInTargetDirectory() {

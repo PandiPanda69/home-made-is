@@ -76,7 +76,15 @@ public class DataUnit implements Comparable<DataUnit> {
 	}
 
 	@Override
-	public int compareTo(DataUnit other) {
-		return (int) (getInBytes() - other.getInBytes());
+	public int compareTo(final DataUnit other) {
+		long diff = (getInBytes() - other.getInBytes());
+
+		if (diff > 0) {
+			return 1;
+		} else if (diff < 0) {
+			return -1;
+		}
+
+		return 0;
 	}
 }

@@ -10,7 +10,8 @@ import fr.thedestiny.bank.dao.OperationTypeDao;
 import fr.thedestiny.bank.models.OperationType;
 import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
+import fr.thedestiny.global.service.InTransactionProcedure;
 
 public class OperationTypeService extends AbstractService {
 
@@ -33,7 +34,7 @@ public class OperationTypeService extends AbstractService {
 
 	public GenericModelDto<OperationType> addOperationType(final GenericModelDto<OperationType> dto) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -61,7 +62,7 @@ public class OperationTypeService extends AbstractService {
 
 	public GenericModelDto<OperationType> updateOperationType(final GenericModelDto<OperationType> dto) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -81,14 +82,11 @@ public class OperationTypeService extends AbstractService {
 
 	public void deleteOperationType(final Integer id) throws Exception {
 
-		this.processInTransaction(new InTransactionAction() {
+		this.processInTransaction(new InTransactionProcedure() {
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public Object doWork(EntityManager em) throws Exception {
-
+			public void doWork(EntityManager em) throws Exception {
 				operationTypeDao.delete(em, id);
-				return null;
 			}
 		});
 	}

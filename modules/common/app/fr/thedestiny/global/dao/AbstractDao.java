@@ -8,7 +8,7 @@ public abstract class AbstractDao<T extends Object> {
 
 	protected String persistenceContext = null;
 
-	public AbstractDao(final String persistenceContext) {
+	protected AbstractDao(final String persistenceContext) {
 		this.persistenceContext = persistenceContext;
 	}
 

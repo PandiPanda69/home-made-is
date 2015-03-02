@@ -1,5 +1,6 @@
 package fr.thedestiny.torrent.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -44,23 +45,33 @@ public class TorrentsController extends Controller {
 
 	@Transactional(readOnly = true)
 	@Security
-	public Result filter() throws Exception {
+	public Result filter() {
 
-		TorrentFilterDto dto = objectMapper.readValue(ctx().request().body().asJson().toString(), TorrentFilterDto.class);
-		List<TorrentDto> torrents = torrentService.findAllTorrentsMatchingFilter(dto);
+		try {
+			TorrentFilterDto dto = objectMapper.readValue(ctx().request().body().asJson().toString(), TorrentFilterDto.class);
+			List<TorrentDto> torrents = torrentService.findAllTorrentsMatchingFilter(dto);
 
-		return ok(Json.toJson(torrents));
+			return ok(Json.toJson(torrents));
+		} catch (IOException ex) {
+			Logger.error("Error while unserializing JSON", ex);
+			return ResultFactory.FAIL;
+		}
 	}
 
 	@Transactional
 	@Security
 	@SuppressWarnings("unchecked")
-	public Result update(Integer torrentId) throws Exception {
+	public Result update(Integer torrentId) {
 
-		Map<String, Object> data = objectMapper.readValue(ctx().request().body().asJson().toString(), Map.class);
-		Integer grade = (Integer) data.get("grade");
+		try {
+			Map<String, Object> data = objectMapper.readValue(ctx().request().body().asJson().toString(), Map.class);
+			Integer grade = (Integer) data.get("grade");
 
-		torrentService.updateTorrentGrade(torrentId, grade);
+			torrentService.updateTorrentGrade(torrentId, grade);
+		} catch (IOException ex) {
+			Logger.error("Error while unserializing JSON", ex);
+			return ResultFactory.FAIL;
+		}
 
 		return ResultFactory.OK;
 	}

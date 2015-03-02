@@ -12,7 +12,8 @@ import fr.thedestiny.bank.dto.MotifOperationDto;
 import fr.thedestiny.bank.models.MotifOperation;
 import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
+import fr.thedestiny.global.service.InTransactionProcedure;
 
 public class MotifOperationService extends AbstractService {
 
@@ -41,20 +42,18 @@ public class MotifOperationService extends AbstractService {
 
 	public void deleteMotif(final Integer userId, final Integer motifId) throws Exception {
 
-		this.processInTransaction(new InTransactionAction() {
+		this.processInTransaction(new InTransactionProcedure() {
 
 			@Override
-			public <T> T doWork(EntityManager em) throws Exception {
-
+			public void doWork(EntityManager em) throws Exception {
 				motifDao.delete(em, userId, motifId);
-				return null;
 			}
 		});
 	}
 
 	public MotifOperationDto addMotif(final GenericModelDto<MotifOperation> dto, final Integer userId) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override

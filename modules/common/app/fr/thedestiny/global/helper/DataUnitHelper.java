@@ -1,7 +1,8 @@
-package fr.thedestiny.global.util;
+package fr.thedestiny.global.helper;
 
 import java.math.BigDecimal;
 
+import fr.thedestiny.global.util.DataUnit;
 import fr.thedestiny.global.util.DataUnit.Unit;
 
 /**

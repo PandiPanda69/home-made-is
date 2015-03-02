@@ -16,6 +16,7 @@ import fr.thedestiny.global.model.Model;
  * @author Sébastien
  * @param <T> Le type du modèle à mapper
  */
+@Deprecated
 public class GenericModelDto<T> extends AbstractDto {
 
 	protected T model;

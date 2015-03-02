@@ -16,7 +16,7 @@ import fr.thedestiny.fitness.dto.CalendarEventDto;
 import fr.thedestiny.fitness.model.CalendarEvent;
 import fr.thedestiny.fitness.model.Weight;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
 
 @Service
 public class CalendarEventService extends AbstractService {
@@ -44,11 +44,11 @@ public class CalendarEventService extends AbstractService {
 
 	public CalendarEventDto saveCalendarEvent(final CalendarEventDto dto, final Integer userId) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public CalendarEventDto doWork(EntityManager em) throws Exception {
+			public CalendarEventDto doWork(EntityManager em) {
 
 				// Don't add empty event.
 				if (dto.getWeight() == null) {
@@ -73,7 +73,7 @@ public class CalendarEventService extends AbstractService {
 
 	public CalendarEventDto updateCalendarEvent(final CalendarEventDto dto, final Integer userId) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import fr.thedestiny.global.helper.DataUnitHelper;
 import fr.thedestiny.global.util.DataUnit.Unit;
 
 public class DataUnitTest {

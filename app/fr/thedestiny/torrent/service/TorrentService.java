@@ -10,10 +10,9 @@ import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.thedestiny.global.helper.DataUnitHelper;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
-import fr.thedestiny.global.util.DataUnit;
-import fr.thedestiny.global.util.DataUnitHelper;
+import fr.thedestiny.global.service.InTransactionProcedure;
 import fr.thedestiny.global.util.TimeUnit;
 import fr.thedestiny.torrent.dao.TorrentDao;
 import fr.thedestiny.torrent.dao.TorrentDao.TorrentStatus;
@@ -28,54 +27,34 @@ public class TorrentService extends AbstractService {
 	@Autowired
 	private TorrentDao torrentDao;
 
-	private TorrentService() {
+	protected TorrentService() {
 		super("torrent");
 	}
 
-	public List<TorrentDto> findAllTorrentsMatchingFilter(TorrentFilterDto filter) {
+	public List<TorrentDto> findAllTorrentsMatchingFilter(final TorrentFilterDto filter) {
 
 		TorrentStatus statusFilter = TorrentStatus.valueOf(filter.getStatus());
 		TimeUnit unitFilter = TimeUnit.valueOf(filter.getTimeUnit());
 
-		boolean filterExpiredOnly = (statusFilter == TorrentStatus.EXPIRED);
-
-		List<TorrentDto> torrents = new ArrayList<TorrentDto>();
-
 		List<TorrentStat> stats = torrentDao.getLastTorrentActivityData(null, filter.getTimeValue(), unitFilter, statusFilter);
 
-		long expirationLimitTime = 0;
+		long expirationLimitTime = 0L;
+		boolean filterExpiredOnly = TorrentStatus.EXPIRED.equals(statusFilter);
+
 		if (filterExpiredOnly) {
 			expirationLimitTime = getTorrentExpirationTimestamp();
 		}
 
+		List<TorrentDto> torrents = new ArrayList<>();
 		for (TorrentStat current : stats) {
-			TorrentDto dto = new TorrentDto(current.getTorrent());
-
-			dto.setLastUpdateDate(current.getUnformattedLastActivityDate());
-
-			DataUnit uploadedBytes = DataUnitHelper.fit(current.getTotalUploaded());
-			dto.setUploadedAmount(uploadedBytes.getValue());
-			dto.setUploadedUnit(uploadedBytes.getUnit().getSymbol());
-
-			if (current.getUploadedOnLastMonth() != null) {
-				DataUnit delta = DataUnitHelper.fit(current.getUploadedOnLastMonth());
-				dto.setDeltaAmount(delta.getValue());
-				dto.setDeltaUnit(delta.getUnit().getSymbol());
-			}
-
-			if (current.getTorrent().getDownloadedBytes() != 0) {
-				double ratio = (double) current.getTotalUploaded() / (double) current.getTorrent().getDownloadedBytes();
-				dto.setRatio(ratio);
-			}
-
 			// Gather expired torrents
 			if (filterExpiredOnly) {
 				if (isTorrentInactive(current.getTorrent(), expirationLimitTime)) {
-					torrents.add(dto);
+					torrents.add(buildTorrentDto(current));
 				}
 			}
 			else {
-				torrents.add(dto);
+				torrents.add(buildTorrentDto(current));
 			}
 		}
 
@@ -84,31 +63,28 @@ public class TorrentService extends AbstractService {
 		return torrents;
 	}
 
-	public void deleteTorrent(final Integer torrentId) throws Throwable {
-		this.processInTransaction(new InTransactionAction() {
+	public void deleteTorrent(final Integer torrentId) {
+		this.processInTransaction(new InTransactionProcedure() {
 
 			@Override
-			public <T> T doWork(EntityManager em) throws Exception {
+			public void doWork(EntityManager em) throws Exception {
 				torrentDao.logicalDelete(em, torrentId);
-				return null;
 			}
 		});
 	}
 
-	public void updateTorrentGrade(final Integer torrentId, final Integer grade) throws Exception {
-		this.processInTransaction(new InTransactionAction() {
+	public void updateTorrentGrade(final Integer torrentId, final Integer grade) {
+		this.processInTransaction(new InTransactionProcedure() {
 
 			@Override
-			public <T> T doWork(EntityManager em) throws Exception {
+			public void doWork(EntityManager em) throws Exception {
 				Torrent torrent = torrentDao.find(em, torrentId);
 				torrent.setGrade(grade);
-
-				return null;
 			}
 		});
 	}
 
-	public int countInactiveTorrents(int timeValue, TimeUnit timeUnit) {
+	public int countInactiveTorrents(final int timeValue, final TimeUnit timeUnit) {
 		int result = 0;
 		List<TorrentStat> rawTorrents = torrentDao.getLastTorrentActivityData(null, timeValue, timeUnit, TorrentStatus.EXPIRED);
 
@@ -123,17 +99,35 @@ public class TorrentService extends AbstractService {
 		return result;
 	}
 
-	public boolean isTorrentInactive(Torrent torrent, long expirationLimitTime) {
+	public boolean isTorrentInactive(final Torrent torrent, final long expirationLimitTime) {
 		long torrentCreationDate = torrent.getCreationDate().getTimeInMillis();
 		String trackerError = torrent.getTrackerError();
 
-		return ((expirationLimitTime - torrentCreationDate) > 0) || (trackerError != null && trackerError.length() > 0);
+		return ((expirationLimitTime - torrentCreationDate) > 0) || (trackerError != null && !trackerError.isEmpty());
 	}
 
-	private long getTorrentExpirationTimestamp() {
+	protected long getTorrentExpirationTimestamp() {
 		Calendar expirationLimitCalendar = Calendar.getInstance();
 		expirationLimitCalendar.add(Calendar.MONTH, -1);
 
 		return expirationLimitCalendar.getTimeInMillis();
+	}
+
+	protected TorrentDto buildTorrentDto(final TorrentStat torrentStat) {
+		TorrentDto dto = new TorrentDto(torrentStat.getTorrent());
+
+		dto.setLastUpdateDate(torrentStat.getUnformattedLastActivityDate());
+		dto.setUploadedData(DataUnitHelper.fit(torrentStat.getTotalUploaded()));
+
+		if (torrentStat.getUploadedOnLastMonth() != null) {
+			dto.setDeltaData(DataUnitHelper.fit(torrentStat.getUploadedOnLastMonth()));
+		}
+
+		if (torrentStat.getTorrent().getDownloadedBytes() != 0) {
+			double ratio = (double) torrentStat.getTotalUploaded() / (double) torrentStat.getTorrent().getDownloadedBytes();
+			dto.setRatio(ratio);
+		}
+
+		return dto;
 	}
 }

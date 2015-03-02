@@ -15,7 +15,8 @@ import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.models.Operation;
 import fr.thedestiny.bank.models.Solde;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
+import fr.thedestiny.global.service.InTransactionProcedure;
 
 public class SoldeService extends AbstractService {
 
@@ -40,11 +41,11 @@ public class SoldeService extends AbstractService {
 
 	public SoldeDto getBalanceAtBeginningOfMonth(final Integer userId, final Integer idCompte, final Integer idMois) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public SoldeDto doWork(EntityManager em) throws Exception {
+			public SoldeDto doWork(EntityManager em) {
 
 				// Vérification que le compte appartient à l'utilisateur
 				Compte compte = compteDao.findById(em, idCompte);
@@ -120,11 +121,11 @@ public class SoldeService extends AbstractService {
 
 	public void updateSolde(final Integer userId, final Integer accountId, final Integer monthId) throws Exception {
 
-		this.processInTransaction(new InTransactionAction() {
+		this.processInTransaction(new InTransactionProcedure() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object doWork(EntityManager em) throws Exception {
+			public void doWork(EntityManager em) {
 
 				Compte compte = compteDao.findById(em, accountId);
 				if (compte == null || compte.getOwner().equals(userId) == false) {
@@ -135,8 +136,6 @@ public class SoldeService extends AbstractService {
 
 				Solde solde = getSoldeForMonth(em, compte, month);
 				updateSolde(em, solde);
-
-				return null;
 			}
 		});
 	}

@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import fr.thedestiny.global.dto.AbstractDto;
+import fr.thedestiny.global.helper.DataUnitHelper;
 import fr.thedestiny.global.util.DataUnit;
-import fr.thedestiny.global.util.DataUnitHelper;
 import fr.thedestiny.torrent.model.Torrent;
 
 @Data
@@ -40,13 +40,11 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 		this.creationDate = torrent.getUnformattedCreationDate();
 		this.trackerError = torrent.getTrackerError();
 
-		DataUnit downloaded = DataUnitHelper.fit(torrent.getDownloadedBytes());
-		this.downloadedAmount = downloaded.getValue();
-		this.downloadedUnit = downloaded.getUnit().getSymbol();
+		setDownloadedData(DataUnitHelper.fit(torrent.getDownloadedBytes()));
 	}
 
 	@Override
-	public int compareTo(TorrentDto other) {
+	public int compareTo(final TorrentDto other) {
 
 		if (this.deltaAmount == null) {
 			return -1;
@@ -73,5 +71,20 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 		double deltaBytes = delta.getInBytes();
 
 		return (deltaBytes / downloadedBytes) * 100.0d;
+	}
+
+	public void setUploadedData(final DataUnit unit) {
+		this.uploadedAmount = unit.getValue();
+		this.uploadedUnit = unit.getUnit().getSymbol();
+	}
+
+	public void setDownloadedData(final DataUnit unit) {
+		this.downloadedAmount = unit.getValue();
+		this.downloadedUnit = unit.getUnit().getSymbol();
+	}
+
+	public void setDeltaData(final DataUnit unit) {
+		this.deltaAmount = unit.getValue();
+		this.deltaUnit = unit.getUnit().getSymbol();
 	}
 }

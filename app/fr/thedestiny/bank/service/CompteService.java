@@ -17,7 +17,7 @@ import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.models.Solde;
 import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
-import fr.thedestiny.global.service.InTransactionAction;
+import fr.thedestiny.global.service.InTransactionFunction;
 
 public class CompteService extends AbstractService {
 
@@ -49,11 +49,11 @@ public class CompteService extends AbstractService {
 
 	public CompteDto saveCompte(final GenericModelDto<Compte> dto, final Integer currentUser) throws Exception {
 
-		return this.processInTransaction(new InTransactionAction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public CompteDto doWork(EntityManager em) throws Exception {
+			public CompteDto doWork(EntityManager em) {
 				Compte c = dto.asObject();
 
 				if (c == null) {
@@ -79,7 +79,7 @@ public class CompteService extends AbstractService {
 
 	public void deleteCompte(final Integer id) throws Exception {
 
-		this.processInTransaction(new InTransactionAction() {
+		this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
