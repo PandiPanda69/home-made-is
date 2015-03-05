@@ -20,30 +20,32 @@ public class CalendarEventDao extends AbstractDao<CalendarEvent> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<CalendarEvent> findAll(Integer userId) {
+	public List<CalendarEvent> findAll(final int userId) {
 
-		return JPA.em(this.persistenceContext).createQuery("from CalendarEvent where userId = :userId order by date")
-				.setParameter("userId", userId)
+		return JPA.em(this.persistenceContext)
+				.createQuery("from CalendarEvent where userId = ? order by date")
+				.setParameter(1, userId)
 				.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<CalendarEvent> findForMonth(Integer userId, Integer month, Integer year) {
+	public List<CalendarEvent> findForMonth(final int userId, final int month, final int year) {
 
 		Calendar min = new GregorianCalendar(year, month, 1);
 		Calendar max = new GregorianCalendar(year, month + 1, 0);
 
 		return JPA.em(this.persistenceContext)
-				.createQuery("FROM CalendarEvent WHERE  userId = :userId AND date BETWEEN :min AND :max ORDER BY date")
+				.createQuery("FROM CalendarEvent WHERE  userId = :userId AND date BETWEEN :min AND :max ORDER BY date", CalendarEvent.class)
 				.setParameter("userId", userId)
 				.setParameter("min", min.getTime())
 				.setParameter("max", max.getTime())
 				.getResultList();
 	}
 
-	public void deleteCalendarEvent(EntityManager em, Integer id) {
-		em.createQuery("DELETE FROM CalendarEvent WHERE id = ?")
+	public boolean deleteCalendarEvent(EntityManager em, final int id) {
+		int result = em.createQuery("DELETE FROM CalendarEvent WHERE id = ?")
 				.setParameter(1, id)
 				.executeUpdate();
+
+		return (result == 1);
 	}
 }

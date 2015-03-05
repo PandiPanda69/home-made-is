@@ -1,5 +1,6 @@
 package fr.thedestiny.home.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,15 +9,20 @@ import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.thedestiny.auth.model.Module;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.auth.service.ModuleService;
-import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
 @org.springframework.stereotype.Controller
 public class ModuleController extends Controller {
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private ModuleService moduleService;
@@ -33,41 +39,39 @@ public class ModuleController extends Controller {
 	@Security(restrictedAccess = true)
 	public Result add() {
 
-		GenericModelDto<Module> dto = null;
+		Module module = null;
 		try {
-			dto = new GenericModelDto<Module>(ctx().request().body().asJson(), Module.class);
-
-			dto = moduleService.saveModule(dto);
-
-		} catch (Exception ex) {
+			module = objectMapper.readValue(ctx().request().body().asJson().toString(), Module.class);
+			module = moduleService.saveModule(module);
+		} catch (IOException ex) {
 			return ResultFactory.FAIL;
 		}
 
-		return ok(dto.toJson());
+		return ok(Json.toJson(module));
 	}
 
 	@Transactional
 	@Security(restrictedAccess = true)
-	public Result edit(Integer id) {
+	public Result edit(final Integer id) {
 
-		GenericModelDto<Module> dto = null;
+		Module module = null;
 		try {
-			dto = new GenericModelDto<Module>(ctx().request().body().asJson(), Module.class);
-
-			dto = moduleService.saveModule(dto);
-
-		} catch (Exception ex) {
+			module = objectMapper.readValue(ctx().request().body().asJson().toString(), Module.class);
+			module = moduleService.saveModule(module);
+		} catch (IOException ex) {
 			return ResultFactory.FAIL;
 		}
 
-		return ok(dto.toJson());
+		return ok(Json.toJson(module));
 	}
 
 	@Transactional
 	@Security(restrictedAccess = true)
-	public Result delete(Integer id) {
+	public Result delete(final Integer id) {
 
-		moduleService.deleteModule(id);
+		if (!moduleService.deleteModule(id)) {
+			return ResultFactory.FAIL;
+		}
 		return ResultFactory.OK;
 	}
 }

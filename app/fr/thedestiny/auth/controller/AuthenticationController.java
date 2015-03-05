@@ -1,13 +1,15 @@
 package fr.thedestiny.auth.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import fr.thedestiny.Constants;
 import fr.thedestiny.auth.model.Utilisateur;
 import fr.thedestiny.auth.security.SecurityHelper;

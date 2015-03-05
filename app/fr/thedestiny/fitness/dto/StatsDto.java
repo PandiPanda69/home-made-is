@@ -19,15 +19,15 @@ public class StatsDto extends AbstractDto {
 		private Long timestamp;
 		private Double val;
 
-		public StatsElement(Long timestamp, Double val) {
+		public StatsElement(final long timestamp, final double val) {
 			this.timestamp = timestamp;
 			this.val = val;
 		}
 	}
 
-	private List<StatsElement> elements = new ArrayList<StatsElement>();
+	private List<StatsElement> elements = new ArrayList<>();
 
-	public void addStat(Long timestamp, Double val) {
+	public void addStat(final long timestamp, final double val) {
 		elements.add(new StatsElement(timestamp, val));
 	}
 

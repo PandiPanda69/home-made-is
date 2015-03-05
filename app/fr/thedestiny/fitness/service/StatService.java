@@ -20,7 +20,7 @@ public class StatService extends AbstractService {
 		super("fitness");
 	}
 
-	public StatsDto computeWeightStat(Integer userId) {
+	public StatsDto computeWeightStat(final int userId) {
 
 		List<CalendarEvent> events = calendarDao.findAll(userId);
 		StatsDto dto = new StatsDto();

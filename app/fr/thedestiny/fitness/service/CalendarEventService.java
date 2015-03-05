@@ -31,18 +31,18 @@ public class CalendarEventService extends AbstractService {
 		super("fitness");
 	}
 
-	public List<CalendarEventDto> findAllCalendarEventsForUser(Integer userId) {
+	public List<CalendarEventDto> findAllCalendarEventsForUser(final int userId) {
 		List<CalendarEvent> events = calendarDao.findAll(userId);
 		return convert(events);
 	}
 
-	public List<CalendarEventDto> findCalendarEventsForUserForMonth(Integer userId, Integer month, Integer year) {
+	public List<CalendarEventDto> findCalendarEventsForUserForMonth(final int userId, final int month, final int year) {
 
 		List<CalendarEvent> events = calendarDao.findForMonth(userId, month, year);
 		return convert(events);
 	}
 
-	public CalendarEventDto saveCalendarEvent(final CalendarEventDto dto, final Integer userId) throws Exception {
+	public CalendarEventDto saveCalendarEvent(final CalendarEventDto dto, final int userId) throws Exception {
 
 		return this.processInTransaction(new InTransactionFunction() {
 
@@ -71,7 +71,7 @@ public class CalendarEventService extends AbstractService {
 		});
 	}
 
-	public CalendarEventDto updateCalendarEvent(final CalendarEventDto dto, final Integer userId) throws Exception {
+	public CalendarEventDto updateCalendarEvent(final CalendarEventDto dto, final int userId) throws Exception {
 
 		return this.processInTransaction(new InTransactionFunction() {
 
@@ -101,9 +101,9 @@ public class CalendarEventService extends AbstractService {
 		});
 	}
 
-	private List<CalendarEventDto> convert(List<CalendarEvent> events) {
+	private List<CalendarEventDto> convert(final List<CalendarEvent> events) {
 
-		List<CalendarEventDto> dto = new ArrayList<CalendarEventDto>(events.size());
+		List<CalendarEventDto> dto = new ArrayList<>(events.size());
 		for (CalendarEvent current : events) {
 			dto.add(new CalendarEventDto(current));
 		}

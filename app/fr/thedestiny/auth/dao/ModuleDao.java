@@ -12,17 +12,17 @@ import fr.thedestiny.auth.model.Module;
 @Repository
 public class ModuleDao {
 
-	@SuppressWarnings("unchecked")
 	public List<Module> findAll(EntityManager em) {
-		return em.createQuery("from Module").getResultList();
+		return em.createQuery("from Module", Module.class).getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Module> findModulesForUser(EntityManager em, final Integer userId) {
-		return em.createQuery("SELECT u.privileges FROM Utilisateur u  WHERE u.id = :userId").setParameter("userId", userId).getResultList();
+	public List<Module> findModulesForUser(EntityManager em, final int userId) {
+		return em.createQuery("SELECT u.privileges FROM Utilisateur u  WHERE u.id = ?", Module.class)
+				.setParameter(1, userId)
+				.getResultList();
 	}
 
-	public Module findModuleById(Integer id) {
+	public Module findModuleById(final int id) {
 		return JPA.em().find(Module.class, id);
 	}
 
@@ -30,7 +30,11 @@ public class ModuleDao {
 		return JPA.em().merge(module);
 	}
 
-	public void delete(Integer id) {
-		JPA.em().createQuery("DELETE FROM Module WHERE id = :moduleId").setParameter("moduleId", id).executeUpdate();
+	public boolean delete(final int id) {
+		int result = JPA.em().createQuery("DELETE FROM Module WHERE id = ?")
+				.setParameter(1, id)
+				.executeUpdate();
+
+		return (result == 1);
 	}
 }

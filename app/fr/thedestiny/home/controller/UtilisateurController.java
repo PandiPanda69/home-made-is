@@ -1,5 +1,6 @@
 package fr.thedestiny.home.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ public class UtilisateurController extends Controller {
 	@Autowired
 	private UserService userService;
 
-	private static ObjectMapper mapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Transactional(readOnly = true)
 	@Security(restrictedAccess = true)
@@ -42,13 +44,14 @@ public class UtilisateurController extends Controller {
 			dto = mapper.readValue(ctx().request().body().asJson().toString(), UserDto.class);
 
 			if (dto.getId() != null) {
-				throw new Exception("Cannot have Id.");
+				Logger.error("Adding user with specified id.");
+				return ResultFactory.FAIL;
 			}
 
 			dto = userService.saveNewUser(dto);
 
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		} catch (IOException ex) {
+			Logger.error("Error while serializing JSON", ex);
 			return ResultFactory.FAIL;
 		}
 
@@ -57,19 +60,20 @@ public class UtilisateurController extends Controller {
 
 	@Transactional
 	@Security(restrictedAccess = true)
-	public Result edit(Integer id) {
+	public Result edit(final int id) {
 
 		UserDto dto = null;
 		try {
 			dto = mapper.readValue(ctx().request().body().asJson().toString(), UserDto.class);
 
 			if (dto.getId() == null) {
-				throw new Exception("Cannot have empty id");
+				Logger.error("Empty id submitted.");
+				return ResultFactory.FAIL;
 			}
 
 			dto = userService.saveUser(dto);
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		} catch (IOException ex) {
+			Logger.error("Error while serializing JSON", ex);
 			return ResultFactory.FAIL;
 		}
 
@@ -80,10 +84,7 @@ public class UtilisateurController extends Controller {
 	@Security(restrictedAccess = true)
 	public Result delete(Integer id) {
 
-		try {
-			userService.deleteUser(id);
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		if (!userService.deleteUser(id)) {
 			return ResultFactory.FAIL;
 		}
 

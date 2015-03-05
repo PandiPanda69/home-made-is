@@ -3,11 +3,9 @@ package fr.thedestiny.auth.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
-import play.db.jpa.JPA;
 import fr.thedestiny.auth.model.Utilisateur;
 
 /**
@@ -17,52 +15,35 @@ import fr.thedestiny.auth.model.Utilisateur;
 @Repository
 public class UtilisateurDao {
 
-	@PersistenceContext
-	private EntityManager em;
-
-	public UtilisateurDao() {
+	private UtilisateurDao() {
 	}
 
-	public Utilisateur findById(Integer id) {
-		return em().find(Utilisateur.class, id);
+	public Utilisateur findById(EntityManager em, final int id) {
+		return em.find(Utilisateur.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Utilisateur> findAll() {
-		return em().createQuery("from Utilisateur").getResultList();
+	public List<Utilisateur> findAll(EntityManager em) {
+		return em.createQuery("from Utilisateur", Utilisateur.class).getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Utilisateur> findByUsername(String username) {
-		return em().createQuery("from Utilisateur where username like ?").setParameter(1, username).getResultList();
+	public List<Utilisateur> findByUsername(EntityManager em, final String username) {
+		return em.createQuery("from Utilisateur where username like ?", Utilisateur.class)
+				.setParameter(1, username)
+				.getResultList();
 	}
 
-	public Utilisateur save(Utilisateur u) {
+	public Utilisateur save(EntityManager em, Utilisateur u) {
 
 		if (u.getId() != null) {
-			return em().merge(u);
+			return em.merge(u);
 		}
 
-		em().persist(u);
+		em.persist(u);
 		return u;
 	}
 
-	public void delete(Utilisateur u) {
-		em().remove(u);
-	}
-
-	public void delete(Integer id) throws Exception {
-		int result = em().createQuery("delete from Utilisateur where id = ?").setParameter(1, id).executeUpdate();
-		if (result == 0) {
-			throw new Exception("Failure");
-		}
-	}
-
-	private EntityManager em() {
-		try {
-			return JPA.em();
-		} catch (Exception ex) {
-			return this.em;
-		}
+	public boolean delete(EntityManager em, final int id) {
+		int result = em.createQuery("delete from Utilisateur where id = ?").setParameter(1, id).executeUpdate();
+		return (result != 0);
 	}
 }

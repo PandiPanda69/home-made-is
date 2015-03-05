@@ -18,7 +18,7 @@ public class CalendarEventDto extends AbstractDto {
 	public CalendarEventDto() {
 	}
 
-	public CalendarEventDto(CalendarEvent event) {
+	public CalendarEventDto(final CalendarEvent event) {
 		this.id = event.getId();
 		this.timestamp = event.getDate().getTime();
 		this.weight = (event.getWeight() == null) ? null : event.getWeight().getValue();

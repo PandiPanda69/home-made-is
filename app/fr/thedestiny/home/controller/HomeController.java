@@ -16,18 +16,6 @@ public class HomeController extends Controller {
 	public static Result index() {
 
 		UserDto user = SecurityHelper.getLoggedUser();
-		if (user == null) {
-			//			return AuthenticationController.index();
-		}
-
-		//		Result cachedIndex = (Result) Cache.get(KEY_CACHED_INDEX);
-		//		if (cachedIndex == null) {
-		//			cachedIndex = ok(fr.thedestiny.home.view.html.index.render(user));
-		//			Cache.set(KEY_CACHED_INDEX, cachedIndex);
-		//		}
-		//
-		//		return cachedIndex;
-
 		return ok(fr.thedestiny.home.view.html.index.render(user));
 	}
 }
