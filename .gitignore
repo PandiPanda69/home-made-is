@@ -15,3 +15,5 @@ dist
 .settings
 *.db
 .target
+.sonar
+sonar-project.properties
