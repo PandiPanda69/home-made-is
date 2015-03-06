@@ -29,7 +29,7 @@ public class ModuleController extends Controller {
 
 	@Transactional(readOnly = true)
 	@Security
-	public Result list() throws Exception {
+	public Result list() {
 
 		List<Module> modules = moduleService.findAllModules(SecurityHelper.getLoggedUserId(), SecurityHelper.isAdmin());
 		return ok(Json.toJson(modules));

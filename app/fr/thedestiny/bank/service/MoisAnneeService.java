@@ -33,7 +33,7 @@ public class MoisAnneeService extends AbstractService {
 		monthDao = new MoisAnneeDao("bank");
 	}
 
-	public List<MoisAnnee> findAccountMonths(Integer userId, Integer compteId) throws SecurityException {
+	public List<MoisAnnee> findAccountMonths(final int userId, final int compteId) throws SecurityException {
 
 		// Check user owns account
 		Compte compte = compteDao.findById(null, compteId);

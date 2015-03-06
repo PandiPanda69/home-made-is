@@ -50,7 +50,7 @@ public class AuthenticationService extends AbstractService {
 				encodedPassword += String.format("%02x", b);
 			}
 		} catch (NoSuchAlgorithmException ex) {
-			Logger.error(ex.getMessage());
+			Logger.error("Cannot encode password.", ex);
 		}
 
 		return encodedPassword;

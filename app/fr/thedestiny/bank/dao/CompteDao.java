@@ -35,10 +35,8 @@ public class CompteDao extends AbstractDao<Compte> {
 		return em.createQuery("from Compte where owner_id = ?").setParameter(1, ownerId).getResultList();
 	}
 
-	public void delete(EntityManager em, Integer id) throws Exception {
+	public boolean delete(EntityManager em, Integer id) {
 		int result = em.createQuery("delete from Compte where id = ?").setParameter(1, id).executeUpdate();
-		if (result == 0) {
-			throw new Exception("Failure");
-		}
+		return result == 1;
 	}
 }

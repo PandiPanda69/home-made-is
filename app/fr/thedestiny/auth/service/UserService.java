@@ -15,14 +15,11 @@ import fr.thedestiny.auth.dao.UtilisateurDao;
 import fr.thedestiny.auth.dto.UserDto;
 import fr.thedestiny.auth.model.Module;
 import fr.thedestiny.auth.model.Utilisateur;
-import fr.thedestiny.global.config.SpringConfiguration;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
 
 @Service
 public class UserService extends AbstractService {
-
-	private static UserService thisInstance = new UserService();
 
 	@Autowired
 	private AuthenticationService authenticationService;
@@ -32,26 +29,6 @@ public class UserService extends AbstractService {
 
 	@Autowired
 	private ModuleDao moduleDao;
-
-	@Deprecated
-	public static UserService getInstance() {
-
-		if (thisInstance.userDao == null || thisInstance.moduleDao == null || thisInstance.authenticationService == null) {
-			synchronized (thisInstance) {
-				if (thisInstance.userDao == null) {
-					thisInstance.userDao = SpringConfiguration.appContext.getBean(UtilisateurDao.class);
-				}
-				if (thisInstance.moduleDao == null) {
-					thisInstance.moduleDao = SpringConfiguration.appContext.getBean(ModuleDao.class);
-				}
-				if (thisInstance.authenticationService == null) {
-					thisInstance.authenticationService = SpringConfiguration.appContext.getBean(AuthenticationService.class);
-				}
-			}
-		}
-
-		return thisInstance;
-	}
 
 	public UserDto findUserById(final int id) {
 

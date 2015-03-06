@@ -18,7 +18,7 @@ public class ModuleService extends AbstractService {
 	@Autowired
 	private ModuleDao moduleDao;
 
-	public List<Module> findAllModules(final int userId, final boolean isAdmin) throws Exception {
+	public List<Module> findAllModules(final int userId, final boolean isAdmin) {
 
 		return this.processInTransaction(new InTransactionFunction() {
 

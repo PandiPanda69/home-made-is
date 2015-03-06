@@ -2,7 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET		/							fr.thedestiny.home.controller.HomeController.index()
+GET		/							@fr.thedestiny.home.controller.HomeController.index()
 
 POST	/login						@fr.thedestiny.auth.controller.AuthenticationController.authenticate()
 GET		/logout						@fr.thedestiny.auth.controller.AuthenticationController.logout()
@@ -17,25 +17,25 @@ POST	/modules					@fr.thedestiny.home.controller.ModuleController.add()
 PUT		/modules/:id				@fr.thedestiny.home.controller.ModuleController.edit(id: Integer)
 DELETE	/modules/:id				@fr.thedestiny.home.controller.ModuleController.delete(id: Integer)
 
-GET     /bank                           fr.thedestiny.bank.controller.HomeController.index()
+GET     /bank                           @fr.thedestiny.bank.controller.HomeController.index()
 
 GET		/bank/optypes					fr.thedestiny.bank.controller.OperationTypeController.list()
 POST	/bank/optypes					fr.thedestiny.bank.controller.OperationTypeController.add()
 PUT		/bank/optypes/:id				fr.thedestiny.bank.controller.OperationTypeController.edit(id: Integer)
 DELETE	/bank/optypes/:id				fr.thedestiny.bank.controller.OperationTypeController.delete(id: Integer)
 
-GET		/bank/accounts					fr.thedestiny.bank.controller.CompteController.list()
-POST	/bank/accounts					fr.thedestiny.bank.controller.CompteController.add()
-PUT		/bank/accounts/:id				fr.thedestiny.bank.controller.CompteController.edit(id: Integer)
-DELETE	/bank/accounts/:id				fr.thedestiny.bank.controller.CompteController.delete(id: Integer)
+GET		/bank/accounts					@fr.thedestiny.bank.controller.CompteController.list()
+POST	/bank/accounts					@fr.thedestiny.bank.controller.CompteController.add()
+PUT		/bank/accounts/:id				@fr.thedestiny.bank.controller.CompteController.edit(id: Integer)
+DELETE	/bank/accounts/:id				@fr.thedestiny.bank.controller.CompteController.delete(id: Integer)
 
 GET		/bank/accounts/type				fr.thedestiny.bank.controller.TypeCompteController.list()
 POST	/bank/accounts/type				fr.thedestiny.bank.controller.TypeCompteController.add()
 PUT		/bank/accounts/type/:id			fr.thedestiny.bank.controller.TypeCompteController.edit(id: Integer)
 DELETE 	/bank/accounts/type/:id			fr.thedestiny.bank.controller.TypeCompteController.delete(id: Integer)
 
-GET		/bank/accounts/:idAccount/months	fr.thedestiny.bank.controller.MoisAnneeController.list(idAccount: Integer)
-POST	/bank/accounts/:idAccount/months	fr.thedestiny.bank.controller.MoisAnneeController.add(idAccount: Integer)
+GET		/bank/accounts/:idAccount/months	@fr.thedestiny.bank.controller.MoisAnneeController.list(idAccount: Integer)
+POST	/bank/accounts/:idAccount/months	@fr.thedestiny.bank.controller.MoisAnneeController.add(idAccount: Integer)
 
 GET		/bank/accounts/:idAccount/months/currentYear/operations	@fr.thedestiny.bank.controller.OperationController.currentYearOp(idAccount: Integer)
 
@@ -48,10 +48,10 @@ GET		/bank/accounts/:idAccount/months/:idMonth/balance	fr.thedestiny.bank.contro
 
 POST	/bank/accounts/:idAccount/months/:idMonth/import		@fr.thedestiny.bank.controller.OperationController.importData(idAccount: Integer, idMonth: Integer)
 
-GET		/bank/accounts/:idAccount/stats/month		fr.thedestiny.bank.controller.CompteController.getAccountStatsPerMonth(idAccount: Integer)
+GET		/bank/accounts/:idAccount/stats/month		@fr.thedestiny.bank.controller.CompteController.getAccountStatsPerMonth(idAccount: Integer)
 
-GET		/bank/heuristics/type			fr.thedestiny.bank.controller.HeuristiqueTypeController.list()
-POST	/bank/heuristics/type/compute	fr.thedestiny.bank.controller.HeuristiqueTypeController.compute()
+GET		/bank/heuristics/type			@fr.thedestiny.bank.controller.HeuristiqueTypeController.list()
+POST	/bank/heuristics/type/compute	@fr.thedestiny.bank.controller.HeuristiqueTypeController.compute()
 
 GET		/bank/heuristics/name/pattern	fr.thedestiny.bank.controller.MotifOperationController.list()
 POST	/bank/heuristics/name/pattern	fr.thedestiny.bank.controller.MotifOperationController.add()

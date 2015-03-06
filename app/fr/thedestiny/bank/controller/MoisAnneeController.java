@@ -15,13 +15,14 @@ import fr.thedestiny.bank.service.MoisAnneeService;
 import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
+@org.springframework.stereotype.Controller
 public class MoisAnneeController extends Controller {
 
 	private static MoisAnneeService monthService = MoisAnneeService.getInstance();
 
 	@Security
 	@Transactional(readOnly = true)
-	public static Result list(Integer compteId) {
+	public Result list(final Integer compteId) {
 
 		UserDto currentUser = SecurityHelper.getLoggedUser();
 
@@ -38,7 +39,7 @@ public class MoisAnneeController extends Controller {
 
 	@Security
 	@Transactional
-	public static Result add(Integer idAccount) {
+	public Result add(final Integer idAccount) {
 
 		GenericModelDto<MoisAnnee> mois = null;
 		try {

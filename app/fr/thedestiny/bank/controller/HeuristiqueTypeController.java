@@ -6,11 +6,12 @@ import play.mvc.Result;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.global.helper.ResultFactory;
 
+@org.springframework.stereotype.Controller
 public class HeuristiqueTypeController extends Controller {
 
 	@Security
 	@Transactional(readOnly = true)
-	public static Result list() {
+	public Result list() {
 
 		//		List<HeuristiqueType> types = HeuristiqueTypeDao.findAll();
 		//		return ok(Json.toJson(types));
@@ -19,7 +20,7 @@ public class HeuristiqueTypeController extends Controller {
 
 	@Security
 	@Transactional
-	public static Result compute() {
+	public Result compute() {
 
 		//		HeuristiqueTypeDelegate.compute();
 		return ResultFactory.OK;

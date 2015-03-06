@@ -10,7 +10,7 @@ import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.fitness.dto.StatsDto;
 import fr.thedestiny.fitness.service.StatService;
 
-@org.springframework.stereotype.Controller
+@org.springframework.stereotype.Controller("FitnessHomeController")
 public class HomeController extends Controller {
 
 	@Autowired

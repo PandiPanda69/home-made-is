@@ -15,7 +15,6 @@ import fr.thedestiny.bank.dto.StatsDto;
 import fr.thedestiny.bank.models.Compte;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.models.Solde;
-import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
 
@@ -36,61 +35,56 @@ public class CompteService extends AbstractService {
 		soldeDao = new SoldeDao("bank");
 	}
 
-	public List<CompteDto> listCompteForUser(Integer userId) {
+	public List<CompteDto> listCompteForUser(final int userId) {
 
-		List<CompteDto> result = new ArrayList<CompteDto>();
+		List<CompteDto> result = new ArrayList<>();
 		for (Compte current : compteDao.findAll(null, userId)) {
-			CompteDto dto = new CompteDto(current);
-			result.add(dto);
+			result.add(new CompteDto(current));
 		}
 
 		return result;
 	}
 
-	public CompteDto saveCompte(final GenericModelDto<Compte> dto, final Integer currentUser) throws Exception {
+	public CompteDto saveCompte(final Compte compte, final int currentUser) {
 
 		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
 			public CompteDto doWork(EntityManager em) {
-				Compte c = dto.asObject();
-
-				if (c == null) {
+				if (compte == null) {
 					throw new MappingException("Cannot map dto with model.");
 				}
 
 				// If editing a new account, check owner
-				if (c.getId() != null) {
-					Compte persistedOne = compteDao.findById(em, c.getId());
+				if (compte.getId() != null) {
+					Compte persistedOne = compteDao.findById(em, compte.getId());
 					if (!persistedOne.getOwner().equals(currentUser)) {
 						throw new SecurityException();
 					}
 				}
 
-				c.setOwner(currentUser);
-				c.setLastUpdate(new Date());
+				compte.setOwner(currentUser);
+				compte.setLastUpdate(new Date());
 
-				c = compteDao.save(em, c);
-				return new CompteDto(c);
+				return new CompteDto(compteDao.save(em, compte));
 			}
 		});
 	}
 
-	public void deleteCompte(final Integer id) throws Exception {
+	public boolean deleteCompte(final int id) {
 
-		this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction() {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public Object doWork(EntityManager em) throws Exception {
-				compteDao.delete(em, id);
-				return null;
+			public Boolean doWork(EntityManager em) throws Exception {
+				return compteDao.delete(em, id);
 			}
 		});
 	}
 
-	public StatsDto getStatsPerMonthForAccount(Integer userId, Integer accountId) throws Exception {
+	public StatsDto getStatsPerMonthForAccount(final int userId, final int accountId) {
 
 		Compte compte = compteDao.findById(null, accountId);
 		if (compte.getOwner().equals(userId) == false) {
