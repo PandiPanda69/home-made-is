@@ -41,11 +41,11 @@ public class AuthenticationService extends AbstractService {
 		return null;
 	}
 
-	public String encodePassword(String password) {
+	public String encodePassword(final String password) {
 		String encodedPassword = new String();
 
 		try {
-			byte[] buffer = MessageDigest.getInstance("SHA-1").digest(password.getBytes());
+			final byte[] buffer = MessageDigest.getInstance("SHA-1").digest(password.getBytes());
 			for (byte b : buffer) {
 				encodedPassword += String.format("%02x", b);
 			}
@@ -54,9 +54,5 @@ public class AuthenticationService extends AbstractService {
 		}
 
 		return encodedPassword;
-	}
-
-	protected void setUtilisateurDao(final UtilisateurDao dao) {
-		this.utilisateurDao = dao;
 	}
 }

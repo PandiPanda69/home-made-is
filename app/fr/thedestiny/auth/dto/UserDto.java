@@ -27,13 +27,13 @@ public class UserDto extends AbstractDto implements Serializable {
 	public UserDto() {
 	}
 
-	public UserDto(Utilisateur u) {
+	public UserDto(final Utilisateur u) {
 		this.setId(u.getId());
 		this.setUsername(u.getUsername());
 		this.setFirstName(u.getFirstName());
 		this.setAdmin(u.getIsAdmin());
 
-		this.modules = new ArrayList<Integer>();
+		this.modules = new ArrayList<>();
 
 		for (Module current : u.getPrivileges()) {
 			modules.add(current.getId());

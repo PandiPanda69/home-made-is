@@ -21,7 +21,7 @@ public class AuthenticationController extends Controller {
 	@Autowired
 	private AuthenticationService authenticationService;
 
-	public AuthenticationController() {
+	private AuthenticationController() {
 	}
 
 	public Result index() {
@@ -55,7 +55,6 @@ public class AuthenticationController extends Controller {
 	}
 
 	public Result logout() {
-
 		SecurityHelper.setUserSession(null);
 		return index();
 	}

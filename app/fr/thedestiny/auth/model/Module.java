@@ -51,5 +51,4 @@ public class Module extends Model implements Serializable, Comparable<Module> {
 	public int compareTo(Module o) {
 		return this.name.compareTo(o.name);
 	}
-
 }

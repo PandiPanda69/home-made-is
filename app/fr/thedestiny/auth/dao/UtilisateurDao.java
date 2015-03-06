@@ -44,6 +44,6 @@ public class UtilisateurDao {
 
 	public boolean delete(EntityManager em, final int id) {
 		int result = em.createQuery("delete from Utilisateur where id = ?").setParameter(1, id).executeUpdate();
-		return (result != 0);
+		return (result != 1);
 	}
 }

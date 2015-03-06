@@ -5,6 +5,7 @@ import play.mvc.Http.Context;
 import fr.thedestiny.auth.dto.UserDto;
 import fr.thedestiny.auth.model.Utilisateur;
 import fr.thedestiny.auth.service.UserService;
+import fr.thedestiny.global.config.SpringConfiguration;
 
 /**
  * 
@@ -14,7 +15,10 @@ public class SecurityHelper {
 
 	private final static String KEY_USER_ID = "user_id";
 
-	private static UserService userService = UserService.getInstance();
+	private static UserService userService = SpringConfiguration.appContext.getBean(UserService.class);
+
+	private SecurityHelper() {
+	}
 
 	public static void setUserSession(Utilisateur user) {
 
@@ -50,12 +54,4 @@ public class SecurityHelper {
 
 		return Integer.valueOf(userId);
 	}
-
-	//	public static boolean doesUserOwnAccount(Integer accountId) {
-	//
-	//		Integer userId = getLoggedUserId();
-	//		Compte compte = CompteDao.findById(accountId);
-	//
-	//		return compte != null && compte.getOwner().getId().equals(userId);
-	//	}
 }

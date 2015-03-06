@@ -4,13 +4,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
 import fr.thedestiny.message.service.KeyVerifierService;
 
 @org.springframework.stereotype.Controller
@@ -42,20 +44,11 @@ public class MessageSynchronizerController extends Controller {
 		/* ******************************************************************** */
 		long timestamp = System.currentTimeMillis();
 
-		FileOutputStream out = null;
-		try {
-			out = new FileOutputStream("output_" + timestamp);
+		try (FileOutputStream out = new FileOutputStream("output_" + timestamp)) {
 			out.write(body.toString().getBytes("UTF-8"));
 		} catch (IOException ex) {
 			Logger.error("Error while saving request body.", ex);
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException ex) {
-					Logger.error("Error while closing file.", ex);
-				}
-			}
+			return internalServerError();
 		}
 
 		return ok(String.valueOf(body.size()));

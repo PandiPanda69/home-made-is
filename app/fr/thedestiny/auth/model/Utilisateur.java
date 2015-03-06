@@ -56,6 +56,5 @@ public class Utilisateur extends Model implements Serializable {
 	public Set<Module> privileges;
 
 	public Utilisateur() {
-
 	}
 }
