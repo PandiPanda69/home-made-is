@@ -1,6 +1,7 @@
 package fr.thedestiny.bank.controller;
 
-import play.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -9,22 +10,17 @@ import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.bank.dto.SoldeDto;
 import fr.thedestiny.bank.service.SoldeService;
 
+@org.springframework.stereotype.Controller
 public class SoldeController extends Controller {
 
-	private static SoldeService soldeService = SoldeService.getInstance();
+	@Autowired
+	private SoldeService soldeService;
 
 	@Security
 	@Transactional
-	public static Result get(Integer idAccount, Integer idMois) {
+	public Result get(final Integer idAccount, final Integer idMois) {
 
-		SoldeDto solde = null;
-		try {
-			solde = soldeService.getBalanceAtBeginningOfMonth(SecurityHelper.getLoggedUserId(), idAccount, idMois);
-		} catch (Exception ex) {
-			Logger.error("SoldeController", ex);
-			return badRequest();
-		}
-
+		SoldeDto solde = soldeService.getBalanceAtBeginningOfMonth(SecurityHelper.getLoggedUserId(), idAccount, idMois);
 		return ok(solde.toJson());
 	}
 }

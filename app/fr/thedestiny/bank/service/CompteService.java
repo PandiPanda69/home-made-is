@@ -6,7 +6,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.MappingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import fr.thedestiny.bank.dao.CompteDao;
 import fr.thedestiny.bank.dao.SoldeDao;
@@ -18,21 +19,17 @@ import fr.thedestiny.bank.models.Solde;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
 
+@Service
 public class CompteService extends AbstractService {
 
-	private static CompteService thisInstance = new CompteService();
-
+	@Autowired
 	private CompteDao compteDao;
-	private SoldeDao soldeDao;
 
-	public static CompteService getInstance() {
-		return thisInstance;
-	}
+	@Autowired
+	private SoldeDao soldeDao;
 
 	private CompteService() {
 		super("bank");
-		compteDao = new CompteDao("bank");
-		soldeDao = new SoldeDao("bank");
 	}
 
 	public List<CompteDto> listCompteForUser(final int userId) {
@@ -47,14 +44,10 @@ public class CompteService extends AbstractService {
 
 	public CompteDto saveCompte(final Compte compte, final int currentUser) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<CompteDto>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public CompteDto doWork(EntityManager em) {
-				if (compte == null) {
-					throw new MappingException("Cannot map dto with model.");
-				}
 
 				// If editing a new account, check owner
 				if (compte.getId() != null) {
@@ -74,9 +67,8 @@ public class CompteService extends AbstractService {
 
 	public boolean deleteCompte(final int id) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<Boolean>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Boolean doWork(EntityManager em) throws Exception {
 				return compteDao.delete(em, id);

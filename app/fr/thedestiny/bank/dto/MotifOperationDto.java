@@ -14,7 +14,7 @@ public class MotifOperationDto extends AbstractDto {
 	private Integer id;
 	private String motif;
 
-	public MotifOperationDto(MotifOperation model) {
+	public MotifOperationDto(final MotifOperation model) {
 		this.id = model.getId();
 		this.motif = model.getMotif();
 	}

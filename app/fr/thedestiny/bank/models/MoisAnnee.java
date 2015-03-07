@@ -8,11 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import fr.thedestiny.global.model.Model;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import fr.thedestiny.global.model.Model;
 
 @Entity
 @AllArgsConstructor
@@ -38,7 +37,7 @@ public class MoisAnnee extends Model implements Serializable {
 	public MoisAnnee() {
 	}
 
-	public MoisAnnee(Integer id) {
+	public MoisAnnee(final Integer id) {
 		this.id = id;
 	}
 
@@ -47,7 +46,7 @@ public class MoisAnnee extends Model implements Serializable {
 	 * @param other
 	 * @return
 	 */
-	public boolean lesserThan(MoisAnnee other) {
+	public boolean lesserThan(final MoisAnnee other) {
 
 		if (annee < other.annee) {
 			return true;
@@ -59,15 +58,32 @@ public class MoisAnnee extends Model implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 
 		if (!(obj instanceof MoisAnnee)) {
 			return false;
 		}
 
 		MoisAnnee other = (MoisAnnee) obj;
-		//		return (other.annee.equals(this.annee) && other.mois.equals(this.mois));
+
+		if (this.id == null && other.id == null) {
+			return this.annee.equals(other.annee) && this.mois.equals(other.mois);
+		}
+		else if (this.id == null || other.id == null) {
+			return false;
+		}
+
 		return other.id.equals(this.id);
+	}
+
+	@Override
+	public int hashCode() {
+
+		if (id != null) {
+			return id;
+		}
+
+		return (annee * 100 + mois);
 	}
 
 	@Override

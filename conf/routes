@@ -19,20 +19,20 @@ DELETE	/modules/:id				@fr.thedestiny.home.controller.ModuleController.delete(id
 
 GET     /bank                           @fr.thedestiny.bank.controller.HomeController.index()
 
-GET		/bank/optypes					fr.thedestiny.bank.controller.OperationTypeController.list()
-POST	/bank/optypes					fr.thedestiny.bank.controller.OperationTypeController.add()
-PUT		/bank/optypes/:id				fr.thedestiny.bank.controller.OperationTypeController.edit(id: Integer)
-DELETE	/bank/optypes/:id				fr.thedestiny.bank.controller.OperationTypeController.delete(id: Integer)
+GET		/bank/optypes					@fr.thedestiny.bank.controller.OperationTypeController.list()
+POST	/bank/optypes					@fr.thedestiny.bank.controller.OperationTypeController.add()
+PUT		/bank/optypes/:id				@fr.thedestiny.bank.controller.OperationTypeController.edit(id: Integer)
+DELETE	/bank/optypes/:id				@fr.thedestiny.bank.controller.OperationTypeController.delete(id: Integer)
 
 GET		/bank/accounts					@fr.thedestiny.bank.controller.CompteController.list()
 POST	/bank/accounts					@fr.thedestiny.bank.controller.CompteController.add()
 PUT		/bank/accounts/:id				@fr.thedestiny.bank.controller.CompteController.edit(id: Integer)
 DELETE	/bank/accounts/:id				@fr.thedestiny.bank.controller.CompteController.delete(id: Integer)
 
-GET		/bank/accounts/type				fr.thedestiny.bank.controller.TypeCompteController.list()
-POST	/bank/accounts/type				fr.thedestiny.bank.controller.TypeCompteController.add()
-PUT		/bank/accounts/type/:id			fr.thedestiny.bank.controller.TypeCompteController.edit(id: Integer)
-DELETE 	/bank/accounts/type/:id			fr.thedestiny.bank.controller.TypeCompteController.delete(id: Integer)
+GET		/bank/accounts/type				@fr.thedestiny.bank.controller.TypeCompteController.list()
+POST	/bank/accounts/type				@fr.thedestiny.bank.controller.TypeCompteController.add()
+PUT		/bank/accounts/type/:id			@fr.thedestiny.bank.controller.TypeCompteController.edit(id: Integer)
+DELETE 	/bank/accounts/type/:id			@fr.thedestiny.bank.controller.TypeCompteController.delete(id: Integer)
 
 GET		/bank/accounts/:idAccount/months	@fr.thedestiny.bank.controller.MoisAnneeController.list(idAccount: Integer)
 POST	/bank/accounts/:idAccount/months	@fr.thedestiny.bank.controller.MoisAnneeController.add(idAccount: Integer)
@@ -44,7 +44,7 @@ POST	/bank/accounts/:idAccount/months/:idMonth/operations	@fr.thedestiny.bank.co
 PUT		/bank/accounts/:idAccount/months/:idMonth/operations/:id	@fr.thedestiny.bank.controller.OperationController.edit(idAccount: Integer, idMonth: Integer, id: Integer)
 DELETE	/bank/accounts/:idAccount/months/:idMonth/operations/:id	@fr.thedestiny.bank.controller.OperationController.delete(idAccount: Integer, idMonth: Integer, id: Integer)
 
-GET		/bank/accounts/:idAccount/months/:idMonth/balance	fr.thedestiny.bank.controller.SoldeController.get(idAccount: Integer, idMonth: Integer)
+GET		/bank/accounts/:idAccount/months/:idMonth/balance	@fr.thedestiny.bank.controller.SoldeController.get(idAccount: Integer, idMonth: Integer)
 
 POST	/bank/accounts/:idAccount/months/:idMonth/import		@fr.thedestiny.bank.controller.OperationController.importData(idAccount: Integer, idMonth: Integer)
 
@@ -53,9 +53,9 @@ GET		/bank/accounts/:idAccount/stats/month		@fr.thedestiny.bank.controller.Compt
 GET		/bank/heuristics/type			@fr.thedestiny.bank.controller.HeuristiqueTypeController.list()
 POST	/bank/heuristics/type/compute	@fr.thedestiny.bank.controller.HeuristiqueTypeController.compute()
 
-GET		/bank/heuristics/name/pattern	fr.thedestiny.bank.controller.MotifOperationController.list()
-POST	/bank/heuristics/name/pattern	fr.thedestiny.bank.controller.MotifOperationController.add()
-DELETE	/bank/heuristics/name/pattern/:id fr.thedestiny.bank.controller.MotifOperationController.delete(id: Integer)
+GET		/bank/heuristics/name/pattern	@fr.thedestiny.bank.controller.MotifOperationController.list()
+POST	/bank/heuristics/name/pattern	@fr.thedestiny.bank.controller.MotifOperationController.add()
+DELETE	/bank/heuristics/name/pattern/:id @fr.thedestiny.bank.controller.MotifOperationController.delete(id: Integer)
 
 GET     /torrent                        @fr.thedestiny.torrent.controller.TorrentHomeController.index()
 

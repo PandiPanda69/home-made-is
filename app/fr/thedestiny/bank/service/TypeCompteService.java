@@ -5,37 +5,35 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import fr.thedestiny.bank.dao.TauxInteretDao;
 import fr.thedestiny.bank.dao.TypeCompteDao;
 import fr.thedestiny.bank.dto.TypeCompteDto;
 import fr.thedestiny.bank.models.TauxInteret;
 import fr.thedestiny.bank.models.TypeCompte;
 import fr.thedestiny.bank.service.exception.TypeCompteInUseException;
-import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
-import fr.thedestiny.global.service.InTransactionProcedure;
 
+@Service
 public class TypeCompteService extends AbstractService {
 
-	private static TypeCompteService thisInstance = new TypeCompteService();
+	@Autowired
 	private TypeCompteDao typeDao;
-	private TauxInteretDao interetDao;
 
-	public static TypeCompteService getInstance() {
-		return thisInstance;
-	}
+	@Autowired
+	private TauxInteretDao interetDao;
 
 	private TypeCompteService() {
 		super("bank");
-		this.typeDao = new TypeCompteDao("bank");
-		this.interetDao = new TauxInteretDao("bank");
 	}
 
 	public List<TypeCompteDto> findAllTypes() {
 
 		List<TypeCompte> types = typeDao.findAll(null);
-		List<TypeCompteDto> result = new ArrayList<TypeCompteDto>(types.size());
+		List<TypeCompteDto> result = new ArrayList<>(types.size());
 
 		for (TypeCompte current : types) {
 			result.add(new TypeCompteDto(current));
@@ -44,34 +42,28 @@ public class TypeCompteService extends AbstractService {
 		return result;
 	}
 
-	public TypeCompteDto saveTypeCompte(final GenericModelDto<TypeCompte> dto) throws Exception {
+	public TypeCompteDto saveTypeCompte(final TypeCompte type) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<TypeCompteDto>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public TypeCompteDto doWork(EntityManager em) throws Exception {
-				TypeCompte type = dto.asObject();
-
+			public TypeCompteDto doWork(EntityManager em) {
 				for (TauxInteret current : type.getTaux()) {
 					current.setType(type);
 				}
 
 				interetDao.purge(em, type.getId());
-				type = typeDao.save(em, type);
-
-				return new TypeCompteDto(type);
+				return new TypeCompteDto(typeDao.save(em, type));
 			}
 		});
 	}
 
-	public void deleteTypeCompte(final Integer typeId) throws Exception {
+	public boolean deleteTypeCompte(final int typeId) throws TypeCompteInUseException {
 
-		this.processInTransaction(new InTransactionProcedure() {
+		return this.processInTransaction(new InTransactionFunction<Boolean>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public void doWork(EntityManager em) throws TypeCompteInUseException, Exception {
+			public Boolean doWork(EntityManager em) throws TypeCompteInUseException {
 
 				// Check type isn't in use.
 				boolean isUsed = typeDao.isTypeInUse(typeId);
@@ -79,7 +71,7 @@ public class TypeCompteService extends AbstractService {
 					throw new TypeCompteInUseException();
 				}
 
-				typeDao.delete(em, typeId);
+				return typeDao.delete(em, typeId);
 			}
 		});
 	}

@@ -16,7 +16,7 @@ import fr.thedestiny.global.dto.AbstractDto;
 @EqualsAndHashCode(callSuper = false)
 public class OperationDto extends AbstractDto {
 
-	private final static SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	private static final String DATE_FORMAT = "dd/MM/yyyy";
 
 	private Integer id;
 	private String nom;
@@ -31,7 +31,7 @@ public class OperationDto extends AbstractDto {
 	public OperationDto() {
 	}
 
-	public OperationDto(Operation operation) {
+	public OperationDto(final Operation operation) {
 		this.id = operation.getId();
 		this.nom = operation.getNom();
 		this.nomComplet = operation.getNomComplet();
@@ -42,7 +42,7 @@ public class OperationDto extends AbstractDto {
 		this.type = operation.getType();
 
 		if (operation.getDate() != null) {
-			this.date = formatter.format(operation.getDate());
+			this.date = new SimpleDateFormat(DATE_FORMAT).format(operation.getDate());
 		}
 	}
 

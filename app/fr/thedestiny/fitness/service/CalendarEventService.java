@@ -44,9 +44,8 @@ public class CalendarEventService extends AbstractService {
 
 	public CalendarEventDto saveCalendarEvent(final CalendarEventDto dto, final int userId) throws Exception {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<CalendarEventDto>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public CalendarEventDto doWork(EntityManager em) {
 
@@ -73,9 +72,8 @@ public class CalendarEventService extends AbstractService {
 
 	public CalendarEventDto updateCalendarEvent(final CalendarEventDto dto, final int userId) throws Exception {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<CalendarEventDto>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public CalendarEventDto doWork(EntityManager em) throws Exception {
 

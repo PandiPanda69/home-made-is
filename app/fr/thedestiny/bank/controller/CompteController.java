@@ -25,7 +25,8 @@ import fr.thedestiny.global.helper.ResultFactory;
 @org.springframework.stereotype.Controller
 public class CompteController extends Controller {
 
-	private static CompteService compteService = CompteService.getInstance();
+	@Autowired
+	private CompteService compteService;
 
 	@Autowired
 	private ObjectMapper mapper;

@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.stereotype.Repository;
+
 import play.db.jpa.JPA;
 import fr.thedestiny.bank.models.Operation;
 import fr.thedestiny.global.dao.AbstractDao;
@@ -12,46 +14,45 @@ import fr.thedestiny.global.dao.AbstractDao;
  * Data Access Object du modèle Operation
  * @author Sébastien
  */
+@Repository
 public class OperationDao extends AbstractDao<Operation> {
 
-	public OperationDao(String persistenceContext) {
-		super(persistenceContext);
+	private OperationDao() {
+		super("bank");
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Operation> findAll(EntityManager em) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
-		return em.createQuery("from Operation").getResultList();
+		return em.createQuery("from Operation", Operation.class).getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Operation> findAll(EntityManager em, Integer idAccount, Integer idMois) {
+	public List<Operation> findAll(EntityManager em, final int idAccount, final int idMois) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
 
-		return em.createQuery("from Operation where compte_id = ? and mois_id = ?").setParameter(1, idAccount).setParameter(2, idMois).getResultList();
+		return em.createQuery("from Operation where compte_id = ? and mois_id = ?", Operation.class)
+				.setParameter(1, idAccount)
+				.setParameter(2, idMois)
+				.getResultList();
 	}
 
-	public Operation findById(EntityManager em, Integer id) {
+	public Operation findById(EntityManager em, final int id) {
 		return findById(em, id, Operation.class);
 	}
 
-	public void delete(EntityManager em, Integer id) throws Exception {
+	public boolean delete(EntityManager em, final int id) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
 
 		int result = em.createQuery("delete from Operation where id = ?").setParameter(1, id).executeUpdate();
-		if (result == 0) {
-			throw new Exception("Failure");
-		}
+		return result == 1;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Operation> findOperationOfYear(Integer accountId, Integer year) {
+	public List<Operation> findOperationOfYear(final int accountId, final int year) {
 
 		return JPA.em(persistenceContext).createQuery(
 				"from Operation op " +
@@ -59,7 +60,7 @@ public class OperationDao extends AbstractDao<Operation> {
 						"join fetch op.compte compte " +
 						"where compte.id = :accountId " +
 						"and mois.annee = :year " +
-						"order by mois.mois")
+						"order by mois.mois", Operation.class)
 				.setParameter("accountId", accountId)
 				.setParameter("year", year)
 				.getResultList();

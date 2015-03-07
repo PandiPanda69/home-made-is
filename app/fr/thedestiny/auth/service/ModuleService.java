@@ -20,9 +20,8 @@ public class ModuleService extends AbstractService {
 
 	public List<Module> findAllModules(final int userId, final boolean isAdmin) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<List<Module>>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public List<Module> doWork(EntityManager em) {
 				if (isAdmin) {
@@ -36,9 +35,8 @@ public class ModuleService extends AbstractService {
 
 	public Module saveModule(final Module module) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<Module>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Module doWork(EntityManager em) {
 				return moduleDao.add(module);
@@ -47,9 +45,8 @@ public class ModuleService extends AbstractService {
 	}
 
 	public boolean deleteModule(final int id) {
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<Boolean>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Boolean doWork(EntityManager em) {
 				return moduleDao.delete(id);

@@ -4,40 +4,40 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import play.db.jpa.JPA;
 import fr.thedestiny.bank.models.TypeCompte;
 import fr.thedestiny.global.dao.AbstractDao;
 
+@Repository
 public class TypeCompteDao extends AbstractDao<TypeCompte> {
 
-	public TypeCompteDao(String persistenceContext) {
-		super(persistenceContext);
+	private TypeCompteDao() {
+		super("bank");
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<TypeCompte> findAll(EntityManager em) {
 
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
 
-		return em.createQuery("FROM TypeCompte").getResultList();
+		return em.createQuery("FROM TypeCompte", TypeCompte.class).getResultList();
 	}
 
-	public boolean isTypeInUse(Integer typeId) {
+	public boolean isTypeInUse(final int typeId) {
 
-		Session session = JPA.em(persistenceContext).unwrap(Session.class);
-		Integer count = (Integer) session.createSQLQuery("SELECT COUNT(1) FROM Compte WHERE id_type = :typeId").setParameter("typeId", typeId).uniqueResult();
+		int count = JPA.em(persistenceContext)
+				.createNamedQuery("SELECT COUNT(1) FROM Compte WHERE id_type = :typeId", Integer.class)
+				.setParameter("typeId", typeId)
+				.getSingleResult();
 
 		return count > 0;
 	}
 
-	public void delete(EntityManager em, Integer typeId) throws Exception {
+	public boolean delete(EntityManager em, final int typeId) {
 		int result = em.createQuery("delete from TypeCompte where id = ?").setParameter(1, typeId).executeUpdate();
-		if (result == 0) {
-			throw new Exception("Failure");
-		}
+		return result == 1;
 	}
 }

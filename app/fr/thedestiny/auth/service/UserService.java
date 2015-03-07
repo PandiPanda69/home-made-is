@@ -32,9 +32,8 @@ public class UserService extends AbstractService {
 
 	public UserDto findUserById(final int id) {
 
-		Utilisateur u = processInTransaction(new InTransactionFunction() {
+		Utilisateur u = processInTransaction(new InTransactionFunction<Utilisateur>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Utilisateur doWork(EntityManager em) throws Exception {
 				return userDao.findById(em, id);
@@ -48,9 +47,8 @@ public class UserService extends AbstractService {
 
 		List<UserDto> userList = new ArrayList<>();
 
-		List<Utilisateur> users = processInTransaction(new InTransactionFunction() {
+		List<Utilisateur> users = processInTransaction(new InTransactionFunction<List<Utilisateur>>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public List<Utilisateur> doWork(EntityManager em) throws Exception {
 				return userDao.findAll(em);
@@ -70,9 +68,8 @@ public class UserService extends AbstractService {
 	}
 
 	public UserDto saveUser(final UserDto dto) {
-		Utilisateur u = processInTransaction(new InTransactionFunction() {
+		Utilisateur u = processInTransaction(new InTransactionFunction<Utilisateur>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Utilisateur doWork(EntityManager em) throws Exception {
 				return userDao.findById(em, dto.getId());
@@ -83,9 +80,8 @@ public class UserService extends AbstractService {
 
 	private UserDto updateUser(final UserDto dto, final Utilisateur u) {
 
-		Utilisateur saved = this.processInTransaction(new InTransactionFunction() {
+		Utilisateur saved = this.processInTransaction(new InTransactionFunction<Utilisateur>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Utilisateur doWork(EntityManager em) {
 
@@ -111,9 +107,8 @@ public class UserService extends AbstractService {
 	}
 
 	public boolean deleteUser(final int id) {
-		return processInTransaction(new InTransactionFunction() {
+		return processInTransaction(new InTransactionFunction<Boolean>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Boolean doWork(EntityManager em) throws Exception {
 				return userDao.delete(em, id);

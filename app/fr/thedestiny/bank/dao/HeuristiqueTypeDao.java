@@ -4,33 +4,43 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import org.springframework.stereotype.Repository;
+
 import play.db.jpa.JPA;
 import fr.thedestiny.bank.models.HeuristiqueType;
+import fr.thedestiny.global.dao.AbstractDao;
 
 /**
  * Data Access Object du modèle HeuristiqueType
  * @author Sébastien
  */
-public class HeuristiqueTypeDao {
+@Repository
+public class HeuristiqueTypeDao extends AbstractDao<HeuristiqueType> {
 
-	public static HeuristiqueType findById(Integer id) {
+	public HeuristiqueTypeDao() {
+		super("bank");
+	}
+
+	public HeuristiqueType findById(final int id) {
 		return JPA.em().find(HeuristiqueType.class, id);
 	}
 
-	public static HeuristiqueType findByNom(String nom) {
+	public HeuristiqueType findByNom(final String nom) {
 		try {
-			return (HeuristiqueType) JPA.em().createQuery("from HeuristiqueType where nom like ?").setParameter(1, nom).getSingleResult();
+			return JPA.em().createQuery("from HeuristiqueType where nom like ?", HeuristiqueType.class)
+					.setParameter(1, nom)
+					.getSingleResult();
 		} catch (NoResultException ex) {
 			return null;
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static List<HeuristiqueType> findAll() {
-		return JPA.em().createQuery("from HeuristiqueType").getResultList();
+	public List<HeuristiqueType> findAll() {
+		return JPA.em().createQuery("from HeuristiqueType", HeuristiqueType.class)
+				.getResultList();
 	}
 
-	public static HeuristiqueType save(HeuristiqueType type) {
+	public HeuristiqueType save(final HeuristiqueType type) {
 
 		if (type.getId() != null) {
 			return JPA.em().merge(type);
@@ -40,18 +50,12 @@ public class HeuristiqueTypeDao {
 		return type;
 	}
 
-	public static void delete(HeuristiqueType type) {
-		JPA.em().remove(type);
-	}
-
-	public static void delete(Integer id) throws Exception {
+	public boolean delete(final int id) {
 		int result = JPA.em().createQuery("delete from HeuristiqueType where id = ?").setParameter(1, id).executeUpdate();
-		if (result == 0) {
-			throw new Exception("Failure");
-		}
+		return result == 1;
 	}
 
-	public static void deleteAll() {
+	public void deleteAll() {
 		JPA.em().createQuery("delete from HeuristiqueType").executeUpdate();
 	}
 }

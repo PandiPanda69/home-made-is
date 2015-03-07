@@ -25,7 +25,7 @@ public class TypeCompteDto extends AbstractDto {
 		this.libelle = model.getLibelle();
 		this.type = model.getType();
 
-		this.taux = new ArrayList<TauxInteretDto>();
+		this.taux = new ArrayList<>();
 		if (model.getTaux() != null) {
 			for (TauxInteret current : model.getTaux()) {
 				TauxInteretDto dto = new TauxInteretDto();

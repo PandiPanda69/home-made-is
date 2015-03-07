@@ -16,11 +16,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
 
-import fr.thedestiny.global.model.Model;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import fr.thedestiny.global.model.Model;
 
 @Entity
 @AllArgsConstructor
@@ -58,7 +57,7 @@ public class Compte extends Model implements Serializable {
 	@OrderBy("annee, mois")
 	@Getter
 	@Setter
-	private List<MoisAnnee> mois = new ArrayList<MoisAnnee>();
+	private List<MoisAnnee> mois = new ArrayList<>();
 
 	@ManyToOne(targetEntity = TypeCompte.class)
 	@JoinColumn(name = "id_type")

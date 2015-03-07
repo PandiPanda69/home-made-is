@@ -8,11 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import fr.thedestiny.global.model.Model;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import fr.thedestiny.global.model.Model;
 
 @Entity
 @AllArgsConstructor
@@ -38,7 +37,7 @@ public class OperationType extends Model implements Serializable {
 	public OperationType() {
 	}
 
-	public OperationType(String id) {
+	public OperationType(final String id) {
 		this.id = Integer.parseInt(id);
 	}
 }

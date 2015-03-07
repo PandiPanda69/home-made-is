@@ -16,7 +16,7 @@ public class AbstractService {
 		this.persistenceContext = persistenceContext;
 	}
 
-	protected <T> T processInTransaction(final InTransactionFunction action) {
+	protected <T> T processInTransaction(final InTransactionFunction<T> action) {
 		T result = null;
 
 		EntityManager em = JPA.em(persistenceContext);

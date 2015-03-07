@@ -1,25 +1,35 @@
 package fr.thedestiny.bank.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
 import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.bank.models.OperationType;
 import fr.thedestiny.bank.service.OperationTypeService;
-import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
+@org.springframework.stereotype.Controller
 public class OperationTypeController extends Controller {
 
-	private static OperationTypeService operationTypeService = OperationTypeService.getInstance();
+	@Autowired
+	private OperationTypeService operationTypeService;
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Security
 	@Transactional(readOnly = true)
-	public static Result list() {
+	public Result list() {
 
 		List<OperationType> list = operationTypeService.findAllOperationTypes();
 		return ok(Json.toJson(list));
@@ -27,44 +37,41 @@ public class OperationTypeController extends Controller {
 
 	@Security
 	@Transactional
-	public static Result add() {
+	public Result add() {
 
-		GenericModelDto<OperationType> optype = null;
+		OperationType optype = null;
 		try {
-			optype = new GenericModelDto<OperationType>(ctx().request().body().asJson(), OperationType.class);
+			optype = mapper.readValue(ctx().request().body().asJson().toString(), OperationType.class);
 			optype = operationTypeService.addOperationType(optype);
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		} catch (IOException ex) {
+			Logger.error("Error while unserializing", ex);
 			return ResultFactory.FAIL;
 		}
 
-		return ok(optype.toJson());
+		return ok(Json.toJson(optype));
 	}
 
 	@Security
 	@Transactional
-	public static Result edit(Integer id) {
+	public Result edit(final Integer id) {
 
-		GenericModelDto<OperationType> optype = null;
+		OperationType optype = null;
 		try {
-			optype = new GenericModelDto<OperationType>(ctx().request().body().asJson(), OperationType.class);
+			optype = mapper.readValue(ctx().request().body().asJson().toString(), OperationType.class);
 			optype = operationTypeService.updateOperationType(optype);
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		} catch (IOException ex) {
+			Logger.error("Error while unserializing", ex);
 			return ResultFactory.FAIL;
 		}
 
-		return ok(optype.toJson());
+		return ok(Json.toJson(optype));
 	}
 
 	@Security
 	@Transactional
-	public static Result delete(Integer id) {
+	public Result delete(final Integer id) {
 
-		try {
-			operationTypeService.deleteOperationType(id);
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		if (!operationTypeService.deleteOperationType(id)) {
 			return ResultFactory.FAIL;
 		}
 

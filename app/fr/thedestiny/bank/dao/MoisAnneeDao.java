@@ -3,6 +3,8 @@ package fr.thedestiny.bank.dao;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import org.springframework.stereotype.Repository;
+
 import play.db.jpa.JPA;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.global.dao.AbstractDao;
@@ -11,28 +13,27 @@ import fr.thedestiny.global.dao.AbstractDao;
  * Data Access Object du modèle MoisAnnee
  * @author Sébastien
  */
+@Repository
 public class MoisAnneeDao extends AbstractDao<MoisAnnee> {
 
-	public MoisAnneeDao(String persistenceContext) {
-		super(persistenceContext);
+	private MoisAnneeDao() {
+		super("bank");
 	}
 
-	public MoisAnnee findById(EntityManager em, Integer id) {
+	public MoisAnnee findById(EntityManager em, final int id) {
 		return findById(em, id, MoisAnnee.class);
 	}
 
-	//	@SuppressWarnings("unchecked")
-	//	public static List<MoisAnnee> findAll(Integer compteId) {
-	//		return JPA.em().createNativeQuery("SELECT id, mois, annee FROM MoisAnnee WHERE id IN (SELECT DISTINCT mois_id FROM Operation WHERE compte_id = ? ORDER BY mois_id)", MoisAnnee.class).setParameter(1, compteId).getResultList();
-	//	}
-
-	public MoisAnnee findUnique(EntityManager em, Integer mois, Integer annee) {
+	public MoisAnnee findUnique(EntityManager em, final int mois, final int annee) {
 		try {
 			if (em == null) {
 				em = JPA.em(persistenceContext);
 			}
 
-			return (MoisAnnee) em.createQuery("from MoisAnnee where mois = ? and annee = ? order by annee, mois").setParameter(1, mois).setParameter(2, annee).getSingleResult();
+			return em.createQuery("from MoisAnnee where mois = ? and annee = ? order by annee, mois", MoisAnnee.class)
+					.setParameter(1, mois)
+					.setParameter(2, annee)
+					.getSingleResult();
 		} catch (NoResultException ex) {
 			return null;
 		}

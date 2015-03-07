@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.MappingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import play.Logger;
 import fr.thedestiny.bank.dao.CompteDao;
@@ -25,34 +26,30 @@ import fr.thedestiny.bank.models.MotifOperation;
 import fr.thedestiny.bank.models.Operation;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
-import fr.thedestiny.global.service.InTransactionProcedure;
 
+@Service
 public class OperationService extends AbstractService {
-
-	private static OperationService thisInstance = new OperationService();
 
 	private final static String DATE_PATTERN = "[DATE]";
 	private final static String REASON_PATTERN = "[RAISON]";
 
+	@Autowired
 	private OperationDao operationDao;
-	private CompteDao compteDao;
-	private MotifOperationDao motifDao;
 
-	public static OperationService getInstance() {
-		return thisInstance;
-	}
+	@Autowired
+	private CompteDao compteDao;
+
+	@Autowired
+	private MotifOperationDao motifDao;
 
 	private OperationService() {
 		super("bank");
-		operationDao = new OperationDao("bank");
-		compteDao = new CompteDao("bank");
-		motifDao = new MotifOperationDao("bank");
 	}
 
-	public List<OperationDto> findAllOperationsForMonth(Integer userId, Integer accountId, Integer monthId) {
+	public List<OperationDto> findAllOperationsForMonth(final int userId, final int accountId, final int monthId) {
 
 		List<Operation> operations = operationDao.findAll(null, accountId, monthId);
-		List<OperationDto> result = new ArrayList<OperationDto>(operations.size());
+		List<OperationDto> result = new ArrayList<>(operations.size());
 
 		if (operations.size() > 0) {
 			if (!operations.get(0).getCompte().getOwner().equals(userId)) {
@@ -68,17 +65,12 @@ public class OperationService extends AbstractService {
 		return result;
 	}
 
-	public OperationDto addOperation(final OperationDto dto, final Integer userId, final Integer accountId, final Integer moisId) throws Exception {
+	public OperationDto addOperation(final OperationDto dto, final int userId, final int accountId, final int moisId) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<OperationDto>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public OperationDto doWork(EntityManager em) throws Exception {
-
-				if (dto == null) {
-					throw new MappingException("Cannot map dto with model.");
-				}
+			public OperationDto doWork(EntityManager em) {
 
 				Operation op = dto.toBO();
 
@@ -128,17 +120,12 @@ public class OperationService extends AbstractService {
 		});
 	}
 
-	public OperationDto updateOperation(final OperationDto dto, final Integer userId, final Integer idAccount, final Integer idMois) throws Exception {
+	public OperationDto updateOperation(final OperationDto dto, final int userId, final int idAccount, final int idMois) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<OperationDto>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public OperationDto doWork(EntityManager em) throws Exception {
-
-				if (dto == null) {
-					throw new MappingException("Cannot map dto with model.");
-				}
 
 				Operation op = dto.toBO();
 
@@ -188,12 +175,12 @@ public class OperationService extends AbstractService {
 		});
 	}
 
-	public void deleteOperation(final Integer userId, final Integer idAccount, final Integer idMois, final Integer id) throws Exception {
+	public boolean deleteOperation(final int userId, final int idAccount, final int idMois, final int id) {
 
-		this.processInTransaction(new InTransactionProcedure() {
+		return this.processInTransaction(new InTransactionFunction<Boolean>() {
 
 			@Override
-			public void doWork(EntityManager em) throws Exception {
+			public Boolean doWork(EntityManager em) {
 
 				// Vérification que l'utilisateur possède bien le compte
 				Compte compte = compteDao.findById(em, idAccount);
@@ -217,17 +204,20 @@ public class OperationService extends AbstractService {
 				Operation previousOp = operationDao.findById(em, id);
 
 				// Suppression de l'opération et MaJ du compte
-				operationDao.delete(em, id);
+				boolean isDeleted = operationDao.delete(em, id);
 
 				Double newSolde = compte.getSolde() - previousOp.getMontant();
 				compte.setSolde(newSolde);
 
-				compteDao.save(em, compte);
+				Compte mergedAccount = compteDao.save(em, compte);
+				isDeleted &= mergedAccount.getSolde().equals(newSolde);
+
+				return isDeleted;
 			}
 		});
 	}
 
-	private void applyOperationPatterns(Operation op, Integer userId) {
+	private void applyOperationPatterns(final Operation op, final int userId) {
 
 		if (op.getNomComplet() == null || op.getNomComplet().length() == 0) {
 			return;
@@ -236,7 +226,7 @@ public class OperationService extends AbstractService {
 		String nomComplet = op.getNomComplet();
 		List<MotifOperation> motifs = motifDao.findAll(userId);
 
-		Map<String, String> matchedContent = new HashMap<String, String>();
+		Map<String, String> matchedContent = new HashMap<>();
 		boolean motifMatched = false;
 		for (MotifOperation current : motifs) {
 
@@ -302,7 +292,7 @@ public class OperationService extends AbstractService {
 		}
 	}
 
-	private GregorianCalendar getSubmittedDate(String date) {
+	private GregorianCalendar getSubmittedDate(final String date) {
 
 		if (date == null || date.length() < 10 || !date.matches("..\\/..\\/....")) {
 			return null;
@@ -312,10 +302,10 @@ public class OperationService extends AbstractService {
 		return new GregorianCalendar(Integer.valueOf(buf[2]), Integer.valueOf(buf[1]) - 1, Integer.valueOf(buf[0]));
 	}
 
-	public List<OperationDto> getCurrentYearOperation(Integer accountId) {
+	public List<OperationDto> getCurrentYearOperation(final int accountId) {
 
 		List<Operation> operations = operationDao.findOperationOfYear(accountId, Calendar.getInstance().get(Calendar.YEAR));
-		List<OperationDto> dto = new ArrayList<OperationDto>();
+		List<OperationDto> dto = new ArrayList<>(operations.size());
 		for (Operation op : operations) {
 			dto.add(new OperationDto(op));
 		}

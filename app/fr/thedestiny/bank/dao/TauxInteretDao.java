@@ -2,19 +2,20 @@ package fr.thedestiny.bank.dao;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
 import fr.thedestiny.bank.models.TauxInteret;
 import fr.thedestiny.global.dao.AbstractDao;
 
+@Repository
 public class TauxInteretDao extends AbstractDao<TauxInteret> {
 
-	public TauxInteretDao(String persistenceContext) {
-		super(persistenceContext);
+	private TauxInteretDao() {
+		super("bank");
 	}
 
-	public void purge(EntityManager em, Integer typeId) {
-		((Session) em.unwrap(Session.class)).createSQLQuery("DELETE FROM TauxInteret where id_type = :typeId").setParameter("typeId", typeId).executeUpdate();
+	public void purge(EntityManager em, final int typeId) {
+		em.createNativeQuery("DELETE FROM TauxInteret where id_type = :typeId").setParameter("typeId", typeId).executeUpdate();
 	}
 
 }

@@ -4,89 +4,61 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.MappingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import fr.thedestiny.bank.dao.OperationTypeDao;
 import fr.thedestiny.bank.models.OperationType;
-import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
-import fr.thedestiny.global.service.InTransactionProcedure;
 
+@Service
 public class OperationTypeService extends AbstractService {
 
-	private static OperationTypeService thisInstance = new OperationTypeService();
-
+	@Autowired
 	private OperationTypeDao operationTypeDao;
-
-	public static OperationTypeService getInstance() {
-		return thisInstance;
-	}
 
 	private OperationTypeService() {
 		super("bank");
-		operationTypeDao = new OperationTypeDao("bank");
 	}
 
 	public List<OperationType> findAllOperationTypes() {
 		return operationTypeDao.findAll(null);
 	}
 
-	public GenericModelDto<OperationType> addOperationType(final GenericModelDto<OperationType> dto) throws Exception {
+	public OperationType addOperationType(final OperationType op) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		assert op.getId() == null;
 
-			@SuppressWarnings("unchecked")
+		return this.processInTransaction(new InTransactionFunction<OperationType>() {
+
 			@Override
-			public GenericModelDto<OperationType> doWork(EntityManager em) throws Exception {
-
-				if (dto == null) {
-					throw new NullPointerException("dto is null.");
-				}
-
-				OperationType op = dto.asObject();
-
-				if (op == null) {
-					throw new MappingException("Cannot map dto with model.");
-				}
-
-				if (op.getId() != null) {
-					throw new Exception("Cannot have Id.");
-				}
-
-				op = operationTypeDao.save(em, op);
-				return new GenericModelDto<OperationType>(op);
+			public OperationType doWork(EntityManager em) {
+				return operationTypeDao.save(em, op);
 			}
 		});
 	}
 
-	public GenericModelDto<OperationType> updateOperationType(final GenericModelDto<OperationType> dto) throws Exception {
+	public OperationType updateOperationType(final OperationType op) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		assert op.getId() != null;
 
-			@SuppressWarnings("unchecked")
+		return this.processInTransaction(new InTransactionFunction<OperationType>() {
+
 			@Override
-			public GenericModelDto<OperationType> doWork(EntityManager em) throws Exception {
-
-				OperationType op = dto.asObject();
-
-				if (op.getId() == null) {
-					throw new Exception("Cannot have empty id");
-				}
-
-				op = operationTypeDao.save(em, op);
-				return new GenericModelDto<OperationType>(op);
+			public OperationType doWork(EntityManager em) {
+				return operationTypeDao.save(em, op);
 			}
 		});
 	}
 
-	public void deleteOperationType(final Integer id) throws Exception {
+	public boolean deleteOperationType(final int id) {
 
-		this.processInTransaction(new InTransactionProcedure() {
+		return this.processInTransaction(new InTransactionFunction<Boolean>() {
 
 			@Override
-			public void doWork(EntityManager em) throws Exception {
-				operationTypeDao.delete(em, id);
+			public Boolean doWork(EntityManager em) {
+				return operationTypeDao.delete(em, id);
 			}
 		});
 	}

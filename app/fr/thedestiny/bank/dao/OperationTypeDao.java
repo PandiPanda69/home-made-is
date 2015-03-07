@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.stereotype.Repository;
+
 import play.db.jpa.JPA;
 import fr.thedestiny.bank.models.OperationType;
 import fr.thedestiny.global.dao.AbstractDao;
@@ -12,25 +14,25 @@ import fr.thedestiny.global.dao.AbstractDao;
  * Data Access Object du modèle OperationType
  * @author Sébastien
  */
+@Repository
 public class OperationTypeDao extends AbstractDao<OperationType> {
 
-	public OperationTypeDao(String persistenceContext) {
-		super(persistenceContext);
+	private OperationTypeDao() {
+		super("bank");
 	}
 
-	public OperationType findById(EntityManager em, Integer id) {
+	public OperationType findById(EntityManager em, final int id) {
 		return findById(em, id, OperationType.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<OperationType> findAll(EntityManager em) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
-		return em.createQuery("from OperationType order by name").getResultList();
+		return em.createQuery("from OperationType order by name", OperationType.class).getResultList();
 	}
 
-	public void delete(EntityManager em, OperationType op) {
+	public void delete(EntityManager em, final OperationType op) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
@@ -38,14 +40,12 @@ public class OperationTypeDao extends AbstractDao<OperationType> {
 		em.remove(op);
 	}
 
-	public void delete(EntityManager em, Integer id) throws Exception {
+	public boolean delete(EntityManager em, final int id) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
 
 		int result = em.createQuery("delete from OperationType where id = ?").setParameter(1, id).executeUpdate();
-		if (result == 0) {
-			throw new Exception("Failure");
-		}
+		return result == 1;
 	}
 }

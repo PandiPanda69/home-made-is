@@ -21,7 +21,7 @@ public class CompteDto extends AbstractDto {
 	private String type;
 	private String category;
 
-	public CompteDto(Compte compte) {
+	public CompteDto(final Compte compte) {
 		this.id = compte.getId();
 		this.nom = compte.getNom();
 		this.typeId = compte.getType().getId();

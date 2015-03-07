@@ -15,7 +15,7 @@ public class SoldeDto extends AbstractDto {
 	private Double solde;
 	private Integer compteId;
 
-	public SoldeDto(Solde solde) {
+	public SoldeDto(final Solde solde) {
 		this.moisAnneId = solde.getMois().getId();
 		this.compteId = solde.getCompte().getId();
 		this.solde = solde.getSolde();

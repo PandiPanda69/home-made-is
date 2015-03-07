@@ -5,34 +5,28 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.MappingException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import fr.thedestiny.bank.dao.MotifOperationDao;
 import fr.thedestiny.bank.dto.MotifOperationDto;
 import fr.thedestiny.bank.models.MotifOperation;
-import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
-import fr.thedestiny.global.service.InTransactionProcedure;
 
+@Service
 public class MotifOperationService extends AbstractService {
 
-	private static MotifOperationService thisInstance = new MotifOperationService();
-
+	@Autowired
 	private MotifOperationDao motifDao;
 
 	protected MotifOperationService() {
 		super("bank");
-		this.motifDao = new MotifOperationDao("bank");
 	}
 
-	public static MotifOperationService getInstance() {
-		return thisInstance;
-	}
+	public List<MotifOperationDto> findAllMotifs(final int userId) {
 
-	public List<MotifOperationDto> findAllMotifs(Integer userId) {
-
-		List<MotifOperationDto> result = new ArrayList<MotifOperationDto>();
+		List<MotifOperationDto> result = new ArrayList<>();
 		for (MotifOperation motif : motifDao.findAll(userId)) {
 			result.add(new MotifOperationDto(motif));
 		}
@@ -40,33 +34,25 @@ public class MotifOperationService extends AbstractService {
 		return result;
 	}
 
-	public void deleteMotif(final Integer userId, final Integer motifId) throws Exception {
+	public boolean deleteMotif(final int userId, final int motifId) {
 
-		this.processInTransaction(new InTransactionProcedure() {
+		return this.processInTransaction(new InTransactionFunction<Boolean>() {
 
 			@Override
-			public void doWork(EntityManager em) throws Exception {
-				motifDao.delete(em, userId, motifId);
+			public Boolean doWork(EntityManager em) throws Exception {
+				return motifDao.delete(em, userId, motifId);
 			}
 		});
 	}
 
-	public MotifOperationDto addMotif(final GenericModelDto<MotifOperation> dto, final Integer userId) throws Exception {
+	public MotifOperationDto addMotif(final MotifOperation motif, final int userId) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		assert motif.getId() == null;
 
-			@SuppressWarnings("unchecked")
+		return this.processInTransaction(new InTransactionFunction<MotifOperationDto>() {
+
 			@Override
-			public MotifOperationDto doWork(EntityManager em) throws Exception {
-
-				MotifOperation motif = dto.asObject();
-				if (motif == null) {
-					throw new MappingException("Cannot map dto with model.");
-				}
-
-				if (motif.getId() != null) {
-					throw new Exception("Cannot have Id.");
-				}
+			public MotifOperationDto doWork(EntityManager em) {
 
 				// Vérification que la regex est valide (sinon lève une exception)
 				"".matches(motif.getMotif());

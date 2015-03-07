@@ -22,9 +22,8 @@ public class AuthenticationService extends AbstractService {
 	private UtilisateurDao utilisateurDao;
 
 	public Utilisateur authenticate(final String username, final String password) {
-		List<Utilisateur> users = processInTransaction(new InTransactionFunction() {
+		List<Utilisateur> users = processInTransaction(new InTransactionFunction<List<Utilisateur>>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public List<Utilisateur> doWork(EntityManager em) {
 				return utilisateurDao.findByUsername(em, username);

@@ -1,24 +1,36 @@
 package fr.thedestiny.bank.controller;
 
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import play.Logger;
 import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.bank.dto.MotifOperationDto;
 import fr.thedestiny.bank.models.MotifOperation;
 import fr.thedestiny.bank.service.MotifOperationService;
-import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
+@org.springframework.stereotype.Controller
 public class MotifOperationController extends Controller {
 
-	private static MotifOperationService motifService = MotifOperationService.getInstance();
+	@Autowired
+	private MotifOperationService motifService;
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Security
 	@Transactional(readOnly = true)
-	public static Result list() {
+	public Result list() {
 
 		Integer userId = SecurityHelper.getLoggedUserId();
 		return ok(Json.toJson(motifService.findAllMotifs(userId)));
@@ -26,20 +38,29 @@ public class MotifOperationController extends Controller {
 
 	@Security
 	@Transactional
-	public static Result add() throws Exception {
+	public Result add() {
 
-		GenericModelDto<MotifOperation> motif = new GenericModelDto<MotifOperation>(ctx().request().body().asJson(), MotifOperation.class);
-		MotifOperationDto dto = motifService.addMotif(motif, SecurityHelper.getLoggedUserId());
+		MotifOperationDto dto = null;
+		try {
+			MotifOperation motif = mapper.readValue(ctx().request().body().asJson().toString(), MotifOperation.class);
+			dto = motifService.addMotif(motif, SecurityHelper.getLoggedUserId());
+		} catch (IOException ex) {
+			Logger.error("Error while unserializing", ex);
+			return ResultFactory.FAIL;
+		}
 
 		return ok(dto.toJson());
 	}
 
 	@Security
 	@Transactional
-	public static Result delete(Integer motifId) throws Exception {
+	public Result delete(final Integer motifId) {
 
 		Integer userId = SecurityHelper.getLoggedUserId();
-		motifService.deleteMotif(userId, motifId);
+		if (!motifService.deleteMotif(userId, motifId)) {
+			return ResultFactory.FAIL;
+		}
+
 		return ResultFactory.OK;
 	}
 }

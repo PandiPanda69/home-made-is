@@ -1,6 +1,9 @@
 package fr.thedestiny.bank.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
 import play.db.jpa.Transactional;
@@ -8,29 +11,30 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
-import fr.thedestiny.bank.dao.HeuristiqueTypeDao;
 import fr.thedestiny.bank.dto.OperationDto;
-import fr.thedestiny.bank.models.HeuristiqueType;
-import fr.thedestiny.bank.models.Operation;
 import fr.thedestiny.bank.service.OperationService;
 import fr.thedestiny.bank.service.SoldeService;
-import fr.thedestiny.global.dto.GenericModelDto;
 import fr.thedestiny.global.helper.ResultFactory;
 
 @org.springframework.stereotype.Controller
 public class OperationController extends Controller {
 
-	private static OperationService operationService = OperationService.getInstance();
-	private static SoldeService soldeService = SoldeService.getInstance();
+	@Autowired
+	private OperationService operationService;
+
+	@Autowired
+	private SoldeService soldeService;
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Security
 	@Transactional(readOnly = true)
-	public Result list(Integer idAccount, Integer idMonth) {
+	public Result list(final Integer idAccount, final Integer idMonth) {
 
 		List<OperationDto> list = operationService.findAllOperationsForMonth(SecurityHelper.getLoggedUserId(), idAccount, idMonth);
 		return ok(Json.toJson(list));
@@ -38,20 +42,20 @@ public class OperationController extends Controller {
 
 	@Security
 	@Transactional
-	public Result add(Integer idAccount, Integer idMonth) throws Exception {
+	public Result add(final Integer idAccount, final Integer idMonth) {
 
 		OperationDto dto = null;
 		try {
 			Integer userId = SecurityHelper.getLoggedUserId();
 
-			dto = new ObjectMapper().readValue(ctx().request().body().asJson().toString(), OperationDto.class);
+			dto = mapper.readValue(ctx().request().body().asJson().toString(), OperationDto.class);
 			dto = operationService.addOperation(dto, userId, idAccount, idMonth);
 
 			// Update month solds (chained)
 			soldeService.updateSolde(userId, idAccount, idMonth);
 
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		} catch (IOException ex) {
+			Logger.error("Error while unserializing", ex);
 			return ResultFactory.FAIL;
 		}
 
@@ -60,21 +64,20 @@ public class OperationController extends Controller {
 
 	@Security
 	@Transactional
-	public Result edit(Integer idAccount, Integer idMonth, Integer id) {
+	public Result edit(final Integer idAccount, final Integer idMonth, final Integer id) {
 
 		OperationDto dto = null;
 		try {
-			dto = new ObjectMapper().readValue(ctx().request().body().asJson().toString(), OperationDto.class);
+			dto = mapper.readValue(ctx().request().body().asJson().toString(), OperationDto.class);
 
 			Integer userId = SecurityHelper.getLoggedUserId();
-
 			dto = operationService.updateOperation(dto, userId, idAccount, idMonth);
 
 			// Update month solds (chained)
 			soldeService.updateSolde(userId, idAccount, idMonth);
 
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		} catch (IOException ex) {
+			Logger.error("Error while unserializing", ex);
 			return ResultFactory.FAIL;
 		}
 
@@ -83,18 +86,15 @@ public class OperationController extends Controller {
 
 	@Security
 	@Transactional
-	public Result delete(Integer idAccount, Integer idMois, Integer id) {
+	public Result delete(final Integer idAccount, final Integer idMois, final Integer id) {
 
-		try {
-			Integer userId = SecurityHelper.getLoggedUserId();
-			operationService.deleteOperation(userId, idAccount, idMois, id);
-
-			// Update month solds (chained)
-			soldeService.updateSolde(userId, idAccount, idMois);
-		} catch (Exception ex) {
-			Logger.error("Error while saving", ex);
+		Integer userId = SecurityHelper.getLoggedUserId();
+		if (!operationService.deleteOperation(userId, idAccount, idMois, id)) {
 			return ResultFactory.FAIL;
 		}
+
+		// Update month solds (chained)
+		soldeService.updateSolde(userId, idAccount, idMois);
 
 		return ResultFactory.OK;
 	}
@@ -102,39 +102,12 @@ public class OperationController extends Controller {
 	@Deprecated
 	@Security
 	@Transactional
-	public Result importData(Integer idAccount, Integer idMois) {
-
-		JsonNode body = ctx().request().body().asJson();
-
-		GenericModelDto<Operation> dto = null;
-		JsonNode current = null;
-		for (int i = 0; i < body.size(); i++) {
-
-			try {
-				current = body.get(i);
-				dto = new GenericModelDto<Operation>(current, Operation.class);
-
-				// FIXME Nettoyer ce caca
-				Operation model = dto.asObject();
-				HeuristiqueType type = HeuristiqueTypeDao.findByNom(model.getNom());
-				if (type != null) {
-					model.setType(type.getType());
-					dto = new GenericModelDto<Operation>(model);
-				}
-
-				//				OperationDelegate.add(dto, idAccount, idMois);
-
-			} catch (Exception ex) {
-				Logger.error("Error while importing data", ex);
-				return ResultFactory.FAIL;
-			}
-		}
-
-		return ResultFactory.OK;
+	public Result importData(final Integer idAccount, final Integer idMois) {
+		return notFound();
 	}
 
 	@Security
-	public Result currentYearOp(Integer accountId) {
+	public Result currentYearOp(final Integer accountId) {
 
 		List<OperationDto> dto = operationService.getCurrentYearOperation(accountId);
 		return ok(Json.toJson(dto));

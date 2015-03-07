@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import fr.thedestiny.bank.dao.CompteDao;
 import fr.thedestiny.bank.dao.MoisAnneeDao;
 import fr.thedestiny.bank.dao.OperationDao;
@@ -18,32 +21,29 @@ import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
 import fr.thedestiny.global.service.InTransactionProcedure;
 
+@Service
 public class SoldeService extends AbstractService {
 
-	private static SoldeService thisInstance = new SoldeService();
-
+	@Autowired
 	private CompteDao compteDao;
-	private MoisAnneeDao monthDao;
-	private SoldeDao soldeDao;
-	private OperationDao operationDao;
 
-	public static SoldeService getInstance() {
-		return thisInstance;
-	}
+	@Autowired
+	private MoisAnneeDao monthDao;
+
+	@Autowired
+	private SoldeDao soldeDao;
+
+	@Autowired
+	private OperationDao operationDao;
 
 	private SoldeService() {
 		super("bank");
-		compteDao = new CompteDao("bank");
-		monthDao = new MoisAnneeDao("bank");
-		soldeDao = new SoldeDao("bank");
-		operationDao = new OperationDao("bank");
 	}
 
-	public SoldeDto getBalanceAtBeginningOfMonth(final Integer userId, final Integer idCompte, final Integer idMois) throws Exception {
+	public SoldeDto getBalanceAtBeginningOfMonth(final int userId, final int idCompte, final int idMois) {
 
-		return this.processInTransaction(new InTransactionFunction() {
+		return this.processInTransaction(new InTransactionFunction<SoldeDto>() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public SoldeDto doWork(EntityManager em) {
 
@@ -71,7 +71,7 @@ public class SoldeService extends AbstractService {
 	 * @param mois
 	 * @return
 	 */
-	private Solde getSoldeForMonth(EntityManager em, Compte compte, MoisAnnee mois) {
+	private Solde getSoldeForMonth(EntityManager em, final Compte compte, final MoisAnnee mois) {
 		Solde solde = null;
 		boolean saveSolde = false;
 
@@ -119,11 +119,10 @@ public class SoldeService extends AbstractService {
 		return solde;
 	}
 
-	public void updateSolde(final Integer userId, final Integer accountId, final Integer monthId) throws Exception {
+	public void updateSolde(final int userId, final int accountId, final int monthId) {
 
 		this.processInTransaction(new InTransactionProcedure() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void doWork(EntityManager em) {
 
@@ -144,7 +143,7 @@ public class SoldeService extends AbstractService {
 	 * Met à jour le solde en question en calculant également ses suivants
 	 * @param solde
 	 */
-	private void updateSolde(EntityManager em, Solde solde) {
+	private void updateSolde(EntityManager em, final Solde solde) {
 
 		Double balance = null;
 		List<Solde> soldes = soldeDao.findAll(em, solde.getCompte().getId());
@@ -181,7 +180,7 @@ public class SoldeService extends AbstractService {
 	 * @param mois
 	 * @return
 	 */
-	protected Double computeBalanceFromBeginning(EntityManager em, Compte compte, MoisAnnee mois) {
+	protected Double computeBalanceFromBeginning(EntityManager em, final Compte compte, final MoisAnnee mois) {
 
 		Double balance = .0d;
 		for (MoisAnnee current : compte.getMois()) {
@@ -203,7 +202,7 @@ public class SoldeService extends AbstractService {
 	 * @param cible
 	 * @return
 	 */
-	protected Double computeBalanceForMonth(EntityManager em, Compte compte, Solde solde, MoisAnnee cible) {
+	protected Double computeBalanceForMonth(EntityManager em, final Compte compte, final Solde solde, final MoisAnnee cible) {
 
 		Double balance = solde.getSolde();
 
@@ -228,7 +227,7 @@ public class SoldeService extends AbstractService {
 	 * @param mois
 	 * @return La somme des montants
 	 */
-	protected Double sumOperationsAmount(EntityManager em, Compte compte, MoisAnnee mois) {
+	protected Double sumOperationsAmount(EntityManager em, final Compte compte, final MoisAnnee mois) {
 		Double balance = .0d;
 		List<Operation> operations = operationDao.findAll(em, compte.getId(), mois.getId());
 		for (Operation op : operations) {
@@ -245,7 +244,7 @@ public class SoldeService extends AbstractService {
 	 * @param getPrevious	Force à récupérer le solde précédent
 	 * @return
 	 */
-	private Solde getSoldeForMonth(List<Solde> soldes, MoisAnnee mois, boolean getPrevious) {
+	private Solde getSoldeForMonth(final List<Solde> soldes, final MoisAnnee mois, final boolean getPrevious) {
 
 		int i = 0;
 		Solde result = null;

@@ -19,16 +19,16 @@ public class StatsDto extends AbstractDto {
 		private Integer key;
 		private Object val;
 
-		public StatsElement(Integer key, Object val) {
+		public StatsElement(final int key, final Object val) {
 			this.key = key;
 			this.val = val;
 		}
 	}
 
 	private Integer accountId;
-	private List<StatsElement> elements = new ArrayList<StatsElement>();
+	private List<StatsElement> elements = new ArrayList<>();
 
-	public void addStat(Integer key, Object val) {
+	public void addStat(final int key, final Object val) {
 		elements.add(new StatsElement(key, val));
 	}
 
