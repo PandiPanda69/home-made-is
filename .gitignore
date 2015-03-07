@@ -17,3 +17,6 @@ dist
 .target
 .sonar
 sonar-project.properties
+.gradle
+bin
+build

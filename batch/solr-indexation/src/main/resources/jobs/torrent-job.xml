@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		
+	<import resource="classpath:job-context.xml" />
+	<context:property-placeholder location="file:${conf.directory}/torrent-job.properties,
+											file:${conf.directory}/solr.properties" />
+	
+	<batch:job id="torrent-job">
+		<batch:step id="torrent-index" next="torrent-commit">
+			<batch:tasklet>
+				<batch:chunk 
+					reader="torrentReader"
+					writer="torrentWriter"
+					commit-interval="10"
+				/>
+			</batch:tasklet>
+		</batch:step>
+		<batch:step id="torrent-commit">
+			<batch:tasklet ref="commitTasklet" />
+		</batch:step>
+	</batch:job>
+	
+	<bean id="torrentReader" class="org.springframework.batch.item.database.JdbcCursorItemReader">
+		<property name="dataSource" ref="dataSource" />
+		<property name="rowMapper" ref="rowMapper" />
+		<property name="sql">
+			<value>
+				<![CDATA[
+					SELECT id, name, status, trackerError FROM Torrent
+				]]>
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="torrentWriter" class="fr.thedestiny.indexation.writer.TorrentWriter">
+		<constructor-arg ref="solrConnection" />
+	</bean>
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    	<property name="driverClassName" value="${database.driver}" />
+    	<property name="url" value="${database.url}" />
+    </bean>
+	
+</beans>

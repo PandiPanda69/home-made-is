@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+      <property name="jobRepository" ref="jobRepository"/>
+  </bean>
+    
+  <bean id="jobRepository" class="org.springframework.batch.core.repository.support.SimpleJobRepository">
+      <constructor-arg>
+          <bean class="org.springframework.batch.core.repository.dao.MapJobInstanceDao"/>
+      </constructor-arg>
+      <constructor-arg>
+          <bean class="org.springframework.batch.core.repository.dao.MapJobExecutionDao" />
+      </constructor-arg>
+      <constructor-arg>
+          <bean class="org.springframework.batch.core.repository.dao.MapStepExecutionDao"/>
+      </constructor-arg>
+      <constructor-arg>
+      	<bean class="org.springframework.batch.core.repository.dao.MapExecutionContextDao" />
+      </constructor-arg>
+  </bean>
+  
+  <bean id="rowMapper" class="org.springframework.jdbc.core.ColumnMapRowMapper" />
+  
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <bean id="solrConnection" class="fr.thedestiny.indexation.util.SolrConnection">
+  	<constructor-arg value="${solr.url}"/>
+  </bean>
+  
+  <bean id="commitTasklet" class="fr.thedestiny.indexation.tasklet.CommitTasklet">
+  	<constructor-arg ref="solrConnection" />
+  </bean>
+  
+</beans>
