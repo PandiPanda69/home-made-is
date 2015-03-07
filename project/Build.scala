@@ -15,7 +15,7 @@ object ApplicationBuild extends Build {
     javaCore,
     javaJdbc,
     javaJpa,
-    "org.projectlombok" % "lombok" % "0.11.6",
+    "org.projectlombok" % "lombok" % "1.12.6",
     "org.xerial" % "sqlite-jdbc" % "3.7.2",
     "org.hibernate" % "hibernate-entitymanager" % "3.6.9.Final",
     "org.hibernate" % "hibernate-validator" % "4.0.0.GA",
