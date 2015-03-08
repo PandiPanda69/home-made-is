@@ -24,4 +24,6 @@
 
    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 
+	<bean class="fr.thedestiny.global.dao.SolrSearchDao" />
+
 </beans>

@@ -5,7 +5,8 @@ App.Views.Torrents = Backbone.View.extend({
 
 	events: {
 		"click .torrent-remove": "_remove",
-		"click #torrent-filter": "_filter"
+		"click #torrent-filter": "_filter",
+		"click #torrent-search": "_search"
 	},
 	initialize: function() {
 		this.$el = $("#main-container");
@@ -61,6 +62,14 @@ App.Views.Torrents = Backbone.View.extend({
 
 		App.Loading.dispose();
 	},
+	_refreshListing: function(data) {
+		this._wrapData(data);
+
+		this.$el.html(this.template({torrents: data}));
+
+		this._initGrades();
+		this._refreshCounter();
+	},
 	_remove: function(evt) {
 		var $target = $(evt.currentTarget);
 		var id = $target.attr('torrent-id');
@@ -103,17 +112,11 @@ App.Views.Torrents = Backbone.View.extend({
 			this._onError('Une erreur est survenue lors du filtrage des torrents : ' + errorMsg);
 		}, this))
 		.done($.proxy(function(data) {
-			this._wrapData(data);
-
-			this.$el.html(this.template({torrents: data}));
+			this._refreshListing(data);
 
 			$('#status').val(status);
 			$('#timeUnit').val(timeUnit);
 			$('#timeValue').val(timeValue);
-
-			this._initGrades();
-
-			this._refreshCounter();
 
 			App.Loading.dispose();
 		}, this));
@@ -129,5 +132,29 @@ App.Views.Torrents = Backbone.View.extend({
 				this._onError('Erreur lors de la mise à jour de la note : ' + response.statusText);
 			}, this)
 		});
+	},
+	_search: function() {
+		App.Loading.render();
+
+		var value = $('#torrent-search-value').val();
+		var status = $('#status').val();
+
+		$.ajax({
+			type: 'GET',
+			url:  globals.rootUrl + '/torrents/find/' + value,
+			data: {status: status},
+			cache: false
+		})
+		.fail($.proxy(function(xhr) {
+			var response = JSON.parse(xhr.responseText);
+			this._onError('Erreur lors de la recherche : ' + response.message);
+		}, this))
+		.done($.proxy(function(data) {
+                        this._refreshListing(data);
+
+                        App.Loading.dispose();
+		}, this));
+
+		return false;
 	}
 });

@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import play.db.jpa.JPA;
+import fr.thedestiny.Constants;
 import fr.thedestiny.global.dao.AbstractDao;
 import fr.thedestiny.global.util.TimeUnit;
 import fr.thedestiny.torrent.model.Torrent;
@@ -28,7 +29,7 @@ public class TorrentDao extends AbstractDao<Torrent> {
 	};
 
 	protected TorrentDao() {
-		super("torrent");
+		super(Constants.TORRENT_CONTEXT);
 	}
 
 	public List<Torrent> findAll(EntityManager em, final TorrentStatus status) {
@@ -63,21 +64,10 @@ public class TorrentDao extends AbstractDao<Torrent> {
 				.getSingleResult();
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<TorrentStat> getLastTorrentActivityData(EntityManager em, int unitCount, TimeUnit unit, TorrentStatus status) {
+	public List<TorrentStat> getLastTorrentActivityData(EntityManager em, TorrentStatus status) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
 		}
-
-		// TODO Disable temporally
-		//		String unitString = null;
-		//		if (unit != TimeUnit.WEEK) {
-		//			unitString = getUnitString(unit);
-		//		}
-		//		else {
-		//			unitString = "days";
-		//			unitCount = unitCount * 7;
-		//		}
 
 		String query = "from TorrentStat s join fetch s.torrent t";
 		if (status != TorrentStatus.ALL) {
@@ -89,7 +79,7 @@ public class TorrentDao extends AbstractDao<Torrent> {
 			}
 		}
 
-		Query q = em.createQuery(query, TorrentStat.class);
+		TypedQuery<TorrentStat> q = em.createQuery(query, TorrentStat.class);
 		if (status != TorrentStatus.ALL) {
 			if (status == TorrentStatus.EXPIRED) {
 				q.setParameter("status", TorrentStatus.ACTIVE.toString());
@@ -102,15 +92,15 @@ public class TorrentDao extends AbstractDao<Torrent> {
 		return q.getResultList();
 	}
 
-	private String getUnitString(TimeUnit unit) {
+	private String getUnitString(final TimeUnit unit) {
 		switch (unit) {
 		case MONTH:
 			return "months";
 		case DAY:
 			return "days";
+		default:
+			throw new UnsupportedOperationException();
 		}
-
-		throw new UnsupportedOperationException();
 	}
 
 	public void delete(EntityManager em, Integer torrentId) {
@@ -118,12 +108,16 @@ public class TorrentDao extends AbstractDao<Torrent> {
 		em.createQuery("delete from Torrent where id = :torrentId").setParameter("torrentId", torrentId).executeUpdate();
 	}
 
-	public void logicalDelete(EntityManager em, Integer torrentId) {
-		em.createQuery("update Torrent set status = 'DELETED' where id = :torrentId").setParameter("torrentId", torrentId).executeUpdate();
+	public boolean logicalDelete(EntityManager em, final int torrentId) {
+		int result = em.createQuery("update Torrent set status = 'DELETED' where id = :torrentId")
+				.setParameter("torrentId", torrentId)
+				.executeUpdate();
+
+		return result == 1;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> getTorrentStatHistory(StatType type, int unitCount, TimeUnit unit) {
+	public List<Map<String, Object>> getTorrentStatHistory(final StatType type, int unitCount, final TimeUnit unit) {
 
 		String unitString = null;
 		if (unit != TimeUnit.WEEK) {
@@ -146,5 +140,15 @@ public class TorrentDao extends AbstractDao<Torrent> {
 				.setParameter("type", type.name())
 				.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP)
 				.list();
+	}
+
+	public List<TorrentStat> getTorrentActivityDataById(final List<Integer> ids) {
+
+		String query = "from TorrentStat s join fetch s.torrent t WHERE t.id IN :ids";
+
+		TypedQuery<TorrentStat> q = JPA.em(persistenceContext).createQuery(query, TorrentStat.class);
+		q.setParameter("ids", ids);
+
+		return q.getResultList();
 	}
 }

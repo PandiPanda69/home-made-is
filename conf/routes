@@ -64,6 +64,7 @@ PUT		/torrent/torrents/:idTorrent	@fr.thedestiny.torrent.controller.TorrentsCont
 DELETE  /torrent/torrents/:idTorrent    @fr.thedestiny.torrent.controller.TorrentsController.delete(idTorrent: Integer)
 
 POST    /torrent/torrents/filter        @fr.thedestiny.torrent.controller.TorrentsController.filter()
+GET		/torrent/torrents/find/:value	@fr.thedestiny.torrent.controller.TorrentsController.find(value: String)
 
 GET     /torrent/stats/home             @fr.thedestiny.torrent.controller.StatsController.home()
 

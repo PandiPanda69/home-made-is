@@ -1,9 +1,11 @@
 package fr.thedestiny.torrent.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
@@ -61,7 +63,7 @@ public class TorrentsController extends Controller {
 	@Transactional
 	@Security
 	@SuppressWarnings("unchecked")
-	public Result update(Integer torrentId) {
+	public Result update(final Integer torrentId) {
 
 		try {
 			Map<String, Object> data = objectMapper.readValue(ctx().request().body().asJson().toString(), Map.class);
@@ -78,14 +80,37 @@ public class TorrentsController extends Controller {
 
 	@Transactional
 	@Security
-	public Result delete(Integer torrentId) {
+	public Result delete(final Integer torrentId) {
 
-		try {
-			torrentService.deleteTorrent(torrentId);
-		} catch (Throwable ex) {
-			Logger.error("Error : ", ex);
+		if (!torrentService.deleteTorrent(torrentId)) {
 			return ResultFactory.FAIL;
 		}
+
 		return ResultFactory.OK;
+	}
+
+	@Security
+	public Result find(final String value) {
+
+		Map<String, String[]> params = ctx().request().queryString();
+		if (params == null) {
+			return badRequest();
+		}
+
+		if (!params.containsKey("status") || params.get("status").length != 1) {
+			return badRequest();
+		}
+
+		String status = params.get("status")[0];
+
+		try {
+			List<TorrentDto> dto = torrentService.findTorrents(value, status);
+			return ok(Json.toJson(dto));
+		} catch (SolrServerException ex) {
+			Map<String, String> error = new HashMap<>();
+			error.put("message", ex.getMessage());
+
+			return internalServerError(Json.toJson(error));
+		}
 	}
 }
