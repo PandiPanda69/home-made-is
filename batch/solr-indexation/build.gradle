@@ -11,6 +11,18 @@ jar {
     }
 }
 
+task zipDependencies(type: Zip) {
+	description 'Package dependencies into a single external zip.'
+
+	archiveName project.name + '-' + project.version + '-libs.zip'
+
+	println 'Prepare ' + relativePath(archivePath) + ' ...'
+
+	from configurations.compile
+    from configurations.runtime
+    into 'libs'
+}
+
 repositories {
     ivy {
     	url '~/play-2.2.5/repository/cache'
