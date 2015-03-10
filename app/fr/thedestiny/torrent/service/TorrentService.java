@@ -10,8 +10,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +30,9 @@ import fr.thedestiny.torrent.model.TorrentStat;
 
 @Service
 public class TorrentService extends AbstractService {
+
+	private static final String FIELD_STATUS = "status";
+	private static final String FIELD_NAME = "name";
 
 	@Autowired
 	private TorrentDao torrentDao;
@@ -158,30 +159,44 @@ public class TorrentService extends AbstractService {
 
 		// If all status included, no clause needed.
 		if (!TorrentStatus.ALL.name().equals(status)) {
-			criteria.put("status", status);
+			criteria.put(FIELD_STATUS, status);
 		}
 
-		criteria.put("name", value);
+		criteria.put(FIELD_NAME, value);
 
-		SolrDocumentList docs;
+		Map<String, Map<String, List<String>>> highlighted;
 		try {
-			docs = searchDao.search(Constants.TORRENT_CONTEXT, criteria);
+			highlighted = searchDao.highlight(Constants.TORRENT_CONTEXT, criteria, FIELD_NAME);
 		} catch (CoreNotFoundException ex) {
 			Logger.error("Code fault.", ex);
 			return null;
 		}
 
-		List<Integer> ids = new ArrayList<>();
-		if (docs.size() == 0) {
+		if (highlighted.isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		for (SolrDocument doc : docs) {
-			ids.add(Integer.valueOf(doc.get("id").toString()));
+		List<Integer> ids = new ArrayList<>();
+		for (String id : highlighted.keySet()) {
+			ids.add(Integer.valueOf(id));
 		}
 
 		List<TorrentStat> stats = torrentDao.getTorrentActivityDataById(ids);
+		List<TorrentDto> dto = convertTorrentStat(stats, filterExpiredOnly);
 
-		return convertTorrentStat(stats, filterExpiredOnly);
+		for (TorrentDto current : dto) {
+			if (!highlighted.containsKey(current.getId().toString())) {
+				continue;
+			}
+
+			Map<String, List<String>> fields = highlighted.get(current.getId().toString());
+			if (!fields.containsKey(FIELD_NAME) || fields.get(FIELD_NAME).isEmpty()) {
+				continue;
+			}
+
+			current.setName(fields.get(FIELD_NAME).get(0));
+		}
+
+		return dto;
 	}
 }

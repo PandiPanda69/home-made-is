@@ -42,3 +42,7 @@
 .valign-center {
 	vertical-align: middle;
 }
+
+em {
+	background: yellow;
+}

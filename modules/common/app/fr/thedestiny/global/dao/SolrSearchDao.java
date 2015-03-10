@@ -32,20 +32,41 @@ public class SolrSearchDao {
 
 	public SolrDocumentList search(final String core, final Map<String, String> criteria) throws CoreNotFoundException, SolrServerException {
 
+		SolrClient client = getCore(core);
+
+		SolrQuery query = prepareQuery(criteria);
+		QueryResponse res = client.query(query);
+
+		return res.getResults();
+	}
+
+	public Map<String, Map<String, List<String>>> highlight(final String core, final Map<String, String> criteria, final String field) throws CoreNotFoundException, SolrServerException {
+
+		SolrClient client = getCore(core);
+
+		SolrQuery query = prepareQuery(criteria);
+		query.setHighlight(true);
+		query.addHighlightField(field);
+
+		QueryResponse res = client.query(query);
+
+		return res.getHighlighting();
+	}
+
+	private SolrClient getCore(final String core) throws CoreNotFoundException {
 		if (!clients.containsKey(core)) {
 			throw new CoreNotFoundException(core);
 		}
 
-		SolrClient client = clients.get(core);
+		return clients.get(core);
+	}
 
+	private SolrQuery prepareQuery(final Map<String, String> criteria) throws CoreNotFoundException {
 		List<String> q = new ArrayList<>();
 		for (Entry<String, String> entry : criteria.entrySet()) {
 			q.add(entry.getKey() + ":" + entry.getValue());
 		}
 
-		SolrQuery query = new SolrQuery(StringUtils.join(q.toArray(), " AND "));
-		QueryResponse res = client.query(query);
-
-		return res.getResults();
+		return new SolrQuery(StringUtils.join(q.toArray(), " AND "));
 	}
 }
