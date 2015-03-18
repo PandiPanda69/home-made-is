@@ -9,6 +9,10 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'solr-indexation', 'Implementation-Version': version
     }
+    
+    sourceSets.main.resources {
+    	exclude 'log4j.xml'
+    }
 }
 
 task zipDependencies(type: Zip) {
