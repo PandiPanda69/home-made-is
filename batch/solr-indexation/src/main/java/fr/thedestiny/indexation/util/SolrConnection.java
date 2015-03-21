@@ -17,8 +17,17 @@ public class SolrConnection {
 
 	private final SolrClient client;
 
-	private SolrConnection(final String url) {
-		client = new HttpSolrClient(url);
+	private SolrConnection(final String url, final String core) {
+
+		String coreUrl;
+
+		if (url.endsWith("/")) {
+			coreUrl = url + core;
+		} else {
+			coreUrl = url + '/' + core;
+		}
+
+		client = new HttpSolrClient(coreUrl);
 	}
 
 	public UpdateResponse addDocuments(final List<? extends Map<String, Object>> documents) throws SolrServerException, IOException {

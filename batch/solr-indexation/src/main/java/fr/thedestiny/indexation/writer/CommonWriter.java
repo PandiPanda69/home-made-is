@@ -8,13 +8,13 @@ import org.springframework.batch.item.ItemWriter;
 
 import fr.thedestiny.indexation.util.SolrConnection;
 
-public class TorrentWriter implements ItemWriter<Map<String, Object>> {
+public class CommonWriter implements ItemWriter<Map<String, Object>> {
 
-	private static final Logger LOGGER = Logger.getLogger(TorrentWriter.class);
+	private static final Logger LOGGER = Logger.getLogger(CommonWriter.class);
 
 	private final SolrConnection solrConnection;
 
-	public TorrentWriter(final SolrConnection solrConnection) {
+	public CommonWriter(final SolrConnection solrConnection) {
 		this.solrConnection = solrConnection;
 	}
 

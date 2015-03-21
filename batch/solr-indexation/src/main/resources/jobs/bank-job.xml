@@ -8,37 +8,39 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 		
 	<import resource="classpath:job-context.xml" />
-	<context:property-placeholder location="file:${conf.directory}/torrent-job.properties,
+	<context:property-placeholder location="file:${conf.directory}/bank-job.properties,
 											file:${conf.directory}/solr.properties" />
 	
-	<batch:job id="torrent-job">
-		<batch:step id="torrent-index" next="torrent-commit">
+	<batch:job id="bank-job">
+		<batch:step id="torrent-index" next="bank-commit">
 			<batch:tasklet>
 				<batch:chunk 
-					reader="torrentReader"
-					writer="torrentWriter"
-					commit-interval="10"
+					reader="bankReader"
+					writer="bankWriter"
+					commit-interval="100"
 				/>
 			</batch:tasklet>
 		</batch:step>
-		<batch:step id="torrent-commit">
+		<batch:step id="bank-commit">
 			<batch:tasklet ref="commitTasklet" />
 		</batch:step>
 	</batch:job>
 	
-	<bean id="torrentReader" class="org.springframework.batch.item.database.JdbcCursorItemReader">
+	<bean id="bankReader" class="org.springframework.batch.item.database.JdbcCursorItemReader">
 		<property name="dataSource" ref="dataSource" />
 		<property name="rowMapper" ref="rowMapper" />
 		<property name="sql">
 			<value>
 				<![CDATA[
-					SELECT id, name, status, trackerError FROM Torrent
+					SELECT op.id, op.nom as "desc", op.nomComplet as "transaction", type.name as "cat"
+					FROM Operation op
+					LEFT JOIN OperationType type ON op.type_id = type.id
 				]]>
 			</value>
 		</property>
 	</bean>
 	
-	<bean id="torrentWriter" class="fr.thedestiny.indexation.writer.CommonWriter">
+	<bean id="bankWriter" class="fr.thedestiny.indexation.writer.CommonWriter">
 		<constructor-arg ref="solrConnection" />
 	</bean>
 	

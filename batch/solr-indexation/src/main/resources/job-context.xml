@@ -29,7 +29,8 @@
   </bean>
   
   <bean id="solrConnection" class="fr.thedestiny.indexation.util.SolrConnection">
-  	<constructor-arg value="${solr.url}"/>
+  	<constructor-arg name="url" value="${solr.url}"/>
+  	<constructor-arg name="core" value="${solr.core}"/>
   </bean>
   
   <bean id="commitTasklet" class="fr.thedestiny.indexation.tasklet.CommitTasklet">
