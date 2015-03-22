@@ -11,7 +11,7 @@ App.Views.AccountSynth = Backbone.View.extend({
 	},
 	render: function(account) {
 
-		if(account.get('category') != 'SAVING') {
+		if(account.get('category') !== 'SAVING') {
 			return;
 		}
 

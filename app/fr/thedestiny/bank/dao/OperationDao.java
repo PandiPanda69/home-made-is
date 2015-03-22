@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
 import play.db.jpa.JPA;
+import fr.thedestiny.Constants;
 import fr.thedestiny.bank.models.Operation;
 import fr.thedestiny.global.dao.AbstractDao;
 
@@ -18,7 +19,7 @@ import fr.thedestiny.global.dao.AbstractDao;
 public class OperationDao extends AbstractDao<Operation> {
 
 	private OperationDao() {
-		super("bank");
+		super(Constants.BANK_CONTEXT);
 	}
 
 	public List<Operation> findAll(EntityManager em) {
@@ -64,5 +65,20 @@ public class OperationDao extends AbstractDao<Operation> {
 				.setParameter("accountId", accountId)
 				.setParameter("year", year)
 				.getResultList();
+	}
+
+	public List<Operation> findUserOperationsById(final List<Integer> ids, final int userId) {
+
+		return JPA.em(persistenceContext).createQuery(
+				"from Operation op " +
+						"join fetch op.mois mois " +
+						"join fetch op.compte compte " +
+						"join fetch op.type type " +
+						"where compte.owner = :user " +
+						"and op.id in :ids " +
+						"order by mois.annee desc, mois.mois desc", Operation.class)
+						.setParameter("user", userId)
+						.setParameter("ids", ids)
+						.getResultList();
 	}
 }

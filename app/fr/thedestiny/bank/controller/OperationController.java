@@ -3,6 +3,7 @@ package fr.thedestiny.bank.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.auth.security.SecurityHelper;
 import fr.thedestiny.bank.dto.OperationDto;
+import fr.thedestiny.bank.dto.SearchResultDto;
 import fr.thedestiny.bank.service.OperationService;
 import fr.thedestiny.bank.service.SoldeService;
 import fr.thedestiny.global.helper.ResultFactory;
@@ -111,5 +113,21 @@ public class OperationController extends Controller {
 
 		List<OperationDto> dto = operationService.getCurrentYearOperation(accountId);
 		return ok(Json.toJson(dto));
+	}
+
+	@Security
+	public Result search(final String value) {
+
+		int userId = SecurityHelper.getLoggedUserId();
+
+		try {
+			List<SearchResultDto> dto = operationService.findOperations(value, userId);
+			int resultCount = dto.size();
+			String json = mapper.writeValueAsString(dto);
+
+			return ok(fr.thedestiny.bank.views.html.searchresult.render(json, resultCount));
+		} catch (SolrServerException | IOException ex) {
+			return internalServerError(ex.getMessage());
+		}
 	}
 }

@@ -10,12 +10,20 @@
 	margin-right: 50px;
 }
 
+.marginT5 {
+	margin-top: 5px !important;
+}
+
 .marginT25 {
 	margin-top: 25px;
 }
 
 .marginT50 {
 	margin-top: 50px;
+}
+
+.marginB50 {
+        margin-bottom: 50px;
 }
 
 .paddingL50 {

@@ -44,6 +44,8 @@ POST	/bank/accounts/:idAccount/months/:idMonth/operations	@fr.thedestiny.bank.co
 PUT		/bank/accounts/:idAccount/months/:idMonth/operations/:id	@fr.thedestiny.bank.controller.OperationController.edit(idAccount: Integer, idMonth: Integer, id: Integer)
 DELETE	/bank/accounts/:idAccount/months/:idMonth/operations/:id	@fr.thedestiny.bank.controller.OperationController.delete(idAccount: Integer, idMonth: Integer, id: Integer)
 
+GET		/bank/operations/search/:value		@fr.thedestiny.bank.controller.OperationController.search(value: String)
+
 GET		/bank/accounts/:idAccount/months/:idMonth/balance	@fr.thedestiny.bank.controller.SoldeController.get(idAccount: Integer, idMonth: Integer)
 
 POST	/bank/accounts/:idAccount/months/:idMonth/import		@fr.thedestiny.bank.controller.OperationController.importData(idAccount: Integer, idMonth: Integer)

@@ -21,13 +21,17 @@ import fr.thedestiny.global.exception.CoreNotFoundException;
 
 public class SolrSearchDao {
 
+	public static final int MAX_ROWS = 1000;
+
 	private Map<String, HttpSolrClient> clients = new HashMap<>();
 
 	public SolrSearchDao() {
 		final Configuration conf = Play.application().configuration();
 		final String torrentUrl = conf.getString("torrent.solr.url");
+		final String bankUrl = conf.getString("bank.solr.url");
 
 		clients.put(Constants.TORRENT_CONTEXT, new HttpSolrClient(torrentUrl));
+		clients.put(Constants.BANK_CONTEXT, new HttpSolrClient(bankUrl));
 	}
 
 	public SolrDocumentList search(final String core, final Map<String, String> criteria) throws CoreNotFoundException, SolrServerException {
@@ -67,6 +71,9 @@ public class SolrSearchDao {
 			q.add(entry.getKey() + ":" + entry.getValue());
 		}
 
-		return new SolrQuery(StringUtils.join(q.toArray(), " AND "));
+		SolrQuery query = new SolrQuery(StringUtils.join(q.toArray(), " AND "));
+		query.setRows(MAX_ROWS);
+
+		return query;
 	}
 }
