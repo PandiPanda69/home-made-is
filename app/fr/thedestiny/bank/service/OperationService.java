@@ -3,6 +3,7 @@ package fr.thedestiny.bank.service;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -12,18 +13,25 @@ import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import play.Logger;
+import fr.thedestiny.Constants;
 import fr.thedestiny.bank.dao.CompteDao;
 import fr.thedestiny.bank.dao.MotifOperationDao;
 import fr.thedestiny.bank.dao.OperationDao;
 import fr.thedestiny.bank.dto.OperationDto;
+import fr.thedestiny.bank.dto.SearchResultDto;
 import fr.thedestiny.bank.models.Compte;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.models.MotifOperation;
 import fr.thedestiny.bank.models.Operation;
+import fr.thedestiny.global.dao.SolrSearchDao;
+import fr.thedestiny.global.exception.CoreNotFoundException;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
 
@@ -41,6 +49,9 @@ public class OperationService extends AbstractService {
 
 	@Autowired
 	private MotifOperationDao motifDao;
+
+	@Autowired
+	private SolrSearchDao searchDao;
 
 	private OperationService() {
 		super("bank");
@@ -102,11 +113,11 @@ public class OperationService extends AbstractService {
 					op.setDate(date.getTime());
 				}
 
-				// Affectation avant sauvegarde		
+				// Affectation avant sauvegarde
 				op.setCompte(compte);
 				op.setMois(mois);
 
-				// MaJ du compte (date de dernière modif & solde) & persistance de l'operation		
+				// MaJ du compte (date de dernière modif & solde) & persistance de l'operation
 				op = operationDao.save(em, op);
 
 				Double newSolde = compte.getSolde() + op.getMontant();
@@ -308,6 +319,38 @@ public class OperationService extends AbstractService {
 		List<OperationDto> dto = new ArrayList<>(operations.size());
 		for (Operation op : operations) {
 			dto.add(new OperationDto(op));
+		}
+
+		return dto;
+	}
+
+	public List<SearchResultDto> findOperations(final String value, final int userId) throws SolrServerException {
+
+		Map<String, String> criteria = new HashMap<>();
+		criteria.put("text", value);
+
+		SolrDocumentList documents;
+		try {
+			documents = searchDao.search(Constants.BANK_CONTEXT, criteria);
+		} catch (CoreNotFoundException ex) {
+			Logger.error("Code fault.", ex);
+			return null;
+		}
+
+		if (documents.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<Integer> ids = new ArrayList<>();
+		for (final SolrDocument document : documents) {
+			ids.add(Integer.valueOf(document.get("id").toString()));
+		}
+
+		List<Operation> operations = operationDao.findUserOperationsById(ids, userId);
+
+		List<SearchResultDto> dto = new ArrayList<>(operations.size());
+		for (final Operation current : operations) {
+			dto.add(new SearchResultDto(current));
 		}
 
 		return dto;

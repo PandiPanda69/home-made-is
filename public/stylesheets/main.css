@@ -8,6 +8,16 @@
         width: 70%;
 }
 
+.fixed-footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+
+        background: white;
+
+        border-top: 3px solid #999;
+}
+
 table {
 	margin: auto auto;
 	margin-top: 25px;
