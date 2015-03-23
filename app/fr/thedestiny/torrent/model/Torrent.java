@@ -29,6 +29,9 @@ public class Torrent {
 	private Long downloadedBytes;
 
 	@Column
+	private Long uploadedBytes;
+
+	@Column
 	private String status;
 
 	@Column

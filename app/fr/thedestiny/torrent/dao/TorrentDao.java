@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
@@ -103,19 +104,6 @@ public class TorrentDao extends AbstractDao<Torrent> {
 		}
 	}
 
-	public void delete(EntityManager em, Integer torrentId) {
-		em.createQuery("delete from TorrentStat where id_torrent = :torrentId").setParameter("torrentId", torrentId).executeUpdate();
-		em.createQuery("delete from Torrent where id = :torrentId").setParameter("torrentId", torrentId).executeUpdate();
-	}
-
-	public boolean logicalDelete(EntityManager em, final int torrentId) {
-		int result = em.createQuery("update Torrent set status = 'DELETED' where id = :torrentId")
-				.setParameter("torrentId", torrentId)
-				.executeUpdate();
-
-		return result == 1;
-	}
-
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getTorrentStatHistory(final StatType type, int unitCount, final TimeUnit unit) {
 
@@ -150,5 +138,26 @@ public class TorrentDao extends AbstractDao<Torrent> {
 		q.setParameter("ids", ids);
 
 		return q.getResultList();
+	}
+
+	public void cleanTorrentStat(EntityManager em, final int torrentId) {
+
+		String sql = "DELETE FROM TorrentStat WHERE id_torrent = ?";
+
+		em
+		.createNativeQuery(sql)
+		.setParameter(1, torrentId)
+		.executeUpdate();
+	}
+
+	public Long getTotalUploadedBytes(EntityManager em, final int torrentId) {
+		try {
+			return em
+					.createQuery("select s.totalUploaded from TorrentStat s join s.torrent t where t.id = 442 order by s.unformattedLastActivityDate desc", Long.class)
+					.setMaxResults(1)
+					.getSingleResult();
+		} catch (NoResultException ex) {
+			return null;
+		}
 	}
 }

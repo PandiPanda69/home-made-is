@@ -7,7 +7,7 @@ public class Constants {
 	public static final String HOME_VERSION = "1.1";
 	public static final String AUTH_VERSION = "1.1";
 	public static final String BANK_VERSION = "2.11";
-	public static final String TORRENT_VERSION = "1.14b";
+	public static final String TORRENT_VERSION = "1.15";
 	public static final String FITNESS_VERSION = "1.2";
 
 	public static final String BANK_CONTEXT = "bank";

@@ -59,7 +59,15 @@ public class TorrentService extends AbstractService {
 
 			@Override
 			public Boolean doWork(EntityManager em) {
-				return torrentDao.logicalDelete(em, torrentId);
+
+				final Long uploadedBytes = torrentDao.getTotalUploadedBytes(em, torrentId);
+				torrentDao.cleanTorrentStat(em, torrentId);
+
+				Torrent torrent = torrentDao.find(em, torrentId);
+				torrent.setUploadedBytes(uploadedBytes);
+				torrent.setStatus(TorrentStatus.DELETED.name());
+
+				return true;
 			}
 		});
 	}
