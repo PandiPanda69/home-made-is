@@ -41,6 +41,10 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 		this.trackerError = torrent.getTrackerError();
 
 		setDownloadedData(DataUnitHelper.fit(torrent.getDownloadedBytes()));
+		if (torrent.getUploadedBytes() != null) {
+			setUploadedData(DataUnitHelper.fit(torrent.getUploadedBytes()));
+			setRatio((double) torrent.getUploadedBytes() / (double) torrent.getDownloadedBytes());
+		}
 	}
 
 	@Override

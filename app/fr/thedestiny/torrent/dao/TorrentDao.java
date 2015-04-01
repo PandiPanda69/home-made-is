@@ -93,6 +93,21 @@ public class TorrentDao extends AbstractDao<Torrent> {
 		return q.getResultList();
 	}
 
+	public List<Torrent> findDeletedTorrent() {
+		return JPA.em(persistenceContext)
+				.createQuery("from Torrent t where t.status = ? order by t.name", Torrent.class)
+				.setParameter(1, TorrentStatus.DELETED.toString())
+				.getResultList();
+	}
+
+	public List<Torrent> findDeletedTorrentById(final List<Integer> ids) {
+		return JPA.em(persistenceContext)
+				.createQuery("from Torrent t where t.status = :status and t.id IN :ids order by t.name", Torrent.class)
+				.setParameter("status", TorrentStatus.DELETED.toString())
+				.setParameter("ids", ids)
+				.getResultList();
+	}
+
 	private String getUnitString(final TimeUnit unit) {
 		switch (unit) {
 		case MONTH:
@@ -142,10 +157,13 @@ public class TorrentDao extends AbstractDao<Torrent> {
 
 	public void cleanTorrentStat(EntityManager em, final int torrentId) {
 
-		String sql = "DELETE FROM TorrentStat WHERE id_torrent = ?";
+		em
+		.createNativeQuery("DELETE FROM TorrentStat WHERE id_torrent = ?")
+		.setParameter(1, torrentId)
+		.executeUpdate();
 
 		em
-		.createNativeQuery(sql)
+		.createNativeQuery("DELETE FROM DailyTorrentStats WHERE id_torrent = ?")
 		.setParameter(1, torrentId)
 		.executeUpdate();
 	}
@@ -153,7 +171,8 @@ public class TorrentDao extends AbstractDao<Torrent> {
 	public Long getTotalUploadedBytes(EntityManager em, final int torrentId) {
 		try {
 			return em
-					.createQuery("select s.totalUploaded from TorrentStat s join s.torrent t where t.id = 442 order by s.unformattedLastActivityDate desc", Long.class)
+					.createQuery("select s.totalUploaded from TorrentStat s join s.torrent t where t.id = ? order by s.unformattedLastActivityDate desc", Long.class)
+					.setParameter(1, torrentId)
 					.setMaxResults(1)
 					.getSingleResult();
 		} catch (NoResultException ex) {

@@ -3,6 +3,7 @@ package fr.thedestiny.torrent.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -18,6 +19,8 @@ import play.Logger;
 @Data
 @ToString
 public class Torrent {
+
+	private static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
 	@Id
 	private Integer id;
@@ -53,7 +56,7 @@ public class Torrent {
 	public Calendar getCreationDate() {
 		try {
 			GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+1"));
-			cal.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(unformattedCreationDate));
+			cal.setTime(new SimpleDateFormat(DATE_FORMAT).parse(unformattedCreationDate));
 			return cal;
 		} catch (ParseException ex) {
 			Logger.error("Date conversion failed. ", ex);
@@ -65,11 +68,15 @@ public class Torrent {
 	public Calendar getSuppressionDate() {
 		try {
 			GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+1"));
-			cal.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(unformattedSuppressionDate));
+			cal.setTime(new SimpleDateFormat(DATE_FORMAT).parse(unformattedSuppressionDate));
 			return cal;
 		} catch (ParseException ex) {
 			Logger.error("Date conversion failed. ", ex);
 			return null;
 		}
+	}
+
+	public void setSuppressionDate(final Date date) {
+		this.unformattedSuppressionDate = new SimpleDateFormat(DATE_FORMAT).format(date);
 	}
 }

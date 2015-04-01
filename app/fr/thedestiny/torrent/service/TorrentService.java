@@ -3,6 +3,7 @@ package fr.thedestiny.torrent.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +48,27 @@ public class TorrentService extends AbstractService {
 	public List<TorrentDto> findAllTorrentsMatchingFilter(final TorrentFilterDto filter) {
 
 		TorrentStatus statusFilter = TorrentStatus.valueOf(filter.getStatus());
-		boolean filterExpiredOnly = TorrentStatus.EXPIRED.equals(statusFilter);
+
+		// Deleted torrents are actually not all registered in DailyStats.
+		if (TorrentStatus.DELETED.equals(statusFilter)) {
+			return findDeletedTorrent();
+		}
 
 		List<TorrentStat> stats = torrentDao.getLastTorrentActivityData(null, statusFilter);
+		boolean filterExpiredOnly = TorrentStatus.EXPIRED.equals(statusFilter);
 
-		return convertTorrentStat(stats, filterExpiredOnly);
+		List<TorrentDto> dto = convertTorrentStat(stats, filterExpiredOnly);
+		if (TorrentStatus.ALL.equals(statusFilter)) {
+			dto.addAll(findDeletedTorrent());
+		}
+
+		Collections.sort(dto);
+		return dto;
+	}
+
+	private List<TorrentDto> findDeletedTorrent() {
+		List<Torrent> torrents = torrentDao.findDeletedTorrent();
+		return convertTorrent(torrents);
 	}
 
 	public boolean deleteTorrent(final int torrentId) {
@@ -64,6 +81,7 @@ public class TorrentService extends AbstractService {
 				torrentDao.cleanTorrentStat(em, torrentId);
 
 				Torrent torrent = torrentDao.find(em, torrentId);
+				torrent.setSuppressionDate(new Date());
 				torrent.setUploadedBytes(uploadedBytes);
 				torrent.setStatus(TorrentStatus.DELETED.name());
 
@@ -151,8 +169,17 @@ public class TorrentService extends AbstractService {
 			}
 		}
 
-		Collections.sort(torrents);
 		return torrents;
+	}
+
+	protected List<TorrentDto> convertTorrent(final List<Torrent> torrents) {
+		List<TorrentDto> dto = new ArrayList<>(torrents.size());
+
+		for (final Torrent current : torrents) {
+			dto.add(new TorrentDto(current));
+		}
+
+		return dto;
 	}
 
 	public List<TorrentDto> findTorrents(final String value, String status) throws SolrServerException {
@@ -191,6 +218,11 @@ public class TorrentService extends AbstractService {
 
 		List<TorrentStat> stats = torrentDao.getTorrentActivityDataById(ids);
 		List<TorrentDto> dto = convertTorrentStat(stats, filterExpiredOnly);
+
+		if (TorrentStatus.DELETED.name().equals(status) || TorrentStatus.ALL.name().equals(status)) {
+			List<Torrent> deleted = torrentDao.findDeletedTorrentById(ids);
+			dto.addAll(convertTorrent(deleted));
+		}
 
 		for (TorrentDto current : dto) {
 			if (!highlighted.containsKey(current.getId().toString())) {
