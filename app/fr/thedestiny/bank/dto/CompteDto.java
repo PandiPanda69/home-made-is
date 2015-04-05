@@ -20,6 +20,7 @@ public class CompteDto extends AbstractDto {
 	private Integer typeId;
 	private String type;
 	private String category;
+	private boolean active;
 
 	public CompteDto(final Compte compte) {
 		this.id = compte.getId();
@@ -29,5 +30,6 @@ public class CompteDto extends AbstractDto {
 		this.category = compte.getType().getType();
 		this.lastUpdate = compte.getLastUpdate();
 		this.solde = compte.getSolde();
+		this.active = compte.isActive();
 	}
 }

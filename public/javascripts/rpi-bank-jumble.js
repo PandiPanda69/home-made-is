@@ -3,6 +3,7 @@
 $(function() {
 
 	var TypeComptes = new App.Models.AccountType;
+        App.Models.AccountType = TypeComptes;
 
 	// models/heuristicpattern.js
         var HeuristicPattern = Backbone.Model.extend({
@@ -173,118 +174,7 @@ $(function() {
         /*******************************************
         * View
         *******************************************/
-        var AccountAddView = Backbone.View.extend({
-
-                el: $("#main-container"),
-                main: $("#main-container"),
-                accountAddTemplate: _.template($('#accountadd-template').html()),
-                editingAccount: null,
-
-                events: {
-                        "click #accountadd-validate":      "validate",
-                        "click #accountadd-cancel":        "cancel"
-                },
-                render: function(editingAccountId) {
-                        if(editingAccountId == null) {
-				this.editingAccount = null;
-                                TypeComptes.fetch({
-                                        success: $.proxy(function() {
-                                                TypeComptes.initialized = true;
-                                                this.main.html(this.accountAddTemplate({
-                                                        isEditing: false,
-                                                        types: TypeComptes.toJSON()
-                                                }));
-                                        }, this)
-                                });
-
-
-                        }
-                        else {
-                                if( this.editingAccount == null || this.editingAccount.get('id') != editingAccountId) {
-                                        if(Accounts.isEmpty() && !Accounts.initialized) {
-                                                LoadingDialog.render();
-
-                                                var self = this;
-                                                Accounts.fetch({
-                                                        success: function() {
-                                                                Accounts.initialized = true;
-								self.editingAccount = Accounts.get(editingAccountId);
-
-								TypeComptes.fetch({
-									success: $.proxy(function() {
-										TypeComptes.initialized = true;
-                		                                                this.main.html(this.accountAddTemplate({
-											isEditing: true, 
-											account: this.editingAccount.toJSON(),
-											types: TypeComptes.toJSON()
-										}));
-                                		                                LoadingDialog.dispose();
-									}, self)
-								});
-                                                        }
-                                                });
-
-                                                return true;
-                                        }
-                                        else {
-                                                this.editingAccount = Accounts.get(editingAccountId);
-                                        }
-                                }
-
-				TypeComptes.fetch({
-					success: $.proxy(function() {
-						TypeComptes.initialized = true;
-	                                	this.main.html(this.accountAddTemplate({
-							isEditing: true, 
-							account: this.editingAccount.toJSON(),
-							types: TypeComptes.toJSON()
-						}));
-					}, this)
-				});
-                        }
-                },
-                validate: function() {
-                        LoadingDialog.render();
-
-                        var nom  = $('#nom').val();
-                        var type = $('#type').val();
-
-                        // Adding account
-                        if(this.editingAccount == null ) {
-
-                                Accounts.create({
-                                        nom: nom,
-                                        type: {
-						id: type
-					}
-                                },
-                                {
-					success: this.onSuccess
-                                });
-                        }
-                        // Update one
-                        else {
-				this.editingAccount.unset('typeId');
-				this.editingAccount.unset('category');
-                                this.editingAccount.save({
-                                        nom: nom,
-                                        type: {
-						id: type
-					}
-                                },
-                                {
-					success: this.onSuccess
-                                });
-                        }
-                },
-                cancel: function() {
-                        Routes.navigate('accounts', {trigger: true});
-                },
-		onSuccess: function() {
-			LoadingDialog.dispose();
-			Routes.navigate('accounts', {trigger: true});
-		}
-        });
+        var AccountAddView = App.Views.AccountAdd;
 
 	// views/heuristics.js
 	/*******************************************

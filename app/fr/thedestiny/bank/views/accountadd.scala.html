@@ -26,6 +26,10 @@
 			</tr>			
 		</table>
 
+		<div class="pull-center">
+                    <input type="checkbox" <%=(!isEditing || account.active) ? checked="checked" : '' %> id="active"> Compte actif
+                </div>
+
 		<div class="pull-right">
 			<button id="accountadd-validate" class="btn btn-success btn-small"><i class="icon-ok"></i> </button>
 			<button id="accountadd-cancel"   class="btn btn-danger btn-small"><i class="icon-remove"></i> </button>

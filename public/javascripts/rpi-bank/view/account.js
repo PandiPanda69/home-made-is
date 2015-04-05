@@ -4,7 +4,7 @@ App.Views.Account = Backbone.View.extend({
 	main: $("#main-container"),
 
 	initialize: function() {
-		this.accountTemplate = _.template($('#accounts-template').html());
+                this.accountTemplate = _.template($('#accounts-template').html());
 	},
 	events: {
 		"click #accounts-add":     "addAccount",

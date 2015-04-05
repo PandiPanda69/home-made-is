@@ -52,6 +52,11 @@ public class Compte extends Model implements Serializable {
 	@Setter
 	private Integer owner;
 
+	@Column
+	@Getter
+	@Setter
+	private boolean active;
+
 	@ManyToMany
 	@JoinTable(name = "CompteMois", joinColumns = { @JoinColumn(name = "compte_id") }, inverseJoinColumns = { @JoinColumn(name = "mois_id") })
 	@OrderBy("annee, mois")
@@ -73,7 +78,7 @@ public class Compte extends Model implements Serializable {
 	}
 
 	/**
-	 * Renvoie vrai si le mois est déjà affecté au compte 
+	 * Renvoie vrai si le mois est déjà affecté au compte
 	 * @param mois
 	 * @return
 	 */
@@ -98,7 +103,7 @@ public class Compte extends Model implements Serializable {
 		MoisAnnee result = null;
 		for (MoisAnnee current : mois) {
 
-			// Result < Current < Ref 
+			// Result < Current < Ref
 			if ((result == null || current.lesserThan(result)) && ref.lesserThan(current)) {
 				result = current;
 			}

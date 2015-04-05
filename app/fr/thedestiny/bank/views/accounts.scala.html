@@ -1,44 +1,18 @@
 <script type="text/template" id="accounts-template">
-		<h1>Comptes</h1>
+   <h1>Comptes</h1>
 
-		<div class="pull-right">
-			<button id="accounts-add" class="btn btn-success btn-small"><i class="icon-plus"></i> </button>
-		</div>
+   <ul class="nav nav-tabs">
+      <li class="active">
+         <a data-toggle="tab" href="#accounts-active" id="accounts-active-tab">Comptes actifs</a>
+      </li>
+      <li>
+         <a data-toggle="tab" href="#accounts-inactive" id="accounts-inactive-tab">Comptes désactivés</a>
+      </li>
+   </ul>
 
-		<table id="accounts-list" class="table table-striped table-bordered table-condensed table-hover">
-			<thead>
-				<tr>
-					<th></th>
-					<th>Libellé</th>
-					<th>Type</th>
-					<th>Solde</th>
-					<th>Dernière MàJ</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<% for(var i = 0; i < accounts.length; i++) { %>
-				<tr>
-					<td></td>
-					<td>
-						<a id="accounts-view" account="<%= accounts[i].id %>" href=""><%= accounts[i].nom %></a>
-					</td>
-					<td>
-						<%= accounts[i].type %>
-					</td>
-					<%
-						 var amount = parseFloat(accounts[i].solde).toFixed(2);
-					%>
-					<td <%=amount < 0 ? 'class="alert-error"' : 'class="alert-success"' %>><%=amount%> €</td>
-					<td><%= new Date(accounts[i].lastUpdate).toLocaleString() %></td>
-					<td>
-						<div class="pull-center">
-							<a id="accounts-edit" account="<%= accounts[i].id %>" href=""><i class="icon-edit"></i></a>
-							<a id="accounts-del"  account="<%= accounts[i].id %>" href=""><i class="icon-remove"></i></a>
-						</div> 
-					</td>
-				</tr>
-				<% } %>	
-			</tbody>
-		</table>
+   <div class="tab-content">
+     @activeaccounts()
+     @inactiveaccounts()
+   </div>
+
 </script>
