@@ -63,7 +63,7 @@ public class CompteController extends Controller {
 		CompteDto outDto = null;
 		try {
 			Compte compte = mapper.readValue(ctx().request().body().asJson().toString(), Compte.class);
-			outDto = compteService.saveCompte(compte, SecurityHelper.getLoggedUserId());
+			outDto = compteService.updateAccount(compte, SecurityHelper.getLoggedUserId());
 		} catch (IOException ex) {
 			Logger.error("Error while serializing", ex);
 			return ResultFactory.FAIL;

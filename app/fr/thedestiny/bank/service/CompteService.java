@@ -44,23 +44,46 @@ public class CompteService extends AbstractService {
 
 	public CompteDto saveCompte(final Compte compte, final int currentUser) {
 
+		if (compte.getId() != null) {
+			throw new IllegalArgumentException("Cannot have ID.");
+		}
+
 		return this.processInTransaction(new InTransactionFunction<CompteDto>() {
 
 			@Override
 			public CompteDto doWork(EntityManager em) {
 
-				// If editing a new account, check owner
-				if (compte.getId() != null) {
-					Compte persistedOne = compteDao.findById(em, compte.getId());
-					if (!persistedOne.getOwner().equals(currentUser)) {
-						throw new SecurityException();
-					}
-				}
-
 				compte.setOwner(currentUser);
 				compte.setLastUpdate(new Date());
 
 				return new CompteDto(compteDao.save(em, compte));
+			}
+		});
+	}
+
+	public CompteDto updateAccount(final Compte compte, final int currentUser) {
+
+		if (compte.getId() == null) {
+			throw new IllegalArgumentException("ID mandatory.");
+		}
+
+		return this.processInTransaction(new InTransactionFunction<CompteDto>() {
+
+			@Override
+			public CompteDto doWork(EntityManager em) {
+
+				Compte persistedOne = compteDao.findById(em, compte.getId());
+				if (!persistedOne.getOwner().equals(currentUser)) {
+					throw new SecurityException();
+				}
+
+				persistedOne.setLastUpdate(new Date());
+
+				persistedOne.setNom(compte.getNom());
+				persistedOne.setType(compte.getType());
+				persistedOne.setActive(compte.isActive());
+
+				return new CompteDto(persistedOne);
 			}
 		});
 	}

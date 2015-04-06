@@ -7,7 +7,7 @@ App.Views.AccountSynth = Backbone.View.extend({
 		this.$el      = $('#operations-container');
 		this.template = _.template($('#accountsynth-template').html());
 
-		this.accountTypes = new App.Models.AccountType;
+		this.accountTypes = App.Models.AccountType;
 	},
 	render: function(account) {
 
