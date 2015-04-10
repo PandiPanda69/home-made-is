@@ -52,6 +52,10 @@ public class TorrentDao extends AbstractDao<Torrent> {
 	}
 
 	public Torrent find(EntityManager em, final int torrentId) {
+		if (em == null) {
+			em = JPA.em(persistenceContext);
+		}
+
 		return findById(em, torrentId, Torrent.class);
 	}
 
@@ -158,14 +162,14 @@ public class TorrentDao extends AbstractDao<Torrent> {
 	public void cleanTorrentStat(EntityManager em, final int torrentId) {
 
 		em
-		.createNativeQuery("DELETE FROM TorrentStat WHERE id_torrent = ?")
-		.setParameter(1, torrentId)
-		.executeUpdate();
+				.createNativeQuery("DELETE FROM TorrentStat WHERE id_torrent = ?")
+				.setParameter(1, torrentId)
+				.executeUpdate();
 
 		em
-		.createNativeQuery("DELETE FROM DailyTorrentStats WHERE id_torrent = ?")
-		.setParameter(1, torrentId)
-		.executeUpdate();
+				.createNativeQuery("DELETE FROM DailyTorrentStats WHERE id_torrent = ?")
+				.setParameter(1, torrentId)
+				.executeUpdate();
 	}
 
 	public Long getTotalUploadedBytes(EntityManager em, final int torrentId) {

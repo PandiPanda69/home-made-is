@@ -1,0 +1,74 @@
+<script type="text/template" id="torrent-browser-template">
+
+   <h1>Description</h1>
+
+   <h4 class="marginT25"><%=torrent.id%> - <%=torrent.name%></h4>
+   <div class="row bordered marginT5">
+      <div class="span6">
+        Statut: <b><%=torrent.status%></b>
+      </div>
+      <div class="span6 marginL0">
+        Notation: <b><%=(torrent.grade === null) ? 'N/A' : torrent.grade + '/3'%></b>
+      </div>
+   </div>
+   <div class="row bordered marginT5">
+      <div class="span6">
+        Date de création: <b><%=torrent.creationDate%></b>
+      </div>
+      <div class="span6 marginL0">
+        Erreur: <b><%=(torrent.trackerError === null) ? '' : torrent.trackerError%></b>
+      </div>
+   </div>
+   <div class="row bordered marginT5 marginB50">
+      <div class="span3">
+        Téléchargé: <b><%=torrent.downloadedAmount.toFixed(2)%> <%=torrent.downloadedUnit%></b>
+      </div>
+      <div class="span3">
+        Envoyé: <b><%=torrent.uploadedAmount.toFixed(2)%> <%=torrent.uploadedUnit%></b>
+      </div>
+      <div class="span3 marginL0">
+        Ratio: <b><%=torrent.ratio.toFixed(2)%></b>
+      </div>
+      <div class="span3 marginL0">
+        Activité: <b><%=torrent.deltaAmount.toFixed(2)%> <%=torrent.deltaUnit%> (<%=torrent.activityRate === null ? '-' : torrent.activityRate.toFixed(2)%> %)</b>
+      </div>
+   </div>
+
+
+   <h4>Fichiers</h4>
+   <ul>
+      <%
+        if(files.children === null) {
+      %>
+          <li><%=files.filename%> (<%=files.size%>)</li>
+      <%
+        } else {
+      %>
+          <li>
+            <%=files.filename%>
+            <ul>
+      <%
+          for(var i = 0; i < files.children.length; i++) {
+            if(files.children[i].children === null) {
+      %>
+            <li><%=files.children[i].filename%> (<%=files.children[i].size%>)</li>
+      <%
+            } else {
+      %>
+            <li>
+              <%=files.children[i].filename%>
+              <ul>
+                <li>TODO.</li>
+              </ul>
+            </li>
+      <%
+            }
+          }
+      %>
+            </ul>
+          </li>
+      <%
+        }
+      %>
+   </ul>
+</script>

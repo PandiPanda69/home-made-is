@@ -19,7 +19,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.thedestiny.auth.security.Security;
 import fr.thedestiny.global.helper.ResultFactory;
 import fr.thedestiny.torrent.dto.TorrentDto;
+import fr.thedestiny.torrent.dto.TorrentFileDto;
 import fr.thedestiny.torrent.dto.TorrentFilterDto;
+import fr.thedestiny.torrent.service.FileService;
 import fr.thedestiny.torrent.service.TorrentService;
 
 @org.springframework.stereotype.Controller
@@ -31,7 +33,9 @@ public class TorrentsController extends Controller {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Transactional(readOnly = true)
+	@Autowired
+	private FileService fileService;
+
 	@Security
 	public Result list() {
 
@@ -45,7 +49,6 @@ public class TorrentsController extends Controller {
 		return ok(Json.toJson(torrents));
 	}
 
-	@Transactional(readOnly = true)
 	@Security
 	public Result filter() {
 
@@ -112,5 +115,25 @@ public class TorrentsController extends Controller {
 
 			return internalServerError(Json.toJson(error));
 		}
+	}
+
+	@Security
+	public Result describe(final Integer id) throws IOException {
+
+		TorrentDto torrent = torrentService.findTorrentById(id);
+		if (torrent == null) {
+			return badRequest();
+		}
+
+		TorrentFileDto files = fileService.getTorrentFiles(torrent);
+		if (files == null) {
+			return notFound();
+		}
+
+		Map<String, Object> result = new HashMap<>();
+		result.put("torrent", torrent);
+		result.put("files", files);
+
+		return ok(Json.toJson(result));
 	}
 }

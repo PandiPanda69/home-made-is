@@ -2,6 +2,7 @@ App.Router = Backbone.Router.extend({
 
 	homeView:    null,
 	torrentView: null,
+	torrentBrowserView: null,
 	queueView:   null,
 	paramView:   null,
 
@@ -12,12 +13,13 @@ App.Router = Backbone.Router.extend({
 		"":     "home",
 		"home": "home",
 		"torrents": "torrents",
+		"torrents/:id/files": "browseTorrent",
 		"queue": "queue",
 		"params": "params"
 	},
 
 	home: function() {
-		if(this.homeView == null) {
+		if(this.homeView === null) {
 			this.homeView = new App.Views.Home;
 		}
 
@@ -25,15 +27,23 @@ App.Router = Backbone.Router.extend({
 		this.homeView.render();
 	},
 	torrents: function() {
-		if(this.torrentView == null) {
+		if(this.torrentView === null) {
 			this.torrentView = new App.Views.Torrents;
 		}
 
 		App.Menu.activateButton($("#menu-torrents"));
 		this.torrentView.render();
 	},
+	browseTorrent: function(id) {
+		if(this.torrentBrowserView === null) {
+		   this.torrentBrowserView = new App.Views.TorrentBrowser;
+		}
+
+		App.Menu.activateButton($("#menu-torrents"));
+		this.torrentBrowserView.render(id);
+	},
 	queue: function() {
-		if(this.queueView == null) {
+		if(this.queueView === null) {
 			this.queueView = new App.Views.Queue;
 		}
 
@@ -41,7 +51,7 @@ App.Router = Backbone.Router.extend({
 		this.queueView.render();
 	},
 	params: function() {
-		if(this.paramView == null) {
+		if(this.paramView === null) {
 			this.paramView = new App.Views.Parameters;
 		}
 

@@ -70,7 +70,9 @@
 					<td><%=element.id%></td>
 					<td>
 						<span data-toggle="tooltip" data-placement="top" title="<%=element.name%>">
+						   <a href="#" class="torrent-name" torrent-id="<%=element.id%>">
 							<%=element.name.substring(0,30)%><%=element.name.length > 30 ? '...' : '' %>
+						   </a>
 						</span>
 						<% if(element.trackerError !== null && element.trackerError.length > 0) { %>
 							<i class="icon-warning-sign" data-toggle="tooltip" data-placement="top" title="<%=element.trackerError%>"></i>

@@ -6,7 +6,8 @@ App.Views.Torrents = Backbone.View.extend({
 	events: {
 		"click .torrent-remove": "_remove",
 		"click #torrent-filter": "_filter",
-		"click #torrent-search": "_search"
+		"click #torrent-search": "_search",
+		"click .torrent-name":   "_browseFiles"
 	},
 	initialize: function() {
 		this.$el = $("#main-container");
@@ -154,6 +155,14 @@ App.Views.Torrents = Backbone.View.extend({
 
                         App.Loading.dispose();
 		}, this));
+
+		return false;
+	},
+	_browseFiles: function(evt) {
+		App.Loading.render();
+
+		var id = $(evt.target).attr('torrent-id');
+		App.Router.navigate("torrents/" + id + "/files", {trigger: true});
 
 		return false;
 	}

@@ -2,6 +2,10 @@
 	display: inline;
 }
 
+.marginL0 {
+	margin-left: 0px !important;
+}
+
 .marginL50 {
 	margin-left: 50px;
 }

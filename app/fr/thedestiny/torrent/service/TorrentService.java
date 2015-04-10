@@ -1,6 +1,7 @@
 package fr.thedestiny.torrent.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -238,5 +239,15 @@ public class TorrentService extends AbstractService {
 		}
 
 		return dto;
+	}
+
+	public TorrentDto findTorrentById(final Integer id) {
+
+		List<TorrentStat> stats = torrentDao.getTorrentActivityDataById(Arrays.asList(id));
+		if (stats.isEmpty()) {
+			return null;
+		}
+
+		return buildTorrentDto(stats.get(0));
 	}
 }
