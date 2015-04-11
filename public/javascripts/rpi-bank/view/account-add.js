@@ -77,7 +77,7 @@ App.Views.AccountAdd = Backbone.View.extend({
                 // Adding account
                 if(this.editingAccount === null ) {
 
-                        Accounts.create({
+                        App.Models.Account.create({
                                 nom: nom,
                                 active: active,
                                 type: {
