@@ -96,7 +96,7 @@ App.Views.OperationsHeader = Backbone.View.extend({
         App.Loading.render();
 
         if(this._operationView === null) {
-           this._operationView = new App.Views.OperationView();
+           this._operationView = new App.Views.Operation(this);
         } else {
            this._operationView.initialize();
         }
