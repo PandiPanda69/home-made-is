@@ -28,6 +28,8 @@ public class OperationDto extends AbstractDto {
 	private Integer compteId;
 	private OperationType type;
 
+	private boolean repetee;
+
 	public OperationDto() {
 	}
 

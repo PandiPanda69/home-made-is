@@ -119,4 +119,9 @@ public class CompteService extends AbstractService {
 
 		return dto;
 	}
+
+	protected boolean isAccountOwnedByUser(final int accountId, final int userId) {
+		Compte compte = compteDao.findById(null, accountId);
+		return compte.getOwner().equals(userId);
+	}
 }

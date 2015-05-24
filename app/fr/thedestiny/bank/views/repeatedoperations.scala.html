@@ -1,0 +1,31 @@
+<script type="text/template" id="repeatedop-template">
+		<h1>Opérations répétées</h1>
+
+        <div>
+            <label for="account">Compte:</label>
+            <select id="account">
+              <option></option>
+               <%
+                  for(i in accounts) {
+                  %>
+                      <option value="<%=accounts[i].id%>"><%=accounts[i].nom%></option>
+                  <%
+                  }
+               %>                 
+            </select>
+        </div>
+
+		<table id="repeatedop-list" class="table table-striped table-bordered table-condensed table-hover">
+			<thead>
+				<tr>
+					<th>Libellé</th>
+					<th>Montant</th>
+					<th>Type</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+
+			</tbody>
+		</table>
+</script>

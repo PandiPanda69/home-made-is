@@ -11,7 +11,7 @@ App.Views.OperationAdd = Backbone.View.extend({
         this.main = el;
 
         this.myParent = myParent;
-        
+
         this.operationAddTemplate = _.template($('#operationadd-template').html());
     },
     bindEvents: function() {
@@ -30,7 +30,7 @@ App.Views.OperationAdd = Backbone.View.extend({
 
         App.Loading.render();
 
-        if(this.checkOperationTypesAreLoaded() !== true) {
+        if(!this.checkOperationTypesAreLoaded()) {
             return;
         }
 
@@ -42,7 +42,7 @@ App.Views.OperationAdd = Backbone.View.extend({
 
         this.main.html(this.operationAddTemplate({
             isEditing: (currentOperation != null),
-            types: App.Models.OperationType.toJSON(), 
+            types: App.Models.OperationType.toJSON(),
             operation: currentOperation
         }));
         this.bindEvents();
@@ -51,7 +51,7 @@ App.Views.OperationAdd = Backbone.View.extend({
     },
     checkOperationTypesAreLoaded: function() {
 
-        if(App.Models.OperationType.isEmpty() && App.Models.OperationType.initialized == false) {
+        if(App.Models.OperationType.isEmpty() && !App.Models.OperationType.initialized) {
             App.Models.OperationType.fetch({
                 success: $.proxy( function() {
                     App.Models.OperationType.initialized = true;
@@ -64,7 +64,7 @@ App.Views.OperationAdd = Backbone.View.extend({
 
         return true;
     },
-    formatAmount: function(e) {
+    formatAmount: function() {
         var val = $('#montant').val();
         val.replace(',', '.');
 

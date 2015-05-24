@@ -82,7 +82,7 @@ public class SoldeService extends AbstractService {
 		if (soldes == null || soldes.isEmpty()) {
 			Double balance = computeBalanceFromBeginning(em, compte, mois);
 
-			// Création du solde			
+			// Création du solde
 			solde = new Solde(compte, mois, balance);
 			saveSolde = true;
 		}
@@ -94,7 +94,7 @@ public class SoldeService extends AbstractService {
 			if (last == null) {
 				Double balance = computeBalanceFromBeginning(em, compte, mois);
 
-				// Création du solde			
+				// Création du solde
 				solde = new Solde(compte, mois, balance);
 				saveSolde = true;
 			}
@@ -113,7 +113,7 @@ public class SoldeService extends AbstractService {
 		}
 
 		if (saveSolde) {
-			solde = soldeDao.persist(em, solde);
+			solde = soldeDao.persistSolde(em, solde);
 		}
 
 		return solde;
@@ -238,7 +238,7 @@ public class SoldeService extends AbstractService {
 	}
 
 	/**
-	 * Récupère le solde du mois demandé, ou à défaut, du plus proche précédent 
+	 * Récupère le solde du mois demandé, ou à défaut, du plus proche précédent
 	 * @param soldes
 	 * @param mois
 	 * @param getPrevious	Force à récupérer le solde précédent

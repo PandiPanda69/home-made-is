@@ -11,19 +11,21 @@ App.Views.Operation = Backbone.View.extend({
 
 	initialize: function(header) {
         this._header = header;
-        
+
 		this.el = $("#operations-container");
 		this.main = $("#operations-container");
-        
+
         this.operationTemplate = _.template($('#operations-template').html());
 	},
 	bindEvents: function() {
 		$(".operations-edit").unbind();
 		$(".operations-del").unbind();
+        $(".operations-rec").unbind();
 
 		_.bindAll(this);
-		$(".operations-edit").bind('click', this.editOperation);
-		$(".operations-del").bind('click',  this.delOperation);
+		$(".operations-edit").click(this.editOperation);
+		$(".operations-del").click(this.delOperation);
+        $(".operations-rec").click(this.repeatedOperation);
     },
     render: function(accountId, monthId) {
         App.Menu.activateButton($('#menu-accounts'));
@@ -85,11 +87,11 @@ App.Views.Operation = Backbone.View.extend({
 			balance += current.get('montant');
 
 			var cumulCell = $('tr[operation=' + current.get('id') + ']').children('#cumul');
-			cumulCell.html(parseFloat(total).toFixed(2) + ' €'); 
+			cumulCell.html(parseFloat(total).toFixed(2) + ' €');
 			cumulCell.addClass(total >= 0 ? 'alert-success' : 'alert-error');
 
 			var balanceCell = $('tr[operation=' + current.get('id') + ']').children('#balance');
-			balanceCell.html(parseFloat(balance).toFixed(2) + ' €'); 
+			balanceCell.html(parseFloat(balance).toFixed(2) + ' €');
 			balanceCell.addClass(balance >= 0 ? 'alert-success' : 'alert-error');
 		});
 	},
@@ -98,15 +100,17 @@ App.Views.Operation = Backbone.View.extend({
         var totalAmount = 0.00;
 
         // First, sum all amounts (except them without any type)
-        App.Models.Operation.each(function(element, index) {
+        App.Models.Operation.each(function(element) {
            if(element.attributes.type != null) {
                 totalAmount += element.attributes.montant;
             }
         }, this);
 
         // Make sum for each operation type
-        App.Models.Operation.each(function(element, index) {
-            if(element.attributes.type == null) return;
+        App.Models.Operation.each(function(element) {
+            if(element.attributes.type == null) {
+                return;
+            }
 
             for(var i = 0; i < stats.length; i++) {
                 if((element.attributes.type != null && stats[i].type == element.attributes.type.name)) {
@@ -128,7 +132,7 @@ App.Views.Operation = Backbone.View.extend({
     refreshStatisticsChart: function(stats) {
 
         var chartData = [];
-        _.each(stats, function(element, index) {
+        _.each(stats, function(element) {
             chartData.push({name: element.type, y: element.percent});
         });
 
@@ -168,16 +172,16 @@ App.Views.Operation = Backbone.View.extend({
     },
 	editOperation: function(e) {
 
-		var row = $(e.currentTarget).parents('tr');
-		var id = row.attr('operation');
+		var $row = $(e.currentTarget).parents('tr');
+		var id = $row.attr('operation');
 
 		if(this.operationEditView != null) {
 			this.refreshListing();
 		}
 
-		row = $('tr[operation=' + id + ']');
+		$row = $('tr[operation=' + id + ']');
 
-		this.operationEditView = new App.Views.OperationAdd(this, row);
+		this.operationEditView = new App.Views.OperationAdd(this, $row);
 		this.operationEditView.render(id);
 
 		return false;
@@ -196,4 +200,22 @@ App.Views.Operation = Backbone.View.extend({
 
 		return false;
 	},
+    repeatedOperation: function(e) {
+        App.Loading.render();
+
+        var id = $(e.currentTarget).parents('tr').attr('operation');
+
+        $
+        .post(globals.rootUrl + '/operations/' + id + '/repetition')
+        .fail($.proxy(function() {
+            this._header._onError("Une erreur est survenue lors de l'enregistrement de l'opération comme répétitive.");
+        }, this))
+        .done($.proxy(function() {
+            $(e.currentTarget).hide();
+
+            App.Loading.dispose();
+        }, this));
+
+        return false;
+    }
 });

@@ -101,13 +101,6 @@ public class OperationController extends Controller {
 		return ResultFactory.OK;
 	}
 
-	@Deprecated
-	@Security
-	@Transactional
-	public Result importData(final Integer idAccount, final Integer idMois) {
-		return notFound();
-	}
-
 	@Security
 	public Result currentYearOp(final Integer accountId) {
 

@@ -46,9 +46,9 @@ DELETE	/bank/accounts/:idAccount/months/:idMonth/operations/:id	@fr.thedestiny.b
 
 GET		/bank/operations/search/:value		@fr.thedestiny.bank.controller.OperationController.search(value: String)
 
-GET		/bank/accounts/:idAccount/months/:idMonth/balance	@fr.thedestiny.bank.controller.SoldeController.get(idAccount: Integer, idMonth: Integer)
+POST    /bank/operations/:operation/repetition             @fr.thedestiny.bank.controller.RepetitionController.add(operation: Integer)
 
-POST	/bank/accounts/:idAccount/months/:idMonth/import		@fr.thedestiny.bank.controller.OperationController.importData(idAccount: Integer, idMonth: Integer)
+GET		/bank/accounts/:idAccount/months/:idMonth/balance	@fr.thedestiny.bank.controller.SoldeController.get(idAccount: Integer, idMonth: Integer)
 
 GET		/bank/accounts/:idAccount/stats/month		@fr.thedestiny.bank.controller.CompteController.getAccountStatsPerMonth(idAccount: Integer)
 
@@ -58,6 +58,9 @@ POST	/bank/heuristics/type/compute	@fr.thedestiny.bank.controller.HeuristiqueTyp
 GET		/bank/heuristics/name/pattern	@fr.thedestiny.bank.controller.MotifOperationController.list()
 POST	/bank/heuristics/name/pattern	@fr.thedestiny.bank.controller.MotifOperationController.add()
 DELETE	/bank/heuristics/name/pattern/:id @fr.thedestiny.bank.controller.MotifOperationController.delete(id: Integer)
+
+GET		/bank/repetitions/:account		@fr.thedestiny.bank.controller.RepetitionController.find(account: Integer)
+DELETE	/bank/repetitions/:account/:id  @fr.thedestiny.bank.controller.RepetitionController.delete(id: Integer, account: Integer)
 
 GET     /torrent                        @fr.thedestiny.torrent.controller.TorrentHomeController.index()
 

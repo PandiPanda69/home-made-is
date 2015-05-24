@@ -47,6 +47,9 @@
 					<div class="pull-center">
 						<a class="operations-edit" href=""><i class="icon-edit"></i></a>
 						<a class="operations-del"  href=""><i class="icon-remove"></i></a>
+						<% if(operations[i].repetee !== true) { %> 
+							<a class="operations-rec"  href=""><i class="icon-repeat"></i></a>
+						<% } %>
 					</div> 
 				</td>
 			</tr>

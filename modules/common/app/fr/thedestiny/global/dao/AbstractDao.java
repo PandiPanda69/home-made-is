@@ -13,7 +13,7 @@ public abstract class AbstractDao<T extends Object> {
 	}
 
 	private T save(T obj) {
-		return JPA.em(persistenceContext).merge(obj);
+		return em().merge(obj);
 	}
 
 	public T save(EntityManager em, T obj) {
@@ -24,11 +24,23 @@ public abstract class AbstractDao<T extends Object> {
 		return em.merge(obj);
 	}
 
+	public void persist(EntityManager em, T obj) {
+		if (em == null) {
+			em().persist(obj);
+		}
+
+		em.persist(obj);
+	}
+
 	protected final T findById(EntityManager em, Integer id, Class<T> clazz) {
 		if (em == null) {
-			em = JPA.em(persistenceContext);
+			em = em();
 		}
 
 		return em.find(clazz, id);
+	}
+
+	protected EntityManager em() {
+		return JPA.em(persistenceContext);
 	}
 }

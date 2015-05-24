@@ -24,12 +24,14 @@ import fr.thedestiny.Constants;
 import fr.thedestiny.bank.dao.CompteDao;
 import fr.thedestiny.bank.dao.MotifOperationDao;
 import fr.thedestiny.bank.dao.OperationDao;
+import fr.thedestiny.bank.dao.RepetitionDao;
 import fr.thedestiny.bank.dto.OperationDto;
 import fr.thedestiny.bank.dto.SearchResultDto;
 import fr.thedestiny.bank.models.Compte;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.models.MotifOperation;
 import fr.thedestiny.bank.models.Operation;
+import fr.thedestiny.bank.models.Repetition;
 import fr.thedestiny.global.dao.SolrSearchDao;
 import fr.thedestiny.global.exception.CoreNotFoundException;
 import fr.thedestiny.global.service.AbstractService;
@@ -43,6 +45,9 @@ public class OperationService extends AbstractService {
 
 	@Autowired
 	private OperationDao operationDao;
+
+	@Autowired
+	private RepetitionDao repetitionDao;
 
 	@Autowired
 	private CompteDao compteDao;
@@ -59,6 +64,7 @@ public class OperationService extends AbstractService {
 
 	public List<OperationDto> findAllOperationsForMonth(final int userId, final int accountId, final int monthId) {
 
+		List<Repetition> repetitions = repetitionDao.findAll();
 		List<Operation> operations = operationDao.findAll(null, accountId, monthId);
 		List<OperationDto> result = new ArrayList<>(operations.size());
 
@@ -69,6 +75,7 @@ public class OperationService extends AbstractService {
 
 			for (Operation current : operations) {
 				OperationDto dto = new OperationDto(current);
+				dto.setRepetee(isRepetee(current, repetitions));
 				result.add(dto);
 			}
 		}
@@ -125,9 +132,8 @@ public class OperationService extends AbstractService {
 
 				compteDao.save(em, compte);
 
-				return new OperationDto(op);
+				return convertBean(op);
 			}
-
 		});
 	}
 
@@ -181,7 +187,7 @@ public class OperationService extends AbstractService {
 
 				compteDao.save(em, compte);
 
-				return new OperationDto(op);
+				return convertBean(op);
 			}
 		});
 	}
@@ -230,7 +236,7 @@ public class OperationService extends AbstractService {
 
 	private void applyOperationPatterns(final Operation op, final int userId) {
 
-		if (op.getNomComplet() == null || op.getNomComplet().length() == 0) {
+		if (op.getNomComplet() == null || op.getNomComplet().isEmpty()) {
 			return;
 		}
 
@@ -315,10 +321,14 @@ public class OperationService extends AbstractService {
 
 	public List<OperationDto> getCurrentYearOperation(final int accountId) {
 
+		List<Repetition> repetitions = repetitionDao.findAll();
 		List<Operation> operations = operationDao.findOperationOfYear(accountId, Calendar.getInstance().get(Calendar.YEAR));
 		List<OperationDto> dto = new ArrayList<>(operations.size());
-		for (Operation op : operations) {
-			dto.add(new OperationDto(op));
+
+		for (Operation current : operations) {
+			OperationDto op = new OperationDto(current);
+			op.setRepetee(isRepetee(current, repetitions));
+			dto.add(op);
 		}
 
 		return dto;
@@ -354,5 +364,38 @@ public class OperationService extends AbstractService {
 		}
 
 		return dto;
+	}
+
+	public Operation findOperationById(final Integer op, final int userId) {
+
+		if (op == null) {
+			throw new IllegalArgumentException();
+		}
+
+		Operation operation = operationDao.findById(null, op);
+		if (operation.getCompte().getOwner().intValue() != userId) {
+			throw new SecurityException("This operation is not owned by this user.");
+		}
+
+		return operation;
+	}
+
+	private OperationDto convertBean(final Operation op) {
+		List<Repetition> repetitions = repetitionDao.findAll();
+
+		OperationDto dto = new OperationDto(op);
+		dto.setRepetee(isRepetee(op, repetitions));
+		return dto;
+	}
+
+	private boolean isRepetee(final Operation op, final List<Repetition> repetitions) {
+
+		for (Repetition current : repetitions) {
+			if (current.getNom().equals(op.getNom()) && current.getType().getId().equals(op.getType().getId())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

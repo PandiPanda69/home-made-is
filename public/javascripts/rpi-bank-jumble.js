@@ -962,35 +962,7 @@ $(function() {
 	/*******************************************
         * View
         *******************************************/
-        var ParamsView = Backbone.View.extend({
-
-                el: $("#main-container"),
-                main: $("#main-container"),
-                paramsTemplate: _.template($('#params-template').html()),
-
-                events: {
-			"click #params-optypes":	"displayOptypes",
-			"click #params-import":		"displayImport",
-			"click #params-heuristics":	"displayHeuristics"
-                },
-                render: function() {
-                        Menu.activateButton($('#menu-params'));
-
-			this.main.html(this.paramsTemplate);
-                },
-		displayOptypes: function() {
-			Routes.navigate('params/optypes', {trigger: true});
-			return false;
-		},
-		displayImport: function() {
-			Routes.navigate('params/import', {trigger: true});
-			return false;
-		},
-		displayHeuristics: function() {
-			Routes.navigate('params/heuristics', {trigger: true});
-			return false;
-		}
-        });
+        var ParamsView = App.Views.Parameters;
 
 
 	// router/router.js
@@ -1013,9 +985,10 @@ $(function() {
 		heuristicsView:	new HeuristicsView,
 		accounttypeListView: new AccountTypeView,
 		accounttypeAddView:  new AccountTypeAddView,
+        repeatedOperationsView: new App.Views.RepeatedOperations,
 
-                routes: {
-                        "":                     	"home",
+        routes: {
+            "":                     	"home",
 			"params":			"paramsHome",
 			"params/optypes":		"optypesHome",
 			"params/optypes/add":		"optypesAdd",
@@ -1030,7 +1003,8 @@ $(function() {
 			"params/import":		"importHome",
 			"params/import/account=:idAccount&month=:idMonth/input":		"importInput",
 			"params/import/account=:idAccount&month=:idMonth/preview/data=:data&delim=:delim":	"importPreview",
-			"params/heuristics":		"heuristicsHome"
+			"params/heuristics":		"heuristicsHome",
+            "params/repetition":    "repeatedOperations"
                 },
 
 		initialize: function() {
@@ -1091,13 +1065,16 @@ $(function() {
 		},
 		accounttypeEdit: function(idType) {
 			this.render(this.accounttypeAddView, idType);
-		}
-        });
+		},
+        repeatedOperations: function() {
+            this.render(this.repeatedOperationsView);
+        }
+    });
 
         var Menu = App.Menu;
 
 	App.Router = new Router;
-        var Routes = App.Router;
+    var Routes = App.Router;
 
 	Backbone.history.start({root: globals.rootUrl});
 

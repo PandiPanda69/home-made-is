@@ -47,7 +47,7 @@ public class SoldeDao extends AbstractDao<Solde> {
 		}
 	}
 
-	public Solde persist(EntityManager em, final Solde solde) {
+	public Solde persistSolde(EntityManager em, final Solde solde) {
 		em.persist(solde);
 		return solde;
 	}
