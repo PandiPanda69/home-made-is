@@ -53,11 +53,14 @@ App.Views.RepeatedOperations = Backbone.View.extend({
               var $body = $('#repeatedop-list tbody');
 
               var buffer = '';
+              var sum = .0;
               App.Models.Repetition.each($.proxy(function(el) {
                  buffer += this._buildLine(el);
+                 sum += parseFloat(el.get('montant'));
               }, this));
 
-              $body.html(buffer);
+              
+              $body.html(buffer + this._buildTotalLine(sum));
               $('#repeatedop-list').show();
               this.delegateEvents();
 
@@ -72,9 +75,13 @@ App.Views.RepeatedOperations = Backbone.View.extend({
        return '<tr id="' + el.id + '"><td>'
                          + el.get('nom') + '</td><td>'
                          + parseFloat(el.get('montant')).toFixed(2) + ' €</td><td>'
-                         + el.get('type') + '</td><td><div class="pull-center">'
+                         + (el.get('type') != null ? el.get('type') : '') + '</td>'
+                         + '<td><div class="pull-center">'
                          + '<a class="remove-repetition" href=""><i class="icon-remove"></i></a>'
                          + '</div></td></tr>';
+    },
+    _buildTotalLine: function(totalAmount) {
+       return '<tr><td><b>Total</b></td><td><b>' + totalAmount.toFixed(2) + ' €</b></td><td></td><td></td></tr>';
     },
     _onClickRemove: function(e) {
        App.Loading.render();

@@ -25,6 +25,6 @@ public class RepetitionDto extends AbstractDto implements Serializable {
 		this.nom = bean.getNom();
 		this.montant = bean.getMontant();
 		this.active = bean.getActive();
-		this.type = bean.getType().getName();
+		this.type = bean.getType() != null ? bean.getType().getName() : null;
 	}
 }
