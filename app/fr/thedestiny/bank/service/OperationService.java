@@ -64,7 +64,7 @@ public class OperationService extends AbstractService {
 
 	public List<OperationDto> findAllOperationsForMonth(final int userId, final int accountId, final int monthId) {
 
-		List<Repetition> repetitions = repetitionDao.findAll();
+		List<Repetition> repetitions = repetitionDao.findByAccount(accountId);
 		List<Operation> operations = operationDao.findAll(null, accountId, monthId);
 		List<OperationDto> result = new ArrayList<>(operations.size());
 
@@ -391,7 +391,8 @@ public class OperationService extends AbstractService {
 	private boolean isRepetee(final Operation op, final List<Repetition> repetitions) {
 
 		for (Repetition current : repetitions) {
-			if (current.getNom().equals(op.getNom()) && current.getType().getId().equals(op.getType().getId())) {
+			if (current.getNom().equals(op.getNom()) &&
+					((current.getType() == null && op.getType() == null) || current.getType().getId().equals(op.getType().getId()))) {
 				return true;
 			}
 		}

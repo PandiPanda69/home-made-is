@@ -1,30 +1,26 @@
 App.Views.OperationAdd = Backbone.View.extend({
 
-    el: $("#main-container"),
-    main: $("#operation-add"),
-
     editingOperationId: null,
     myParent: null,
 
     initialize: function(myParent, el) {
-        this.el = el;
-        this.main = el;
+        this.setElement(el);
 
         this.myParent = myParent;
 
         this.operationAddTemplate = _.template($('#operationadd-template').html());
     },
     bindEvents: function() {
-        this.main.unbind();
+        this.$el.unbind();
         $("#operationadd-validate").unbind();
         $("#operationadd-cancel").unbind();
         $("#montant").unbind();
 
         _.bindAll(this);
-        this.main.bind('keypress',          this.keypressOperation);
-        $("#operationadd-validate").bind('click',  this.validate);
-        $("#operationadd-cancel").bind('click',    this.cancel);
-        $("#montant").bind('blur',          this.formatAmount);
+        this.$el.bind('keypress', this.keypressOperation);
+        $("#operationadd-validate").bind('click', this.validate);
+        $("#operationadd-cancel").bind('click', this.cancel);
+        $("#montant").bind('blur', this.formatAmount);
     },
     render: function(editingOperationId) {
 
@@ -40,13 +36,13 @@ App.Views.OperationAdd = Backbone.View.extend({
             currentOperation = App.Models.Operation.get(editingOperationId).toJSON();
         }
 
-        this.main.html(this.operationAddTemplate({
+        this.$el.html(this.operationAddTemplate({
             isEditing: (currentOperation != null),
             types: App.Models.OperationType.toJSON(),
             operation: currentOperation
         }));
-        this.bindEvents();
 
+        this.bindEvents();
         App.Loading.dispose();
     },
     checkOperationTypesAreLoaded: function() {

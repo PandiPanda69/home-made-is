@@ -1,63 +1,64 @@
 App.Views.Operation = Backbone.View.extend({
 
-    el: $("#operations-container"),
-    main: $("#operations-container"),
+   el: $("#operations-container"),
+   main: $("#operations-container"),
 
-	currentAccountId: null,
-	currentMonthId: null,
-	currentMonthBalance: 0,
-	operationAddView: null,
-	operationEditView: null,
+   currentAccountId: null,
+   currentMonthId: null,
+   currentMonthBalance: 0,
+   operationAddView: null,
+   operationEditView: null,
 
-	initialize: function(header) {
+   initialize: function(header) {
         this._header = header;
 
-		this.el = $("#operations-container");
-		this.main = $("#operations-container");
+	this.el = $("#operations-container");
+	this.main = $("#operations-container");
 
         this.operationTemplate = _.template($('#operations-template').html());
-	},
-	bindEvents: function() {
-		$(".operations-edit").unbind();
-		$(".operations-del").unbind();
+   },
+   bindEvents: function() {
+	$(".operations-edit").unbind();
+	$(".operations-del").unbind();
         $(".operations-rec").unbind();
 
-		_.bindAll(this);
-		$(".operations-edit").click(this.editOperation);
-		$(".operations-del").click(this.delOperation);
+	_.bindAll(this);
+	$(".operations-edit").click(this.editOperation);
+	$(".operations-del").click(this.delOperation);
         $(".operations-rec").click(this.repeatedOperation);
     },
     render: function(accountId, monthId) {
         App.Menu.activateButton($('#menu-accounts'));
 
-		this.currentAccountId = accountId;
-		this.currentMonthId = monthId;
+	this.currentAccountId = accountId;
+	this.currentMonthId = monthId;
 
-		// Load operations for selected month
-		App.Models.Operation.month  = this.currentMonthId;
-		App.Models.Operation.compte = this.currentAccountId;
+	// Load operations for selected month
+	App.Models.Operation.month  = this.currentMonthId;
+	App.Models.Operation.compte = this.currentAccountId;
 
-		// Fetch month balance
-		$.ajax({
-			url: globals.rootUrl + '/accounts/' + this.currentAccountId + '/months/' + this.currentMonthId + '/balance',
-			async: false,
-			success: $.proxy(function(result) {
-				this.currentMonthBalance = result.solde;
-			}, this),
-			error: function() {
-				this._header._onError('Erreur lors du calcul du solde initial.');
-			}
-		});
+	// Fetch month balance
+	$.ajax({
+		url: globals.rootUrl + '/accounts/' + this.currentAccountId + '/months/' + this.currentMonthId + '/balance',
+		async: false,
+		success: $.proxy(function(result) {
+			this.currentMonthBalance = result.solde;
+		}, this),
+		error: function() {
+			this._header._onError('Erreur lors du calcul du solde initial.');
+		}
+	});
 
-		App.Models.Operation.fetch({
-			success: $.proxy( function() {
-				this.refreshListing();
+	App.Models.Operation.fetch({
+		success: $.proxy( function() {
+			this.refreshListing();
 
-				App.Loading.dispose();
-			}, this)
-		});
+			App.Loading.dispose();
+		}, this)
+	});
     },
-	refreshListing: function() {
+
+    refreshListing: function() {
 
 		var stats = this.computeStatistics();
 
@@ -74,6 +75,10 @@ App.Views.Operation = Backbone.View.extend({
 		// Initialize Add operation view
 		this.operationAddView = new App.Views.OperationAdd(this, $('#operation-add'));
 		this.operationAddView.render(null);
+
+		// Initialize suggestions
+		this.suggestionsView = new App.Views.OperationSuggestions(this, $('#suggested-operations'));
+		this.suggestionsView.render();
 	},
 	calculateCells: function() {
 		

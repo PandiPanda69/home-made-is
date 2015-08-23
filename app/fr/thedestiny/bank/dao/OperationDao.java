@@ -19,7 +19,7 @@ import fr.thedestiny.global.dao.AbstractDao;
 public class OperationDao extends AbstractDao<Operation> {
 
 	private OperationDao() {
-		super(Constants.BANK_CONTEXT);
+		super(Constants.BANK_CONTEXT, Operation.class);
 	}
 
 	public List<Operation> findAll(EntityManager em) {
@@ -40,10 +40,6 @@ public class OperationDao extends AbstractDao<Operation> {
 				.getResultList();
 	}
 
-	public Operation findById(EntityManager em, final int id) {
-		return findById(em, id, Operation.class);
-	}
-
 	public boolean delete(EntityManager em, final int id) {
 		if (em == null) {
 			em = JPA.em(persistenceContext);
@@ -62,9 +58,9 @@ public class OperationDao extends AbstractDao<Operation> {
 						"where compte.id = :accountId " +
 						"and mois.annee = :year " +
 						"order by mois.mois", Operation.class)
-				.setParameter("accountId", accountId)
-				.setParameter("year", year)
-				.getResultList();
+						.setParameter("accountId", accountId)
+						.setParameter("year", year)
+						.getResultList();
 	}
 
 	public List<Operation> findUserOperationsById(final List<Integer> ids, final int userId) {
@@ -77,8 +73,8 @@ public class OperationDao extends AbstractDao<Operation> {
 						"where compte.owner = :user " +
 						"and op.id in :ids " +
 						"order by mois.annee desc, mois.mois desc", Operation.class)
-						.setParameter("user", userId)
-						.setParameter("ids", ids)
-						.getResultList();
+				.setParameter("user", userId)
+				.setParameter("ids", ids)
+				.getResultList();
 	}
 }

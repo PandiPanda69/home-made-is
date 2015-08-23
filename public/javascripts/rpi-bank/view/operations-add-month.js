@@ -1,10 +1,9 @@
 App.Views.OperationsAddMonth = Backbone.View.extend({
 
   initialize: function(header) {
-    this.$el = $('#month_input_form');
+    this.setElement($('#month_input_form'));
     this._header = header;
 
-    // Manually bind events...
     $('#month_add').click($.proxy(this._addMonth, this));
     $('#month_cancel').click($.proxy(this._cancelMonth, this));
   },

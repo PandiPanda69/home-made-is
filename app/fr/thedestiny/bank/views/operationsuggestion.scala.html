@@ -1,0 +1,19 @@
+<script type="text/template" id="operationsuggestion-template">
+
+    <% if(repetitions.length > 0) { %>
+    <td colspan="7">
+      <ul>
+      
+      <%
+        $.each(repetitions, function(i, el) {
+           %>
+              <li><a class="suggestion" suggestion="<%=el.id%>"><%=el.nom%></a></li>
+           <%
+        });
+      %>
+
+      </ul>
+    </td>
+    <% } %>
+
+</script>

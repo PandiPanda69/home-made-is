@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
 import play.db.jpa.JPA;
+import fr.thedestiny.Constants;
 import fr.thedestiny.bank.models.OperationType;
 import fr.thedestiny.global.dao.AbstractDao;
 
@@ -18,11 +19,7 @@ import fr.thedestiny.global.dao.AbstractDao;
 public class OperationTypeDao extends AbstractDao<OperationType> {
 
 	private OperationTypeDao() {
-		super("bank");
-	}
-
-	public OperationType findById(EntityManager em, final int id) {
-		return findById(em, id, OperationType.class);
+		super(Constants.BANK_CONTEXT, OperationType.class);
 	}
 
 	public List<OperationType> findAll(EntityManager em) {

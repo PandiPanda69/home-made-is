@@ -6,6 +6,7 @@ import javax.persistence.NoResultException;
 import org.springframework.stereotype.Repository;
 
 import play.db.jpa.JPA;
+import fr.thedestiny.Constants;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.global.dao.AbstractDao;
 
@@ -17,11 +18,7 @@ import fr.thedestiny.global.dao.AbstractDao;
 public class MoisAnneeDao extends AbstractDao<MoisAnnee> {
 
 	private MoisAnneeDao() {
-		super("bank");
-	}
-
-	public MoisAnnee findById(EntityManager em, final int id) {
-		return findById(em, id, MoisAnnee.class);
+		super(Constants.BANK_CONTEXT, MoisAnnee.class);
 	}
 
 	public MoisAnnee findUnique(EntityManager em, final int mois, final int annee) {
