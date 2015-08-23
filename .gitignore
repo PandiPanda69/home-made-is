@@ -20,3 +20,4 @@ sonar-project.properties
 .gradle
 bin
 build
+*swp
