@@ -59,7 +59,7 @@ public class ContactService extends AbstractService {
 				}
 
 				if (!phonesToFetch.isEmpty()) {
-					List<Phone> phones = phoneDao.findByIds(em, phonesToFetch);
+					List<Phone> phones = phoneDao.findByIds(phonesToFetch);
 					persisted.getPhones().addAll(phones);
 				}
 

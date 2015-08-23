@@ -2,8 +2,6 @@ package fr.thedestiny.message.dao;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.springframework.stereotype.Repository;
 
 import fr.thedestiny.Constants;
@@ -17,7 +15,7 @@ public class PhoneDao extends AbstractDao<Phone> {
 		super(Constants.MESSAGES_CONTEXT, Phone.class);
 	}
 
-	public List<Phone> findByIds(EntityManager em, List<Integer> ids) {
+	public List<Phone> findByIds(List<Integer> ids) {
 		return em().createQuery("FROM Phone WHERE id IN :ids", Phone.class)
 				.setParameter("ids", ids)
 				.getResultList();
