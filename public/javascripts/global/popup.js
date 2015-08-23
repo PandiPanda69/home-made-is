@@ -1,7 +1,7 @@
 App.Popup = Backbone.View.extend({
 
 	initialize: function() {
-	      	this.$dialog = $('#popup-dialog').clone();
+        this.$dialog = $('#popup-dialog').clone();
 
 		if(this._init != null) {
 			this._init(this.$dialog);

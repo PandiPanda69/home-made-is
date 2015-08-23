@@ -1,0 +1,27 @@
+<script type="text/template" id="contact-messages-template">
+    <h1 style="margin-bottom: 5px;">Messages - <%=contact.name%> <i>(<%=messages.length%>)</i></h1>
+    
+    <div class="marginAuto width-375px">
+        <div class="pull-center marginB50">
+            <button id="view-contact" class="btn btn-mini btn-info">Fiche contact</button>
+        </div>
+
+    <% for(var i in messages) {
+        var current = messages[i];
+        var directionClass = messages[i].direction === 'IN' ? "left pull-right" : "right";
+    %>
+      <div class="row marginT25">
+          <div class="popover <%=directionClass%>" style="position: relative; display: block;">
+            <div class="arrow"></div>
+            <p class="popover-title emphasis"><%=current.date%></p>
+            <div class="popover-content">
+                <p class="justify"><%=current.body%></p>
+            </div>
+          </div>
+      </div>
+
+    <% } %>
+
+    </div>
+
+</script>

@@ -5,7 +5,7 @@
              
     <persistence-unit name="defaultPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-	<non-jta-data-source>DefaultDS</non-jta-data-source>
+		<non-jta-data-source>DefaultDS</non-jta-data-source>
         <properties>
 		<property name="hibernate.dialect" value="org.hibernate.dialect.SQLiteDialect"/>
 		<property name="hibernate.hbm2ddl.auto" value="none" /> 
@@ -42,6 +42,18 @@
     <persistence-unit name="fitnessPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>FitnessDS</non-jta-data-source>
+        <properties>
+                <property name="hibernate.dialect" value="org.hibernate.dialect.SQLiteDialect"/>
+                <property name="hibernate.hbm2ddl.auto" value="none" />
+                <property name="hibernate.show_sql" value="false" />
+                <property name="hibernate.transaction.flush_before_completion" value="true" />
+                <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="messagesPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <non-jta-data-source>MessagesDS</non-jta-data-source>
         <properties>
                 <property name="hibernate.dialect" value="org.hibernate.dialect.SQLiteDialect"/>
                 <property name="hibernate.hbm2ddl.auto" value="none" />

@@ -2,6 +2,10 @@
 	display: inline;
 }
 
+.marginAuto {
+    margin: auto;
+}
+
 .marginL0 {
 	margin-left: 0px !important;
 }
@@ -26,8 +30,12 @@
 	margin-top: 50px;
 }
 
+.marginB25 {
+    margin-bottom: 25px;
+}
+
 .marginB50 {
-        margin-bottom: 50px;
+    margin-bottom: 50px;
 }
 
 .paddingL50 {
@@ -51,10 +59,37 @@
 	width: 100%;
 }
 
+.width-20px {
+    width: 20px;
+}
+
+.width-375px {
+    width: 375px;
+}
+
+.width-60pc {
+    width: 60%;
+}
+
 .valign-center {
 	vertical-align: middle;
 }
 
+.align-right {
+    text-align: right;
+}
+
 em {
 	background: yellow;
+}
+
+.emphasis {
+    text-align: right;
+    color: darkgrey;
+    font-size: xx-small !important;
+    font-style: italic;
+}
+
+.justify {
+    text-align: justify;
 }

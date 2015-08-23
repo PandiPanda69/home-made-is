@@ -87,8 +87,13 @@ GET		/fitness/calendar/:year/:month	@fr.thedestiny.fitness.controller.CalendarEv
 POST	/fitness/calendar				@fr.thedestiny.fitness.controller.CalendarEventController.add()
 PUT		/fitness/calendar/:id			@fr.thedestiny.fitness.controller.CalendarEventController.edit(id: Integer)
 
-GET		/message						@fr.thedestiny.message.controller.MessageHomeController.index()
-POST	/message/sync					@fr.thedestiny.message.controller.MessageSynchronizerController.synchronize()
+GET		/messages						@fr.thedestiny.message.controller.MessageHomeController.index()
+GET		/messages/contacts				@fr.thedestiny.message.controller.MessageContactController.list()
+PUT		/messages/contacts/:id			@fr.thedestiny.message.controller.MessageContactController.edit(id: Integer)
+DELETE	/messages/contacts/:id			@fr.thedestiny.message.controller.MessageContactController.delete(id: Integer)
+GET		/messages/messages				@fr.thedestiny.message.controller.MessageController.list()
+GET		/messages/contacts/:id/messages	@fr.thedestiny.message.controller.MessageController.listByContact(id: Integer)
+POST	/messages/sync					@fr.thedestiny.message.controller.MessageSynchronizerController.synchronize()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

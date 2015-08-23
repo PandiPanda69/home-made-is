@@ -13,16 +13,16 @@ App.Menu = Backbone.View.extend({
 		$("#menu li").removeClass("active");
 		$btn.parent().addClass("active");
 	},
-	displayHome: function(e) {
+	displayHome: function() {
 		App.Router.navigate("", {trigger: true});
 	},
-	displayTorrents: function(e) {
+	displayTorrents: function() {
 		App.Router.navigate("torrents", {trigger: true});
 	},
-	displayQueue: function(e) {
+	displayQueue: function() {
 		App.Router.navigate("queue", {trigger: true});
 	},
-	displayParams: function(e) {
+	displayParams: function() {
 		App.Router.navigate("params", {trigger: true});
 	}
 });

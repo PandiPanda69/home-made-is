@@ -1,0 +1,39 @@
+<script type="text/template" id="show-contact-template">
+    <h1>Contact - <%=contact.name%></h1>
+
+    <div class="row">
+    <% if(isEditing) { %>
+        <div class="span6">
+            <button id="save-contact" class="btn btn-mini btn-primary">Sauvegarder</button>
+            <button id="cancel-contact" class="btn btn-mini btn-info">Annuler</button>
+        </div>
+        <div class="span6 align-right">
+            <button id="delete-contact" class="btn btn-mini btn-danger">Supprimer</button>
+        </div>
+    <% } else { %>
+        <button id="edit-contact" class="btn btn-mini btn-primary">Editer</button>
+        <button id="view-messages" class="btn btn-mini btn-info">Voir messages</button>
+    <% } %>
+    </div>
+    <div class="marginAuto width-375px">
+
+        <div>
+            <label for="name">Nom :</label>
+            <input type="text" class="marginL50" value="<%=contact.name%>" id="name" <%=isEditing ? '' : 'disabled'%>/>
+        </div>
+
+        <div>
+            <p>
+               Numéros associés: 
+            </p>
+            <ul id="phones" class="marginL50">
+                <% for(i in contact.phones) { %>
+                    <li>
+                        <%=contact.phones[i].phone%> 
+                    </li>
+                <% } %>
+        </ul>
+        </div>
+
+    </div>
+</script>

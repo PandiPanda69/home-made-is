@@ -1,0 +1,112 @@
+@(user: fr.thedestiny.auth.dto.UserDto)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>RPi-Messages</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/util.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/rpi-sms.png")">
+    </head>
+    <body>
+
+             <div class="navbar navbar-inverse navbar-fixed-top">
+              <div class="navbar-inner">
+                <div class="container">
+                  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </a>
+
+                  <a class="brand" href="/">
+                    <img src="@routes.Assets.at("images/rpi-sms.png")" style="width: 28px;"/> 
+                    RPi Messages
+                  </a>
+
+                  <div id="menu" class="nav-collapse collapse">
+                    <ul class="nav">
+                      <li class="active"><a id="menu-home">Accueil</a></li>    
+                      <li><a id="menu-contacts">Contacts</a></li>
+                      <li><a id="menu-messages">Messages</a></li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+             </div>         
+            
+
+        <div id="main-container" class="container">
+        </div>
+
+        <div class="footer horizontal-separator">
+                RPi-Messages V
+                @fr.thedestiny.Constants.MESSAGES_VERSION
+                &mdash; &copy; Krwkrw 2015
+        </div>
+
+        <div id="popup-dialog" class="modal hide fade" style="margin-top: auto;" role="dialog" aria-hidden="true">
+            <div class="modal-body">
+            </div>
+        </div>
+
+        @home()
+
+        @contacts()
+
+        @messages()
+
+        @showcontact()
+
+        @deletecontactpopup()
+
+        @contactmessages()
+        
+        <script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-modal.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-tooltip.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-tab.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/json2.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/underscore.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/backbone-min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/backbone.remoteStorage.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/serialize.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/highcharts.js")" type="text/javascript"></script>
+
+        <script src="@routes.Assets.at("javascripts/rpi-messages.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/global/popup.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/global/error_popup.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/global/loading.js")" type="text/javascript"></script>
+
+		<script src="@routes.Assets.at("javascripts/rpi-messages/router.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/menu.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/model/contacts.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/model/phones.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/model/contact-messages.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/model/messages.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/view/home.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/view/contacts.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/view/edit-contact.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/view/delete-contact-popup.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/view/messages.js")" type="text/javascript"></script>
+		<script src="@routes.Assets.at("javascripts/rpi-messages/view/contact-messages.js")" type="text/javascript"></script>
+
+        <script type="text/javascript">
+         $('.container').tooltip({
+            selector: "a,i[data-toggle=tooltip]"
+         });
+         
+         var globals = {
+            rootUrl : '/messages'
+         };
+
+        App.init()
+        </script>
+
+    </body>
+</html>
+
