@@ -27,5 +27,4 @@ public class ContactDao extends AbstractDao<Contact> {
 				.setParameter(1, id)
 				.executeUpdate() == 1;
 	}
-
 }

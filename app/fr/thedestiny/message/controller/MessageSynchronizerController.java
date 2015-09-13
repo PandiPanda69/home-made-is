@@ -1,19 +1,23 @@
 package fr.thedestiny.message.controller;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import play.Logger;
+import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Http.Request;
 import play.mvc.Result;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.thedestiny.message.service.KeyVerifierService;
+import fr.thedestiny.message.service.MessageService;
 
 @org.springframework.stereotype.Controller
 public class MessageSynchronizerController extends Controller {
@@ -23,6 +27,13 @@ public class MessageSynchronizerController extends Controller {
 	@Autowired
 	private KeyVerifierService keyService;
 
+	@Autowired
+	private MessageService messageService;
+
+	@Autowired
+	private ObjectMapper mapper;
+
+	@Transactional
 	public Result synchronize() {
 
 		Request req = ctx().request();
@@ -39,18 +50,15 @@ public class MessageSynchronizerController extends Controller {
 			return badRequest("Empty request.");
 		}
 
-		/* ******************************************************************** */
-		/* TODO : Handle data. */
-		/* ******************************************************************** */
-		long timestamp = System.currentTimeMillis();
+		try {
+			@SuppressWarnings("unchecked")
+			List<HashMap<String, Object>> messages = mapper.readValue(body.toString(), List.class);
+			messageService.pushMessages(messages);
 
-		try (FileOutputStream out = new FileOutputStream("output_" + timestamp)) {
-			out.write(body.toString().getBytes("UTF-8"));
+			return ok(String.valueOf(messages.size()));
 		} catch (IOException ex) {
-			Logger.error("Error while saving request body.", ex);
+			Logger.error("Error while sync:", ex);
 			return internalServerError();
 		}
-
-		return ok(String.valueOf(body.size()));
 	}
 }

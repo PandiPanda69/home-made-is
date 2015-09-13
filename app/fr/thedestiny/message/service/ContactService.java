@@ -47,7 +47,7 @@ public class ContactService extends AbstractService {
 				for (final Phone newPhone : contact.getPhones()) {
 					boolean existing = false;
 					for (final Phone oldPhone : persisted.getPhones()) {
-						if (oldPhone.getId() == newPhone.getId()) {
+						if (oldPhone.getId().equals(newPhone.getId())) {
 							existing = true;
 							break;
 						}
@@ -74,6 +74,26 @@ public class ContactService extends AbstractService {
 			@Override
 			public Boolean doWork(EntityManager em) throws Exception {
 				return contactDao.delete(em, id);
+			}
+		});
+	}
+
+	public Contact addContact(final String name, final String defaultPhone) {
+		return processInTransaction(new InTransactionFunction<Contact>() {
+
+			@Override
+			public Contact doWork(EntityManager em) throws Exception {
+				Contact contact = new Contact(name);
+				contact = contactDao.save(em, contact);
+
+				Phone phone = new Phone();
+				phone.setContact(contact);
+				phone.setPhone(defaultPhone);
+				phone = phoneDao.save(em, phone);
+
+				contact.getPhones().add(phone);
+
+				return contact;
 			}
 		});
 	}
