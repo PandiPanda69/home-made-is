@@ -35,6 +35,7 @@ public abstract class AbstractDao<T extends Object> {
 	public void persist(EntityManager em, T obj) {
 		if (em == null) {
 			em().persist(obj);
+			return;
 		}
 
 		em.persist(obj);
