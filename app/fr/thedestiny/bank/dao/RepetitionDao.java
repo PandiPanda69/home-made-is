@@ -17,6 +17,7 @@ public class RepetitionDao extends AbstractDao<Repetition> {
 		super(Constants.BANK_CONTEXT);
 	}
 
+	@Override
 	public List<Repetition> findAll() {
 		return em()
 				.createQuery("FROM " + Repetition.class.getName(), Repetition.class)
@@ -26,9 +27,9 @@ public class RepetitionDao extends AbstractDao<Repetition> {
 	public List<Repetition> findByAccount(final int account) {
 
 		String query = new StringBuilder("FROM ")
-		.append(Repetition.class.getName())
-		.append(" WHERE compte.id = ?)")
-		.toString();
+				.append(Repetition.class.getName())
+				.append(" WHERE compte.id = ?)")
+				.toString();
 
 		return em()
 				.createQuery(query, Repetition.class)

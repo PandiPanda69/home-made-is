@@ -49,7 +49,7 @@ public class DataUnit implements Comparable<DataUnit> {
 
 			return result;
 		}
-	};
+	}
 
 	@Getter
 	private final double value;

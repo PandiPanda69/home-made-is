@@ -20,7 +20,7 @@ App.Views.EditContact = Backbone.View.extend({
         App.Loading.render();
 
         this._getContactById(id, $.proxy(function(contact) {
-            
+
             this.currentContact = contact;
 
             this.$el.html(this.template({
@@ -29,7 +29,7 @@ App.Views.EditContact = Backbone.View.extend({
             }));
 
             $.getJSON([globals.rootUrl, 'stats/contact', this.currentContact.id].join('/'))
-           .done($.proxy(function(data) {
+            .done($.proxy(function(data) {
                 if(action !== 'EDIT') {
                     this._setupGraphic(data);
                 }
@@ -85,7 +85,7 @@ App.Views.EditContact = Backbone.View.extend({
             series: [{
                 type: 'area',
                 name: 'Messages par jour',
-                data: data.elements 
+                data: data.elements
             }]
         });
     },
@@ -98,11 +98,11 @@ App.Views.EditContact = Backbone.View.extend({
     },
 
     _onEdit: function() {
-       this.render(this.currentContact.get('id'), 'EDIT'); 
+       this.render(this.currentContact.get('id'), 'EDIT');
     },
 
     _onView: function() {
-       this.render(this.currentContact.get('id'), 'VIEW'); 
+       this.render(this.currentContact.get('id'), 'VIEW');
     },
 
     _onSave: function() {
@@ -114,7 +114,7 @@ App.Views.EditContact = Backbone.View.extend({
             this._onError('Le nom du contact doit contenir au moins 3 caractères.');
             return;
         }
-        
+
         this.currentContact.save({
             name: name
         })

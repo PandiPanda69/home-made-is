@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -63,7 +64,7 @@ public class MessageService extends AbstractService {
 
 	public void pushMessages(final List<HashMap<String, Object>> messages) {
 
-		for (HashMap<String, Object> current : messages) {
+		for (Map<String, Object> current : messages) {
 			String address = (String) current.get("address");
 			String body = (String) current.get("body");
 			long date = (Long) current.get("date");

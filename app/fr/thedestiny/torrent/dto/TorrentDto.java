@@ -64,6 +64,7 @@ public class TorrentDto extends AbstractDto implements Comparable<TorrentDto> {
 
 	public Double getActivityRate() {
 
+		// TODO : Double comparison ===> sooo bad.
 		if (deltaAmount == null || deltaAmount == 0d || downloadedAmount == null || downloadedAmount == 0d) {
 			return null;
 		}

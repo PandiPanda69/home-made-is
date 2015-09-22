@@ -17,7 +17,7 @@ public class DataUnitHelper {
 	}
 
 	/**
-	 * Convert a value to another unit (ex: KB -> MB)  
+	 * Convert a value to another unit (ex: KB -> MB)
 	 * @param value Value to be converted
 	 * @param toUnit New unit
 	 * @return The new value
@@ -60,7 +60,7 @@ public class DataUnitHelper {
 	public static DataUnit fit(final long value) {
 
 		if (value == 0) {
-			return new DataUnit(0l);
+			return new DataUnit(0L);
 		}
 
 		Unit matchingUnit = Unit.BYTES;
