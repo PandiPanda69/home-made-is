@@ -54,7 +54,7 @@ App.Views.Home = Backbone.View.extend({
 				}
 			},
 			tooltip: {
-                                pointFormat: '{series.name}: <b>{point.y} bytes</b>'
+                pointFormat: '{series.name}: <b>{point.y} bytes</b>'
 			},
 			series: [{
 				name: 'Downloaded',

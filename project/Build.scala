@@ -27,6 +27,7 @@ object ApplicationBuild extends Build {
     "org.springframework" % "spring-orm" % "3.2.5.RELEASE",
     "fr.thedestiny" % "bencod-parser" % "1.0",
     "org.apache.solr" % "solr-solrj" % "5.0.0",
+    "joda-time" % "joda-time" % "2.8.2",
 
     "org.springframework" % "spring-test" % "3.2.5.RELEASE" % "test",
     "org.mockito" % "mockito-all" % "1.9.5" % "test"

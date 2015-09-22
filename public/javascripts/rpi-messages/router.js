@@ -2,7 +2,6 @@ App.Router = Backbone.Router.extend({
 
     _homeView:  null,
     _contactsView: null,
-    _unknownContactsView: null,
     _messagesView: null,
     _editContactView: null,
     _contactMessagesView: null,
@@ -17,7 +16,6 @@ App.Router = Backbone.Router.extend({
         "contacts/:id": "viewContact",
         "contacts/:id/edit": "editContact",
         "contacts/:id/messages": "contactMessages",
-        "contacts/inconnu": "unknownContacts",
         "messages": "messages"
     },
 
@@ -37,15 +35,6 @@ App.Router = Backbone.Router.extend({
 
         App.Menu.activateButton($("#menu-contacts"));
         this._contactsView.render();
-    },
-
-    unknownContacts: function() {
-        if(this._unknownContactsView === null) {
-            this._unknownContactsView = new App.Views.UnknownContacts;
-        }
-
-        App.Menu.activateButton($("#menu-contacts"));
-        this._unknownContactsView.render();
     },
 
     messages: function() {

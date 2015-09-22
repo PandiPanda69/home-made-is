@@ -2,14 +2,12 @@ package fr.thedestiny.message.dao;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.springframework.stereotype.Repository;
 
 import fr.thedestiny.Constants;
 import fr.thedestiny.global.dao.AbstractDao;
-import fr.thedestiny.message.model.Contact;
 import fr.thedestiny.message.model.Phone;
 
 @Repository
@@ -33,5 +31,11 @@ public class PhoneDao extends AbstractDao<Phone> {
 		} catch (NoResultException ex) {
 			return null;
 		}
+	}
+
+	public int countPhone() {
+		return em().createQuery("select count(*) from Phone", Long.class)
+				.getSingleResult()
+				.intValue();
 	}
 }

@@ -27,4 +27,10 @@ public class ContactDao extends AbstractDao<Contact> {
 				.setParameter(1, id)
 				.executeUpdate() == 1;
 	}
+
+	public int countContact() {
+		return em().createQuery("select count(*) from Contact", Long.class)
+				.getSingleResult()
+				.intValue();
+	}
 }

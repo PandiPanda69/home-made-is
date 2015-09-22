@@ -94,6 +94,8 @@ DELETE	/messages/contacts/:id			@fr.thedestiny.message.controller.MessageContact
 GET		/messages/messages				@fr.thedestiny.message.controller.MessageController.list()
 GET		/messages/contacts/:id/messages	@fr.thedestiny.message.controller.MessageController.listByContact(id: Integer)
 POST	/messages/sync					@fr.thedestiny.message.controller.MessageSynchronizerController.synchronize()
+GET		/messages/stats					@fr.thedestiny.message.controller.MessageHomeController.stats()
+GET		/messages/stats/contact/:id		@fr.thedestiny.message.controller.MessageContactController.stats(id: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -12,15 +12,20 @@ import play.mvc.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.thedestiny.auth.security.Security;
+import fr.thedestiny.global.dto.GraphDto;
 import fr.thedestiny.global.helper.ResultFactory;
 import fr.thedestiny.message.model.Contact;
 import fr.thedestiny.message.service.ContactService;
+import fr.thedestiny.message.service.MessageStatService;
 
 @org.springframework.stereotype.Controller
 public class MessageContactController extends Controller {
 
 	@Autowired
 	private ContactService contactService;
+
+	@Autowired
+	private MessageStatService statService;
 
 	@Autowired
 	private ObjectMapper mapper;
@@ -41,5 +46,11 @@ public class MessageContactController extends Controller {
 	public Result delete(final Integer id) {
 		contactService.deleteContact(id);
 		return ResultFactory.OK;
+	}
+
+	@Security
+	public Result stats(final Integer id) {
+		GraphDto<List<Long>> dto = statService.computeStatsForContact(id);
+		return ok(Json.toJson(dto));
 	}
 }

@@ -48,4 +48,27 @@ public class MessageDao extends AbstractDao<Message> {
 				.setParameter(1, id)
 				.getResultList();
 	}
+
+	public int countMessage() {
+		return em().createQuery("select count(*) from Message", Long.class)
+				.getSingleResult()
+				.intValue();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object[]> countMessageByDay() {
+		return em()
+				.createNativeQuery("select strftime('%Y-%m-%d', dat_msg/1000, 'unixepoch'), count(*) from Message group by 1 order by 1")
+				.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object[]> countMessageByDayForContact(int id) {
+		return em()
+				.createNativeQuery("select strftime('%Y-%m-%d', dat_msg/1000, 'unixepoch'), count(*) from Message m"
+						+ " inner join Contact_Phone cp on cp.id = m.phone_id"
+						+ " where cp.contact_id = :contact group by 1 order by 1")
+						.setParameter("contact", id)
+						.getResultList();
+	}
 }

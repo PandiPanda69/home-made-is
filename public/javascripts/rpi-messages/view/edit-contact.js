@@ -28,7 +28,16 @@ App.Views.EditContact = Backbone.View.extend({
                 isEditing: (action === 'EDIT')
             }));
 
-            App.Loading.dispose();
+            $.getJSON([globals.rootUrl, 'stats/contact', this.currentContact.id].join('/'))
+           .done($.proxy(function(data) {
+                if(action !== 'EDIT') {
+                    this._setupGraphic(data);
+                }
+                App.Loading.dispose();
+            }, this))
+            .fail($.proxy(function() {
+                this._onError('Impossible de charger les statistiques.');
+            }, this))
         }, this));
     },
 
@@ -45,6 +54,40 @@ App.Views.EditContact = Backbone.View.extend({
         .fail($.proxy(function() {
             this._onError('Impossible de charger la liste des contacts.');
         }, this));
+    },
+
+    _setupGraphic: function(data) {
+
+        $('#messages-volume-chart').highcharts({
+            title: {
+                text: 'Messages échangés'
+            },
+            xAxis: {
+                type: 'datetime',
+                maxZoom: 7 * 24 * 60 * 60 * 1000,
+                title: null
+            },
+            yAxis: {
+                title: null,
+                min: 0
+            },
+            chart: {
+                zoomType: 'x'
+            },
+            plotOptions: {
+                area: {
+                    marker: {
+                        enabled: false
+                    },
+                    lineWidth: 1
+                }
+            },
+            series: [{
+                type: 'area',
+                name: 'Messages par jour',
+                data: data.elements 
+            }]
+        });
     },
 
     _onError: function(msg) {
