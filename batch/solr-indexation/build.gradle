@@ -41,7 +41,8 @@ dependencies {
     		'org.xerial:sqlite-jdbc:3.7.2',
     		'log4j:log4j:1.2.17',
     		'commons-dbcp:commons-dbcp:1.4',
-    		'org.apache.solr:solr-solrj:5.0.0'
+    		'org.apache.solr:solr-solrj:5.0.0',
+    		'commons-codec:commons-codec:1.9'
     
     testCompile 'junit:junit:4.+',
     			'org.mockito:mockito-all:1.9.5'
