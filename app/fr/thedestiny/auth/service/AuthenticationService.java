@@ -41,17 +41,17 @@ public class AuthenticationService extends AbstractService {
 	}
 
 	public String encodePassword(final String password) {
-		String encodedPassword = new String();
+		StringBuffer encodedPassword = new StringBuffer();
 
 		try {
 			final byte[] buffer = MessageDigest.getInstance("SHA-1").digest(password.getBytes());
 			for (byte b : buffer) {
-				encodedPassword += String.format("%02x", b);
+				encodedPassword.append(String.format("%02x", b));
 			}
 		} catch (NoSuchAlgorithmException ex) {
 			Logger.error("Cannot encode password.", ex);
 		}
 
-		return encodedPassword;
+		return encodedPassword.toString();
 	}
 }

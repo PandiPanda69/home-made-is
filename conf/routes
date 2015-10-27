@@ -97,5 +97,21 @@ POST	/messages/sync					@fr.thedestiny.message.controller.MessageSynchronizerCon
 GET		/messages/stats					@fr.thedestiny.message.controller.MessageHomeController.stats()
 GET		/messages/stats/contact/:id		@fr.thedestiny.message.controller.MessageContactController.stats(id: Integer)
 
+# API Endpoints
+
+OPTIONS /api/*path						@fr.thedestiny.Application.options(path: String)
+
+POST	/api/auth/login					@fr.thedestiny.auth.controller.AuthenticationController.authenticateApi()
+GET		/api/auth/logout				@fr.thedestiny.auth.controller.AuthenticationController.logoutApi()
+GET		/api/me							@fr.thedestiny.auth.controller.AuthenticationController.currentUser()
+GET		/api/module						@fr.thedestiny.home.controller.ModuleController.list()
+POST	/api/module						@fr.thedestiny.home.controller.ModuleController.add()
+PUT		/api/module/:id					@fr.thedestiny.home.controller.ModuleController.edit(id: Integer)
+DELETE	/api/module/:id					@fr.thedestiny.home.controller.ModuleController.delete(id: Integer)
+GET		/api/user						@fr.thedestiny.home.controller.UtilisateurController.list()
+POST	/api/user						@fr.thedestiny.home.controller.UtilisateurController.add()
+PUT		/api/user/:id					@fr.thedestiny.home.controller.UtilisateurController.edit(id: Integer)
+DELETE	/api/user/:id					@fr.thedestiny.home.controller.UtilisateurController.delete(id: Integer)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

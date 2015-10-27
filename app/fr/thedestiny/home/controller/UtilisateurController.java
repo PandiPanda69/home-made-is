@@ -1,7 +1,9 @@
 package fr.thedestiny.home.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -46,6 +48,10 @@ public class UtilisateurController extends Controller {
 			if (dto.getId() != null) {
 				Logger.error("Adding user with specified id.");
 				return ResultFactory.FAIL;
+			} else if (dto.getUsername() == null || dto.getPassword() == null) {
+				Map<String, String> result = new HashMap<>();
+				result.put("msg", "Username and password are mandatory.");
+				return badRequest(Json.toJson(result));
 			}
 
 			dto = userService.saveNewUser(dto);
