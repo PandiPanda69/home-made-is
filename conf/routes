@@ -113,5 +113,15 @@ POST	/api/user						@fr.thedestiny.home.controller.UtilisateurController.add()
 PUT		/api/user/:id					@fr.thedestiny.home.controller.UtilisateurController.edit(id: Integer)
 DELETE	/api/user/:id					@fr.thedestiny.home.controller.UtilisateurController.delete(id: Integer)
 
+GET		/api/bank/accounts				@fr.thedestiny.bank.controller.CompteController.list()
+GET		/api/bank/accounts/:id			@fr.thedestiny.bank.controller.CompteController.find(id: Integer)
+POST	/api/bank/accounts				@fr.thedestiny.bank.controller.CompteController.add()
+PUT		/api/bank/accounts/:id			@fr.thedestiny.bank.controller.CompteController.edit(id: Integer)
+DELETE	/api/bank/accounts/:id			@fr.thedestiny.bank.controller.CompteController.delete(id: Integer)
+GET		/api/bank/accounts/type			@fr.thedestiny.bank.controller.TypeCompteController.list()
+POST	/api/bank/accounts/type			@fr.thedestiny.bank.controller.TypeCompteController.add()
+PUT		/api/bank/accounts/type/:id		@fr.thedestiny.bank.controller.TypeCompteController.edit(id: Integer)
+DELETE 	/api/bank/accounts/type/:id		@fr.thedestiny.bank.controller.TypeCompteController.delete(id: Integer)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

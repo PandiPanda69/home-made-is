@@ -62,6 +62,12 @@ public class CompteController extends Controller {
 		return ok(outDto.toJson());
 	}
 
+    @Security
+    @Transactional
+    public Result find(final Integer id) {
+        return ok(compteService.findById(id, SecurityHelper.getLoggedUserId()).toJson());
+    }
+
 	@Security
 	@Transactional
 	public Result edit(final Integer id) {

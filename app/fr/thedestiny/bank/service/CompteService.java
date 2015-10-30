@@ -48,6 +48,15 @@ public class CompteService extends AbstractService {
 		return result;
 	}
 
+    public CompteDto findById(final int userId, final int currentUser) {
+        Compte fetched = compteDao.findById(null, userId);
+        if(!fetched.getOwner().equals(currentUser)) {
+            throw new SecurityException();
+        }
+
+        return new CompteDto(fetched);
+    }
+
 	public CompteDto saveCompte(final Compte compte, final int currentUser) {
 
 		if (compte.getId() != null) {
