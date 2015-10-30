@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 
 import fr.thedestiny.bank.dao.CompteDao;
 import fr.thedestiny.bank.dao.SoldeDao;
+import fr.thedestiny.bank.dao.TypeCompteDao;
 import fr.thedestiny.bank.dto.CompteDto;
 import fr.thedestiny.bank.dto.StatsDto;
 import fr.thedestiny.bank.models.Compte;
 import fr.thedestiny.bank.models.MoisAnnee;
 import fr.thedestiny.bank.models.Solde;
+import fr.thedestiny.bank.models.TypeCompte;
 import fr.thedestiny.global.service.AbstractService;
 import fr.thedestiny.global.service.InTransactionFunction;
 
@@ -24,6 +26,9 @@ public class CompteService extends AbstractService {
 
 	@Autowired
 	private CompteDao compteDao;
+
+    @Autowired
+    private TypeCompteDao typeCompteDao;
 
 	@Autowired
 	private SoldeDao soldeDao;
@@ -34,6 +39,7 @@ public class CompteService extends AbstractService {
 
 	public List<CompteDto> listCompteForUser(final int userId) {
 
+        // TODO CompteDTO has weird struct.
 		List<CompteDto> result = new ArrayList<>();
 		for (Compte current : compteDao.findAll(null, userId)) {
 			result.add(new CompteDto(current));
@@ -55,6 +61,12 @@ public class CompteService extends AbstractService {
 
 				compte.setOwner(currentUser);
 				compte.setLastUpdate(new Date());
+                compte.setSolde(.0d);
+
+                TypeCompte type = typeCompteDao.findById(em, compte.getType().getId());
+                if(type == null) {
+                    throw new SecurityException();
+                }
 
 				return new CompteDto(compteDao.save(em, compte));
 			}
@@ -77,10 +89,15 @@ public class CompteService extends AbstractService {
 					throw new SecurityException();
 				}
 
+                TypeCompte type = typeCompteDao.findById(em, compte.getType().getId());
+                if(type == null) {
+                    throw new SecurityException();
+                }
+
 				persistedOne.setLastUpdate(new Date());
 
 				persistedOne.setNom(compte.getNom());
-				persistedOne.setType(compte.getType());
+				persistedOne.setType(type);
 				persistedOne.setActive(compte.isActive());
 
 				return new CompteDto(persistedOne);

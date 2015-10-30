@@ -14,7 +14,7 @@ import fr.thedestiny.global.dao.AbstractDao;
 public class TypeCompteDao extends AbstractDao<TypeCompte> {
 
 	private TypeCompteDao() {
-		super("bank");
+		super("bank", TypeCompte.class);
 	}
 
 	public List<TypeCompte> findAll(EntityManager em) {

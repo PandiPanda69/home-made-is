@@ -2,6 +2,8 @@ package fr.thedestiny.bank.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,6 +43,7 @@ public class CompteController extends Controller {
 		return ok(Json.toJson(list));
 	}
 
+    @Security
 	@Transactional
 	public Result add() {
 
@@ -50,7 +53,10 @@ public class CompteController extends Controller {
 			outDto = compteService.saveCompte(compte, SecurityHelper.getLoggedUserId());
 		} catch (IOException ex) {
 			Logger.error("Error while serializing", ex);
-			return ResultFactory.FAIL;
+            Map<String, String> msg = new HashMap<>();
+            msg.put("code", "fail");
+            msg.put("msg", "An error occured while unserializing data.");
+			return internalServerError(Json.toJson(msg));
 		}
 
 		return ok(outDto.toJson());

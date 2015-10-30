@@ -20,6 +20,7 @@ public class ResultFactory {
 
 		failNode = JsonNodeFactory.instance.objectNode();
 		failNode.put("code", "fail");
+        failNode.put("msg", "An internal error occured.");
 
 		OK = Controller.ok(okNode);
 		FAIL = Controller.internalServerError(failNode);

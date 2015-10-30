@@ -18,15 +18,7 @@ import fr.thedestiny.global.dao.AbstractDao;
 public class CompteDao extends AbstractDao<Compte> {
 
 	private CompteDao() {
-		super("bank");
-	}
-
-	public Compte findById(EntityManager em, final int id) {
-		if (em == null) {
-			em = JPA.em(persistenceContext);
-		}
-
-		return em.find(Compte.class, id);
+		super("bank", Compte.class);
 	}
 
 	public List<Compte> findAll(EntityManager em, final int ownerId) {
