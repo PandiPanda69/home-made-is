@@ -37,6 +37,7 @@ public class MoisAnneeController extends Controller {
 
 		List<MoisAnnee> list = null;
 		try {
+            Logger.info("Find months for account {}", compteId);
 			list = monthService.findAccountMonths(currentUser.getId(), compteId);
 		} catch (Exception ex) {
 			Logger.error(ex.getMessage());

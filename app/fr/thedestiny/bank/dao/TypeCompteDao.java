@@ -28,8 +28,8 @@ public class TypeCompteDao extends AbstractDao<TypeCompte> {
 
 	public boolean isTypeInUse(final int typeId) {
 
-		int count = JPA.em(persistenceContext)
-				.createNamedQuery("SELECT COUNT(1) FROM Compte WHERE id_type = :typeId", Integer.class)
+		int count = (Integer) JPA.em(persistenceContext)
+				.createNativeQuery("SELECT COUNT(1) FROM Compte WHERE id_type = :typeId")
 				.setParameter("typeId", typeId)
 				.getSingleResult();
 

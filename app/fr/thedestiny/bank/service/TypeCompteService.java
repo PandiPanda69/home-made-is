@@ -48,11 +48,16 @@ public class TypeCompteService extends AbstractService {
 
 			@Override
 			public TypeCompteDto doWork(EntityManager em) {
-				for (TauxInteret current : type.getTaux()) {
-					current.setType(type);
-				}
+                if(type.getType().equals("SAVING")) {
+    				for (TauxInteret current : type.getTaux()) {
+	    				current.setType(type);
+		    		}
 
-				interetDao.purge(em, type.getId());
+			    	interetDao.purge(em, type.getId());
+                } else if(!type.getTaux().isEmpty()) {
+			    	interetDao.purge(em, type.getId());
+                    type.getTaux().clear();
+                }
 				return new TypeCompteDto(typeDao.save(em, type));
 			}
 		});

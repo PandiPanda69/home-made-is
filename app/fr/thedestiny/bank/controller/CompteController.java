@@ -65,6 +65,7 @@ public class CompteController extends Controller {
     @Security
     @Transactional
     public Result find(final Integer id) {
+        Logger.info("Find account {}", id);
         return ok(compteService.findById(id, SecurityHelper.getLoggedUserId()).toJson());
     }
 
@@ -102,4 +103,12 @@ public class CompteController extends Controller {
 		StatsDto statsDto = compteService.getStatsPerMonthForAccount(SecurityHelper.getLoggedUserId(), idAccount);
 		return ok(statsDto.toJson());
 	}
+
+    @Security
+    @Transactional(readOnly = true)
+    public Result getAccountStatsForLastYear(final Integer idAccount) {
+
+		StatsDto statsDto = compteService.getAccountStatsForLastYear(SecurityHelper.getLoggedUserId(), idAccount);
+		return ok(statsDto.toJson());
+    }
 }

@@ -392,7 +392,7 @@ public class OperationService extends AbstractService {
 
 		for (Repetition current : repetitions) {
 			if (current.getNom().equals(op.getNom()) &&
-					((current.getType() == null && op.getType() == null) || current.getType().getId().equals(op.getType().getId()))) {
+					((current.getType() == null && op.getType() == null) || (current.getType() != null && current.getType().getId().equals(op.getType().getId())))) {
 				return true;
 			}
 		}

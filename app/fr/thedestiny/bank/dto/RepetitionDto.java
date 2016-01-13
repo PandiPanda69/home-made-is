@@ -17,6 +17,9 @@ public class RepetitionDto extends AbstractDto implements Serializable {
 	private String nom;
 	private double montant;
 	private boolean active;
+
+    // Todo : Merge into OperationType
+    private int typeId;
 	private String type;
 
 	public RepetitionDto(final Repetition bean) {
@@ -25,6 +28,10 @@ public class RepetitionDto extends AbstractDto implements Serializable {
 		this.nom = bean.getNom();
 		this.montant = bean.getMontant();
 		this.active = bean.getActive();
-		this.type = bean.getType() != null ? bean.getType().getName() : null;
+
+        if(bean.getType() != null) {
+            this.typeId = bean.getType().getId();
+	    	this.type = bean.getType().getName();
+        }
 	}
 }

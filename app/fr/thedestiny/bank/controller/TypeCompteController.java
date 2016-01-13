@@ -76,7 +76,7 @@ public class TypeCompteController extends Controller {
 
 		try {
 			typeService.deleteTypeCompte(typeId);
-		} catch (TypeCompteInUseException ex) {
+		} catch (Exception ex) {
 			ObjectNode inUseNode = JsonNodeFactory.instance.objectNode();
 			inUseNode.put("code", "fail");
 			inUseNode.put("msg", "Type de compte actuellement utilisé. Sa suppression est impossible.");
